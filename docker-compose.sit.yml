@@ -1,0 +1,68 @@
+services:
+  postgres-sit:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wt_whatsapp_sit
+      POSTGRES_USER: wt_admin
+      POSTGRES_PASSWORD: wt_secure_password_2026
+    ports:
+      - '5436:5432'
+    volumes:
+      - postgres-sit-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U wt_admin -d wt_whatsapp_sit']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis-sit:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: >
+      redis-server
+      --requirepass wt_redis_pass_2026
+      --appendonly yes
+      --maxmemory 256mb
+      --maxmemory-policy noeviction
+    ports:
+      - '6380:6379'
+    volumes:
+      - redis-sit-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', '-a', 'wt_redis_pass_2026', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  mock-whatsapp-server:
+    build:
+      context: .
+      dockerfile: apps/mock-whatsapp-server/Dockerfile
+    restart: unless-stopped
+    environment:
+      MOCK_SERVER_PORT: 4010
+      SUT_WEBHOOK_URL: http://sut-backend:3000/api/v1/webhooks/meta
+      META_APP_SECRET: sit_meta_app_secret_32_chars_long!!
+    ports:
+      - '4010:4010'
+    depends_on:
+      - redis-sit
+
+  client-emulator:
+    build:
+      context: .
+      dockerfile: apps/client-emulator/Dockerfile
+    restart: unless-stopped
+    environment:
+      CLIENT_EMULATOR_PORT: 4020
+      MOCK_SERVER_URL: http://mock-whatsapp-server:4010
+      SUT_BACKEND_URL: http://sut-backend:3000
+    ports:
+      - '4020:4020'
+    depends_on:
+      - mock-whatsapp-server
+
+volumes:
+  postgres-sit-data:
+  redis-sit-data:

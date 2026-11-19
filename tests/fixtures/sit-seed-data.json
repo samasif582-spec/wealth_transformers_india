@@ -1,0 +1,121 @@
+{
+  "version": "1.0.0",
+  "environment": "SIT",
+  "generatedAt": "2026-11-19T16:50:00Z",
+  "tenants": [
+    {
+      "id": "tenant-sit-001",
+      "name": "Wealth Transformers SIT Main",
+      "wabaId": "waba-sit-1001",
+      "phoneNumberId": "phone-sit-2001",
+      "phoneNumber": "+919876543210",
+      "displayName": "Wealth Transformers SIT",
+      "qualityRating": "GREEN"
+    },
+    {
+      "id": "tenant-sit-002",
+      "name": "Wealth Transformers Secondary Tenant",
+      "wabaId": "waba-sit-1002",
+      "phoneNumberId": "phone-sit-2002",
+      "phoneNumber": "+919876543211",
+      "displayName": "WT Alternate Desk",
+      "qualityRating": "YELLOW"
+    }
+  ],
+  "clients": [
+    {
+      "id": "sit-client-001",
+      "fullName": "Rajesh Sharma",
+      "phoneNumber": "+919876543210",
+      "email": "rajesh.sharma@example.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "HNI",
+      "birthDate": "1985-11-20",
+      "anniversaryDate": "2015-04-12"
+    },
+    {
+      "id": "sit-client-002",
+      "fullName": "Priya Patel",
+      "phoneNumber": "+919876543211",
+      "email": "priya.patel@example.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "RETAIL",
+      "birthDate": "1992-08-15",
+      "anniversaryDate": "2019-11-19"
+    },
+    {
+      "id": "sit-client-003",
+      "fullName": "Amit Verma",
+      "phoneNumber": "+919876543212",
+      "email": "amit.verma@example.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "PRO",
+      "birthDate": "1988-11-19",
+      "anniversaryDate": "2016-02-14"
+    },
+    {
+      "id": "sit-client-004",
+      "fullName": "Sunita Rao",
+      "phoneNumber": "+919876543213",
+      "email": "sunita.rao@example.com",
+      "consentStatus": "OPTED_OUT",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "RETAIL",
+      "birthDate": "1990-05-10",
+      "anniversaryDate": "2018-09-22"
+    },
+    {
+      "id": "sit-client-005",
+      "fullName": "Vikram Malhotra",
+      "phoneNumber": "+919876543299",
+      "email": "vikram.malhotra@example.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "RETAIL",
+      "birthDate": "1980-01-01",
+      "anniversaryDate": "2010-01-01"
+    },
+    {
+      "id": "sit-client-006",
+      "fullName": "Neha Gupta",
+      "phoneNumber": "+919876543288",
+      "email": "neha.gupta@example.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "RETAIL",
+      "birthDate": "1994-03-21",
+      "anniversaryDate": "2020-06-18"
+    }
+  ],
+  "templates": [
+    {
+      "name": "wealth_trade_diwali_2024",
+      "category": "MARKETING",
+      "language": "en",
+      "components": [
+        { "type": "HEADER", "format": "IMAGE" },
+        { "type": "BODY", "text": "Dear {{1}}, wishing you a prosperous Diwali! - Wealth Transformers India Pvt Ltd" },
+        { "type": "FOOTER", "text": "SEBI Reg: INZ000123456 | Securities investments are subject to market risks." }
+      ]
+    },
+    {
+      "name": "client_birthday_wishes_v1",
+      "category": "UTILITY",
+      "language": "en",
+      "components": [
+        { "type": "BODY", "text": "Happy birthday {{1}} from Wealth Transformers India Pvt Ltd!" }
+      ]
+    },
+    {
+      "name": "wealth_transformers_anniversary_v1",
+      "category": "UTILITY",
+      "language": "en",
+      "components": [
+        { "type": "BODY", "text": "Happy anniversary {{1}}! Celebrating {{2}} years with Wealth Transformers India Pvt Ltd." }
+      ]
+    }
+  ]
+}

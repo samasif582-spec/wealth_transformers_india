@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "1.0.0",
+  "environment": "SIT_SERVICE_VIRTUALIZATION",
+  "generatedAt": "2026-11-19T16:40:00Z",
+  "platform": "Wealth Transformers India Pvt Ltd",
+  "ports": {
+    "sutBackend": 3000,
+    "sutFrontend": 5173,
+    "mockWhatsAppServer": 4010,
+    "clientEmulator": 4020,
+    "postgresDev": 5435,
+    "postgresSit": 5436,
+    "redisDev": 6379,
+    "redisSit": 6380,
+    "n8n": 5678
+  },
+  "adapters": {
+    "metaMessages": {
+      "path": "apps/backend/src/templates/meta-messages.adapter.ts",
+      "targetUrl": "${META_BASE_GRAPH_URL}/${META_GRAPH_API_VERSION}/${META_PHONE_NUMBER_ID}/messages",
+      "supportedModes": ["mock", "virtualized", "live"]
+    },
+    "metaTemplates": {
+      "path": "apps/backend/src/templates/meta-templates.adapter.ts",
+      "targetUrl": "${META_BASE_GRAPH_URL}/${META_GRAPH_API_VERSION}/${META_WABA_ID}/message_templates",
+      "supportedModes": ["mock", "virtualized", "live"]
+    },
+    "campaignWorker": {
+      "path": "apps/backend/src/queue/campaign.worker.ts",
+      "queue": "campaign-messages",
+      "concurrency": 10
+    },
+    "webhooksController": {
+      "path": "apps/backend/src/webhooks/webhooks.controller.ts",
+      "routes": [
+        "/api/v1/webhooks/meta",
+        "/api/v1/webhooks/whatsapp"
+      ],
+      "guard": "apps/backend/src/webhooks/guards/meta-signature.guard.ts",
+      "signatureHeader": "X-Hub-Signature-256",
+      "secretEnv": "META_APP_SECRET"
+    },
+    "internalAutomation": {
+      "path": "apps/backend/src/automation/internal-automation.controller.ts",
+      "routes": [
+        "/api/v1/automation/internal/send",
+        "/api/v1/automation/internal/campaign-batch",
+        "/api/v1/automation/internal/sync-template-quality"
+      ],
+      "authHeader": "X-Internal-Api-Key",
+      "secretEnv": "INTERNAL_AUTOMATION_KEY"
+    }
+  },
+  "mockServerEndpoints": {
+    "graphApi": [
+      {
+        "method": "POST",
+        "route": "/v20.0/:phone_number_id/messages",
+        "description": "Send text or template WhatsApp message"
+      },
+      {
+        "method": "GET",
+        "route": "/v20.0/:waba_id/message_templates",
+        "description": "List WABA message templates"
+      },
+      {
+        "method": "POST",
+        "route": "/v20.0/:waba_id/message_templates",
+        "description": "Create new WABA message template"
+      },
+      {
+        "method": "GET",
+        "route": "/v20.0/:template_id",
+        "description": "Get template details and quality status"
+      },
+      {
+        "method": "DELETE",
+        "route": "/v20.0/:template_id",
+        "description": "Delete message template"
+      }
+    ],
+    "adminApi": [
+      {
+        "method": "GET",
+        "route": "/admin/tenants",
+        "description": "List virtual tenants and WABAs"
+      },
+      {
+        "method": "POST",
+        "route": "/admin/scenarios/seed",
+        "description": "Seed deterministic scenario data"
+      },
+      {
+        "method": "POST",
+        "route": "/admin/scenarios/reset",
+        "description": "Reset simulator state"
+      },
+      {
+        "method": "POST",
+        "route": "/admin/simulator/configure",
+        "description": "Configure failure rates, latency, and fault injection"
+      },
+      {
+        "method": "GET",
+        "route": "/admin/traces",
+        "description": "Inspect HTTP requests, webhooks, and delivery lifecycles"
+      }
+    ]
+  },
+  "tenants": [
+    {
+      "id": "tenant-sit-001",
+      "name": "Wealth Transformers SIT Main",
+      "wabaId": "waba-sit-1001",
+      "phoneNumberId": "phone-sit-2001",
+      "phoneNumber": "+919876543210",
+      "displayName": "Wealth Transformers SIT",
+      "qualityRating": "GREEN"
+    },
+    {
+      "id": "tenant-sit-002",
+      "name": "Wealth Transformers Secondary Tenant",
+      "wabaId": "waba-sit-1002",
+      "phoneNumberId": "phone-sit-2002",
+      "phoneNumber": "+919876543211",
+      "displayName": "WT Alternate Desk",
+      "qualityRating": "YELLOW"
+    }
+  ]
+}

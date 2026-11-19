@@ -65,6 +65,9 @@ export class MetaMessagesAdapter {
     if (this.dispatchMode === 'mock') {
       return true;
     }
+    if (this.dispatchMode === 'virtualized') {
+      return false; // Virtualized mode executes real HTTP calls against mock-whatsapp-server
+    }
     const token = this.metaToken;
     const nodeEnv = this.config.get<string>('NODE_ENV') || process.env['NODE_ENV'] || 'development';
     return (
@@ -73,6 +76,21 @@ export class MetaMessagesAdapter {
       token === 'mock_token' ||
       nodeEnv === 'test'
     );
+  }
+
+  private enforceZeroLeakageGuard(): void {
+    const isSitMode = this.config.get<string>('SIT_MODE') === 'true' || this.dispatchMode === 'virtualized';
+    if (isSitMode) {
+      const lowerUrl = this.baseGraphUrl.toLowerCase();
+      if (lowerUrl.includes('graph.facebook.com') || lowerUrl.includes('facebook.com') || lowerUrl.includes('meta.com')) {
+        this.logger.error(
+          `[CRITICAL SECURITY] Zero-Leakage Guard Violation: Blocked attempted dispatch to ${this.baseGraphUrl} in virtualized SIT mode!`
+        );
+        throw new Error(
+          'Zero-Leakage Guard Violation: Live Meta Graph API cannot be targeted when running in virtualized/SIT mode.'
+        );
+      }
+    }
   }
 
   /**
@@ -132,6 +150,8 @@ export class MetaMessagesAdapter {
         mockMode: true,
       };
     }
+
+    this.enforceZeroLeakageGuard();
 
     // Fail-closed guard for live mode
     if (!this.metaToken || !this.phoneNumberId) {
@@ -256,6 +276,8 @@ export class MetaMessagesAdapter {
         mockMode: true,
       };
     }
+
+    this.enforceZeroLeakageGuard();
 
     if (!this.metaToken || !this.phoneNumberId) {
       return {

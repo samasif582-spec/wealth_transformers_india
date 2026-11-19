@@ -7,7 +7,7 @@ import { MetaMessagesAdapter } from '../templates/meta-messages.adapter';
 
 export interface WhatsAppHealthStatus {
   status: 'HEALTHY' | 'DEGRADED' | 'UNCONFIGURED';
-  dispatchMode: 'mock' | 'canary' | 'live';
+  dispatchMode: 'mock' | 'virtualized' | 'canary' | 'live';
   isMockMode: boolean;
   complianceVerified: boolean;
   circuitBreakerActive: boolean;
@@ -53,7 +53,7 @@ export class AdminService {
 
     const dispatchMode = (
       this.config.get<string>('DISPATCH_MODE') || 'mock'
-    ).toLowerCase() as 'mock' | 'canary' | 'live';
+    ).toLowerCase() as 'mock' | 'virtualized' | 'canary' | 'live';
 
     const hasAccessToken = Boolean(this.config.get<string>('META_ACCESS_TOKEN'));
     const hasPhoneNumberId = Boolean(this.config.get<string>('META_PHONE_NUMBER_ID'));

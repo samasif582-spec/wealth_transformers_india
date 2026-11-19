@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { QualityRating, TemplateStatus } from '@prisma/client';
-import { META_BASE_GRAPH_URL } from './templates.constants';
 
 export interface MetaSubmitResult {
   success: boolean;
@@ -19,9 +18,20 @@ export interface MetaStatusResult {
 @Injectable()
 export class MetaTemplatesAdapter {
   private readonly logger = new Logger(MetaTemplatesAdapter.name);
-  private readonly metaBaseUrl = META_BASE_GRAPH_URL;
 
   constructor(private readonly config: ConfigService) {}
+
+  public get baseGraphUrl(): string {
+    return this.config.get<string>('META_BASE_GRAPH_URL') || process.env['META_BASE_GRAPH_URL'] || 'https://graph.facebook.com';
+  }
+
+  public get graphApiVersion(): string {
+    return this.config.get<string>('META_GRAPH_API_VERSION') || process.env['META_GRAPH_API_VERSION'] || 'v20.0';
+  }
+
+  public get dispatchMode(): string {
+    return (this.config.get<string>('DISPATCH_MODE') || process.env['DISPATCH_MODE'] || 'mock').toLowerCase();
+  }
 
   private get metaToken(): string {
     return this.config.get<string>('META_ACCESS_TOKEN') || process.env['META_ACCESS_TOKEN'] || '';
@@ -32,6 +42,12 @@ export class MetaTemplatesAdapter {
   }
 
   private get isMockMode(): boolean {
+    if (this.dispatchMode === 'mock') {
+      return true;
+    }
+    if (this.dispatchMode === 'virtualized') {
+      return false;
+    }
     const token = this.metaToken;
     const nodeEnv = this.config.get<string>('NODE_ENV') || process.env['NODE_ENV'] || 'development';
     return (
@@ -40,6 +56,21 @@ export class MetaTemplatesAdapter {
       token === 'mock_token' ||
       nodeEnv === 'test'
     );
+  }
+
+  private enforceZeroLeakageGuard(): void {
+    const isSitMode = this.config.get<string>('SIT_MODE') === 'true' || this.dispatchMode === 'virtualized';
+    if (isSitMode) {
+      const lowerUrl = this.baseGraphUrl.toLowerCase();
+      if (lowerUrl.includes('graph.facebook.com') || lowerUrl.includes('facebook.com') || lowerUrl.includes('meta.com')) {
+        this.logger.error(
+          `[CRITICAL SECURITY] Zero-Leakage Guard Violation: Blocked template operation to ${this.baseGraphUrl} in virtualized SIT mode!`
+        );
+        throw new Error(
+          'Zero-Leakage Guard Violation: Live Meta Graph API cannot be targeted when running in virtualized/SIT mode.'
+        );
+      }
+    }
   }
 
   private buildHeaders(): Record<string, string> {
@@ -70,9 +101,11 @@ export class MetaTemplatesAdapter {
       };
     }
 
+    this.enforceZeroLeakageGuard();
+
     try {
       const response = await fetch(
-        `${this.metaBaseUrl}/${this.wabaId}/message_templates`,
+        `${this.baseGraphUrl}/${this.graphApiVersion}/${this.wabaId}/message_templates`,
         {
           method: 'POST',
           headers: this.buildHeaders(),
@@ -119,9 +152,11 @@ export class MetaTemplatesAdapter {
       };
     }
 
+    this.enforceZeroLeakageGuard();
+
     try {
       const response = await fetch(
-        `${this.metaBaseUrl}/${metaTemplateId}?fields=status,quality_score,rejected_reason`,
+        `${this.baseGraphUrl}/${this.graphApiVersion}/templates/${metaTemplateId}?fields=status,quality_score,rejected_reason`,
         { headers: this.buildHeaders() },
       );
 
@@ -168,9 +203,11 @@ export class MetaTemplatesAdapter {
       return QualityRating.GREEN;
     }
 
+    this.enforceZeroLeakageGuard();
+
     try {
       const response = await fetch(
-        `${this.metaBaseUrl}/${metaTemplateId}?fields=quality_score`,
+        `${this.baseGraphUrl}/${this.graphApiVersion}/templates/${metaTemplateId}?fields=quality_score`,
         { headers: this.buildHeaders() },
       );
 
@@ -252,9 +289,11 @@ export class MetaTemplatesAdapter {
       ];
     }
 
+    this.enforceZeroLeakageGuard();
+
     try {
       const response = await fetch(
-        `${this.metaBaseUrl}/${this.wabaId}/message_templates?limit=100`,
+        `${this.baseGraphUrl}/${this.graphApiVersion}/${this.wabaId}/message_templates?limit=100`,
         { headers: this.buildHeaders() },
       );
       if (response.ok) {
