@@ -189,4 +189,82 @@ export class MetaTemplatesAdapter {
 
     return QualityRating.GREEN;
   }
+
+  /**
+   * Fetches official message templates registered on the Meta WABA account.
+   */
+  async fetchWabaTemplates(): Promise<
+    Array<{
+      id: string;
+      name: string;
+      status: string;
+      category: string;
+      language: string;
+      components: any[];
+    }>
+  > {
+    if (this.isMockMode) {
+      return [
+        {
+          id: 'waba_mock_tmpl_01',
+          name: 'client_birthday_greeting_v1',
+          status: 'APPROVED',
+          category: 'UTILITY',
+          language: 'en',
+          components: [
+            {
+              type: 'BODY',
+              text: 'Happy Birthday {{1}}! Wealth Transformers India Pvt Ltd wishes you abundance, financial growth, and joy.',
+            },
+          ],
+        },
+        {
+          id: 'waba_mock_tmpl_02',
+          name: 'client_anniversary_wishes_v1',
+          status: 'APPROVED',
+          category: 'UTILITY',
+          language: 'en',
+          components: [
+            {
+              type: 'BODY',
+              text: 'Warm Anniversary Greetings {{1}}! Proud to accompany your wealth creation journey. Wealth Transformers India Pvt Ltd.',
+            },
+          ],
+        },
+        {
+          id: 'waba_mock_tmpl_03',
+          name: 'market_morning_brief_v1',
+          status: 'APPROVED',
+          category: 'MARKETING',
+          language: 'en',
+          components: [
+            { type: 'HEADER', format: 'IMAGE' },
+            {
+              type: 'BODY',
+              text: 'Good morning {{1}}! Here is your daily market momentum pulse for {{2}} from Wealth Transformers India Pvt Ltd.',
+            },
+            {
+              type: 'FOOTER',
+              text: 'Wealth Transformers India Pvt Ltd | SEBI Reg: INZ000123456',
+            },
+          ],
+        },
+      ];
+    }
+
+    try {
+      const response = await fetch(
+        `${this.metaBaseUrl}/${this.wabaId}/message_templates?limit=100`,
+        { headers: this.buildHeaders() },
+      );
+      if (response.ok) {
+        const data = (await response.json()) as any;
+        return data.data || [];
+      }
+      this.logger.warn(`Failed to fetch WABA templates: HTTP ${response.status}`);
+    } catch (err: any) {
+      this.logger.error(`Error querying WABA templates from Meta: ${err.message}`);
+    }
+    return [];
+  }
 }

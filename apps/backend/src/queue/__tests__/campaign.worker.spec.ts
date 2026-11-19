@@ -180,7 +180,9 @@ describe('CampaignWorker', () => {
     });
 
     it('should abort dispatch if recipient phone is suppressed in Redis', async () => {
-      jest.spyOn(redis, 'get').mockResolvedValueOnce('STOP_REQUESTED');
+      jest.spyOn(redis, 'get').mockImplementation(async (key: string) =>
+        key.includes('suppress') ? 'STOP_REQUESTED' : null,
+      );
 
       const job = createMockJob({});
       const result = await worker.processJob(job);

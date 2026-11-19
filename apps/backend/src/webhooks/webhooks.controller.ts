@@ -24,9 +24,9 @@ export class WebhooksController {
     private readonly webhooksService: WebhooksService,
   ) {}
 
-  /** Meta webhook verification handshake */
+  /** Meta webhook verification handshake - supports both /meta and /whatsapp */
   @Public()
-  @Get('meta')
+  @Get(['meta', 'whatsapp'])
   verifyWebhook(
     @Query('hub.mode') mode: string,
     @Query('hub.verify_token') token: string,
@@ -41,10 +41,10 @@ export class WebhooksController {
     }
   }
 
-  /** Meta webhook POST — return 200 fast, process async */
+  /** Meta webhook POST — return 200 fast, process async - supports both /meta and /whatsapp */
   @Public()
   @UseGuards(MetaSignatureGuard)
-  @Post('meta')
+  @Post(['meta', 'whatsapp'])
   @HttpCode(HttpStatus.OK)
   receiveWebhook(@Body() body: any): { status: string } {
     // Process asynchronously without blocking HTTP 200 response

@@ -20,6 +20,9 @@ import { QueueModule } from './queue/queue.module';
 import { QueueWorkerModule } from './queue/queue.worker.module';
 import { SettingsModule } from './settings/settings.module';
 import { HealthModule } from './health/health.module';
+import { BillingModule } from './billing/billing.module';
+import { ChatModule } from './chat/chat.module';
+import { AdminModule } from './admin/admin.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { AuditInterceptor } from './common/interceptors/audit.interceptor';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
@@ -68,6 +71,9 @@ import { RolesGuard } from './auth/guards/roles.guard';
     AuditModule,
     SettingsModule,
     HealthModule,
+    BillingModule,
+    ChatModule,
+    AdminModule,
   ],
   providers: [
     // Global throttler guard

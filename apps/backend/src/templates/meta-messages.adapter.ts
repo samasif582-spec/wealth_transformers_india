@@ -238,4 +238,97 @@ export class MetaMessagesAdapter {
       };
     }
   }
+
+  /**
+   * Dispatches a freeform text message (for customer care / inbound reply within 24hr window).
+   */
+  async sendTextMessage(to: string, text: string): Promise<MetaSendResult> {
+    const normalizedTo = this.normalizePhoneNumber(to);
+
+    if (this.isMockMode) {
+      const mockWamid = `mock_txt_wamid_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+      this.logger.log(
+        `[MOCK DISPATCH] Simulated text message to ${normalizedTo.slice(0, 4)}****${normalizedTo.slice(-2)}: "${text.slice(0, 40)}..." | WAMID: ${mockWamid}`,
+      );
+      return {
+        success: true,
+        wamid: mockWamid,
+        mockMode: true,
+      };
+    }
+
+    if (!this.metaToken || !this.phoneNumberId) {
+      return {
+        success: false,
+        mockMode: false,
+        errorCode: 'CONFIG_MISSING_CREDENTIALS',
+        errorMessage: 'Meta access token or phone number ID is missing',
+        errorCategory: 'PERMANENT',
+      };
+    }
+
+    const endpoint = `${this.baseGraphUrl}/${this.graphApiVersion}/${this.phoneNumberId}/messages`;
+    const requestBody = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: normalizedTo,
+      type: 'text',
+      text: {
+        preview_url: false,
+        body: text,
+      },
+    };
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this.metaToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+      const responseJson = (await response.json()) as any;
+
+      if (response.ok && responseJson?.messages?.[0]?.id) {
+        const wamid = responseJson.messages[0].id;
+        this.logger.log(
+          `✅ [LIVE TEXT DISPATCH] Sent to ${normalizedTo.slice(0, 4)}****${normalizedTo.slice(-2)} | WAMID: ${wamid}`,
+        );
+        return {
+          success: true,
+          wamid,
+          mockMode: false,
+          rawResponse: responseJson,
+        };
+      }
+
+      const metaError = responseJson?.error || {};
+      const metaCode = metaError.code;
+      const metaMsg = metaError.message || `HTTP ${response.status}`;
+      return {
+        success: false,
+        mockMode: false,
+        errorCode: metaCode ? String(metaCode) : `HTTP_${response.status}`,
+        errorMessage: metaMsg,
+        errorCategory: this.classifyError(response.status, metaCode),
+        rawResponse: responseJson,
+      };
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      return {
+        success: false,
+        mockMode: false,
+        errorCode: err.name === 'AbortError' ? 'AMBIGUOUS_TIMEOUT' : 'NETWORK_ERROR',
+        errorMessage: err.message,
+        errorCategory: err.name === 'AbortError' ? 'AMBIGUOUS' : 'TRANSIENT',
+      };
+    }
+  }
 }

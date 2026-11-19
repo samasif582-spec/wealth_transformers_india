@@ -110,6 +110,13 @@ export class CampaignWorker implements OnModuleInit, OnModuleDestroy {
       `Processing message job ${job.id} for client ${clientId} | Key: ${idempotencyKey}`,
     );
 
+    // Circuit breaker check
+    const isPaused = (await this.redis.get('whatsapp:circuit_breaker:paused')) === 'true';
+    if (isPaused) {
+      this.logger.warn(`⏸️ Emergency circuit breaker active. Holding message job ${job.id}`);
+      throw new Error('EMERGENCY_CIRCUIT_BREAKER_ACTIVE: Outbound dispatching is paused by Administrator');
+    }
+
     // 1. Retrieve & validate client record
     const client = await this.prisma.client.findUnique({
       where: { id: clientId },
@@ -244,7 +251,7 @@ export class CampaignWorker implements OnModuleInit, OnModuleDestroy {
     }
 
     // 5. Build Meta Components Payload
-    // By convention in Wealth Trade templates, {{1}} is client full name
+    // By convention in Wealth Transformers templates, {{1}} is client full name
     const recipientName = client.fullName || payload.clientName || 'Valued Client';
     const components: TemplateComponent[] = [
       {

@@ -44,6 +44,13 @@ export class TemplatesController {
     return this.templatesService.preview(dto);
   }
 
+  @Post('sync-waba')
+  @Roles(UserRole.Admin, UserRole.Super_Admin)
+  @HttpCode(HttpStatus.OK)
+  syncWaba() {
+    return this.templatesService.syncWabaTemplates();
+  }
+
   @Get()
   @Roles(UserRole.Viewer)
   @HttpCode(HttpStatus.OK)

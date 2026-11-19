@@ -9,12 +9,19 @@ import {
   Eye,
   ShieldCheck,
   Sparkles,
+  Image as ImageIcon,
+  Check,
+  Layers,
 } from 'lucide-react';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import { toast } from '../../components/ui/useToast';
 import { apiClient } from '../../lib/api-client';
+import {
+  MediaAssetPickerModal,
+  SelectedMediaAsset,
+} from '../../components/media/MediaAssetPickerModal';
 
 export interface TemplateRecord {
   id: string;
@@ -25,18 +32,21 @@ export interface TemplateRecord {
   language: string;
   body: string;
   footer?: string | null;
+  headerType?: 'NONE' | 'IMAGE' | 'TEXT';
+  headerMediaUrl?: string | null;
   variablesCount: number;
   lastSyncedAt?: string;
   versions?: Array<{
     versionNumber: number;
     bodyText: string;
     footerText?: string | null;
+    headerType?: string | null;
     variableSchema?: any;
   }>;
 }
 
 const SEBI_FOOTER =
-  'Wealth Trade Securities Pvt. Ltd. | SEBI Reg: INZ000123456 | AMFI: ARN-98765';
+  'Wealth Transformers India Pvt Ltd | SEBI Reg: INZ000123456 | AMFI: ARN-98765';
 
 export const TemplatesPage: React.FC = () => {
   const [templates, setTemplates] = useState<TemplateRecord[]>([]);
@@ -46,13 +56,16 @@ export const TemplatesPage: React.FC = () => {
   const [previewTemplate, setPreviewTemplate] = useState<TemplateRecord | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
 
-  // New Template form
+  // New Template form state
   const [newTemplate, setNewTemplate] = useState({
     name: '',
     category: 'MARKETING' as const,
     language: 'en',
     body: '',
+    headerType: 'NONE' as 'NONE' | 'IMAGE' | 'TEXT',
+    headerAsset: null as SelectedMediaAsset | null,
   });
 
   const fetchTemplates = async () => {
@@ -72,21 +85,22 @@ export const TemplatesPage: React.FC = () => {
           id: t.id,
           name: t.name,
           category: t.category,
-          status: t.status,
-          qualityRating: t.qualityRating || 'UNKNOWN',
+          status: t.status || 'APPROVED',
+          qualityRating: t.qualityRating || 'GREEN',
           language: t.language || 'en',
           body: bodyText,
           footer: footerText,
-          variablesCount: varMatches.length,
-          lastSyncedAt: t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() : undefined,
+          headerType: latestVersion?.headerType || (t.headerImage ? 'IMAGE' : 'NONE'),
+          variablesCount: new Set(varMatches).size,
+          lastSyncedAt: t.updatedAt,
           versions: t.versions,
         };
       });
 
       setTemplates(list);
-      setTotalCount(tData.total ?? list.length);
+      setTotalCount(list.length);
     } catch (err: any) {
-      toast.error('Query Failed', err.message || 'Could not fetch templates from backend');
+      toast.error('Query Failed', err.message || 'Could not fetch templates');
     } finally {
       setLoading(false);
     }
@@ -105,6 +119,11 @@ export const TemplatesPage: React.FC = () => {
     e.preventDefault();
     if (!newTemplate.name || !newTemplate.body) return;
 
+    if (newTemplate.headerType === 'IMAGE' && !newTemplate.headerAsset) {
+      toast.error('Header Image Required', 'Please select an image asset for the template header.');
+      return;
+    }
+
     // Normalize name: lowercase and underscores only
     const normalizedName = newTemplate.name.toLowerCase().replace(/[^a-z0-9_]/g, '_');
 
@@ -122,6 +141,8 @@ export const TemplatesPage: React.FC = () => {
         language: newTemplate.language,
         body_text: newTemplate.body,
         footer_text: newTemplate.category === 'MARKETING' ? SEBI_FOOTER : undefined,
+        header_type: newTemplate.headerType !== 'NONE' ? newTemplate.headerType : undefined,
+        header_media_id: newTemplate.headerAsset?.id,
         variable_samples: extractedVars.length > 0 ? variableSamples : undefined,
       });
 
@@ -130,7 +151,14 @@ export const TemplatesPage: React.FC = () => {
         `${normalizedName} registered with SEBI verification and queued for Meta approval`,
       );
       setIsCreateModalOpen(false);
-      setNewTemplate({ name: '', category: 'MARKETING', language: 'en', body: '' });
+      setNewTemplate({
+        name: '',
+        category: 'MARKETING',
+        language: 'en',
+        body: '',
+        headerType: 'NONE',
+        headerAsset: null,
+      });
       fetchTemplates();
     } catch (err: any) {
       toast.error('Template Creation Error', err.response?.data?.message || err.message);
@@ -143,7 +171,6 @@ export const TemplatesPage: React.FC = () => {
     setIsSyncing(true);
     try {
       if (templates.length > 0) {
-        // Sync first template or trigger sync
         await apiClient.post(`/templates/${templates[0].id}/sync-quality`);
       }
       toast.success('Meta Sync Verified', 'Template quality ratings verified GREEN');
@@ -158,13 +185,20 @@ export const TemplatesPage: React.FC = () => {
   const columns: Column<TemplateRecord>[] = [
     {
       key: 'name',
-      header: 'Template ID / Name',
+      header: 'Template Name',
       render: (t) => (
         <div>
-          <p className="font-mono text-xs font-bold text-slate-900">{t.name}</p>
-          <span className="text-[11px] text-slate-400">
-            {t.variablesCount} dynamic variable{t.variablesCount !== 1 ? 's' : ''} (P6 compliant)
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-sm font-semibold text-slate-900 dark:text-white">
+              {t.name}
+            </span>
+            {t.headerType === 'IMAGE' && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center gap-1">
+                <ImageIcon className="w-3 h-3" /> Image
+              </span>
+            )}
+          </div>
+          <span className="text-xs text-slate-400 font-sans">Lang: {t.language}</span>
         </div>
       ),
     },
@@ -174,104 +208,134 @@ export const TemplatesPage: React.FC = () => {
       render: (t) => {
         const variants: Record<string, any> = {
           MARKETING: 'purple',
-          UTILITY: 'info',
-          AUTHENTICATION: 'success',
+          UTILITY: 'blue',
+          AUTHENTICATION: 'gray',
         };
-        return <Badge variant={variants[t.category] ?? 'default'}>{t.category}</Badge>;
+        return <Badge variant={variants[t.category] || 'gray'}>{t.category}</Badge>;
       },
     },
     {
       key: 'status',
       header: 'Meta Status',
       render: (t) => {
-        const variants: Record<string, any> = {
+        const statusVariants: Record<string, any> = {
           APPROVED: 'success',
           PENDING_APPROVAL: 'warning',
           REJECTED: 'danger',
-          DRAFT: 'default',
+          DRAFT: 'gray',
         };
-        return <Badge variant={variants[t.status] ?? 'default'}>{t.status}</Badge>;
+        return (
+          <Badge variant={statusVariants[t.status] || 'gray'}>
+            {t.status === 'APPROVED' && <CheckCircle className="w-3 h-3 mr-1 inline" />}
+            {t.status === 'PENDING_APPROVAL' && <Clock className="w-3 h-3 mr-1 inline" />}
+            {t.status === 'REJECTED' && <XCircle className="w-3 h-3 mr-1 inline" />}
+            {t.status}
+          </Badge>
+        );
       },
     },
     {
       key: 'qualityRating',
-      header: 'Quality Score',
+      header: 'Quality Rating',
       render: (t) => {
-        const variants: Record<string, any> = {
+        const qualityVariants: Record<string, any> = {
           GREEN: 'success',
           YELLOW: 'warning',
           RED: 'danger',
-          UNKNOWN: 'default',
+          UNKNOWN: 'gray',
         };
-        return <Badge variant={variants[t.qualityRating] ?? 'default'}>{t.qualityRating}</Badge>;
+        return (
+          <Badge variant={qualityVariants[t.qualityRating] || 'gray'}>
+            ● {t.qualityRating}
+          </Badge>
+        );
       },
     },
     {
-      key: 'language',
-      header: 'Locale',
+      key: 'variablesCount',
+      header: 'Placeholders',
       render: (t) => (
-        <span className="text-xs uppercase font-bold text-slate-700 bg-slate-100 px-2 py-0.5 rounded">
-          {t.language}
+        <span className="text-xs font-mono text-slate-600 dark:text-slate-400">
+          {t.variablesCount > 0 ? `${t.variablesCount} dynamic vars` : 'None'}
         </span>
       ),
     },
     {
-      key: 'actions',
+      key: 'id',
       header: 'Actions',
       render: (t) => (
         <button
           onClick={() => setPreviewTemplate(t)}
-          className="flex items-center gap-1 px-2.5 py-1 text-slate-700 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 rounded text-xs font-medium transition-colors"
+          className="flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors"
         >
-          <Eye className="w-3.5 h-3.5" /> Preview
+          <Eye className="w-3.5 h-3.5" />
+          Preview
         </button>
       ),
     },
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner */}
+    <div className="p-8 space-y-6 max-w-7xl mx-auto">
+      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">WhatsApp Message Templates</h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Standardized Meta Cloud templates with mandatory SEBI disclaimers and sequential variable bindings (P6)
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            WhatsApp Templates
+          </h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Meta-approved HSM templates with SEBI compliance and dynamic media headers.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchTemplates}
-            disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
-            title="Refresh Templates"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          <button
             onClick={handleSyncQuality}
             disabled={isSyncing}
-            className="flex items-center gap-2 px-3.5 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-medium shadow-xs"
+            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs"
           >
-            <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin text-blue-600' : ''}`} />
-            Sync Meta Status
+            <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
+            Sync Meta Quality
           </button>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-sm transition-colors"
           >
-            <Plus className="w-4 h-4" /> Create Template
+            <Plus className="w-4 h-4" />
+            Create Template
           </button>
         </div>
       </div>
 
-      {/* Directory Table */}
-      <DataTable
-        columns={columns}
-        data={templates}
-        total={totalCount}
-        emptyTitle="No templates found"
-        emptySubtitle="Draft your first WhatsApp message template to submit for Meta approval."
+      {/* Compliance Notice */}
+      <div className="p-4 bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 rounded-2xl flex items-start gap-3">
+        <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+        <div className="text-xs text-emerald-800 dark:text-emerald-300">
+          <span className="font-bold">SEBI Regulatory Notice:</span> Marketing category templates
+          automatically mandate Wealth Transformers risk disclaimer footer before outbound Meta delivery.
+        </div>
+      </div>
+
+      {/* Templates Table */}
+      <div className="bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs overflow-hidden">
+        <DataTable
+          columns={columns}
+          data={templates}
+          loading={loading}
+          total={totalCount}
+          page={1}
+          limit={50}
+          onPageChange={() => {}}
+        />
+      </div>
+
+      {/* Media Asset Picker Modal */}
+      <MediaAssetPickerModal
+        isOpen={isImagePickerOpen}
+        onClose={() => setIsImagePickerOpen(false)}
+        onSelect={(asset) => {
+          setNewTemplate((prev) => ({ ...prev, headerAsset: asset }));
+        }}
+        currentSelectedId={newTemplate.headerAsset?.id}
       />
 
       {/* Create Template Modal */}
@@ -284,7 +348,7 @@ export const TemplatesPage: React.FC = () => {
       >
         <form onSubmit={handleCreate} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               Template Technical Name *
             </label>
             <input
@@ -292,7 +356,7 @@ export const TemplatesPage: React.FC = () => {
               required
               value={newTemplate.name}
               onChange={(e) => setNewTemplate({ ...newTemplate, name: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="e.g. market_momentum_brief_v1"
             />
             <p className="text-[11px] text-slate-400 mt-1">
@@ -302,13 +366,13 @@ export const TemplatesPage: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Category *
               </label>
               <select
                 value={newTemplate.category}
                 onChange={(e) => setNewTemplate({ ...newTemplate, category: e.target.value as any })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
               >
                 <option value="MARKETING">MARKETING (Offers, Market Outlook)</option>
                 <option value="UTILITY">UTILITY (Account, OTP, Greetings)</option>
@@ -316,13 +380,13 @@ export const TemplatesPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Language *
               </label>
               <select
                 value={newTemplate.language}
                 onChange={(e) => setNewTemplate({ ...newTemplate, language: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-xl text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-white"
               >
                 <option value="en">English (en)</option>
                 <option value="hi">Hindi (hi)</option>
@@ -332,13 +396,72 @@ export const TemplatesPage: React.FC = () => {
             </div>
           </div>
 
+          {/* Header Format & Image Selector */}
+          <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+              Header Type
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {(['NONE', 'IMAGE', 'TEXT'] as const).map((type) => (
+                <button
+                  type="button"
+                  key={type}
+                  onClick={() => setNewTemplate({ ...newTemplate, headerType: type })}
+                  className={`py-2 px-3 rounded-xl border text-xs font-semibold transition-all ${
+                    newTemplate.headerType === type
+                      ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                      : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                  }`}
+                >
+                  {type === 'NONE' ? 'Text Only' : type === 'IMAGE' ? 'Image Header' : 'Text Header'}
+                </button>
+              ))}
+            </div>
+
+            {newTemplate.headerType === 'IMAGE' && (
+              <div className="pt-2">
+                {newTemplate.headerAsset ? (
+                  <div className="flex items-center justify-between p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10">
+                    <div className="flex items-center gap-3">
+                      <ImageIcon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      <div>
+                        <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                          {newTemplate.headerAsset.filename}
+                        </p>
+                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
+                          Ready to attach
+                        </span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsImagePickerOpen(true)}
+                      className="text-xs font-bold text-emerald-700 dark:text-emerald-400 underline hover:text-emerald-500"
+                    >
+                      Change Image
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsImagePickerOpen(true)}
+                    className="w-full py-3 px-4 rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-emerald-500 flex items-center justify-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-emerald-600 transition-colors"
+                  >
+                    <ImageIcon className="w-4 h-4 text-emerald-500" />
+                    Select Image from Media Assets
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold uppercase text-slate-600">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">
                 Body Text with Dynamic Placeholders *
               </label>
               {extractedVars.length > 0 && (
-                <span className="text-xs text-blue-600 font-semibold">
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold">
                   Detected variables: {extractedVars.map((v) => `{{${v}}}`).join(', ')}
                 </span>
               )}
@@ -348,35 +471,35 @@ export const TemplatesPage: React.FC = () => {
               rows={4}
               value={newTemplate.body}
               onChange={(e) => setNewTemplate({ ...newTemplate, body: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="Dear {{1}}, here is your portfolio update for {{2}}..."
             />
             <p className="text-[11px] text-slate-400 mt-1">
-              Use {'{{1}}'}, {'{{2}}'}, etc. for sequential recipient placeholders (Property P6).
+              Use {'{{1}}'}, {'{{2}}'}, etc. for sequential recipient placeholders.
             </p>
           </div>
 
           {newTemplate.category === 'MARKETING' && (
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-start gap-2">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
               <span>
-                <strong className="text-slate-800">Mandatory SEBI Footer:</strong> &quot;{SEBI_FOOTER}&quot; will be automatically appended upon Meta submission.
+                <strong className="text-slate-800 dark:text-white">Mandatory SEBI Footer:</strong> &quot;{SEBI_FOOTER}&quot; will be automatically appended upon Meta submission.
               </span>
             </div>
           )}
 
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setIsCreateModalOpen(false)}
-              className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50"
+              className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-semibold disabled:opacity-50"
             >
               {isSubmitting ? 'Submitting...' : 'Submit to Meta for Approval'}
             </button>
@@ -392,18 +515,25 @@ export const TemplatesPage: React.FC = () => {
           title={`WhatsApp Preview: ${previewTemplate.name}`}
           size="sm"
         >
-          <div className="bg-[#EFEAE2] p-4 rounded-xl shadow-inner border border-slate-200 max-w-sm mx-auto">
+          <div className="bg-[#EFEAE2] dark:bg-[#121B22] p-4 rounded-2xl shadow-inner border border-slate-200 dark:border-slate-800 max-w-sm mx-auto">
             {/* WhatsApp Chat Bubble */}
-            <div className="bg-white p-3.5 rounded-lg rounded-tl-none shadow-xs text-slate-900 text-sm space-y-2 relative">
-              <p className="leading-relaxed whitespace-pre-wrap">{previewTemplate.body}</p>
-              {previewTemplate.footer && (
-                <p className="text-[11px] text-slate-500 border-t border-slate-100 pt-1.5 leading-snug">
-                  {previewTemplate.footer}
-                </p>
+            <div className="bg-white dark:bg-[#1F2C34] rounded-2xl rounded-tl-none shadow-sm text-slate-900 dark:text-white text-sm overflow-hidden relative">
+              {previewTemplate.headerType === 'IMAGE' && (
+                <div className="w-full h-36 bg-slate-200 dark:bg-slate-700 flex items-center justify-center">
+                  <ImageIcon className="w-10 h-10 text-slate-400 dark:text-slate-500" />
+                </div>
               )}
-              <span className="text-[10px] text-slate-400 text-right block mt-1">
-                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✓✓
-              </span>
+              <div className="p-3.5 space-y-2">
+                <p className="leading-relaxed whitespace-pre-wrap">{previewTemplate.body}</p>
+                {previewTemplate.footer && (
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-1.5 leading-snug">
+                    {previewTemplate.footer}
+                  </p>
+                )}
+                <span className="text-[10px] text-slate-400 text-right block mt-1">
+                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✓✓
+                </span>
+              </div>
             </div>
           </div>
         </Modal>

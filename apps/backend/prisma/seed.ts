@@ -147,8 +147,8 @@ async function main(): Promise<void> {
           versionNumber: 1,
           status: TemplateStatus.APPROVED,
           bodyText:
-            'Happy Birthday {{1}}! On your special day, Wealth Trade extends warmest wishes for great health, prosperity and compounding success.',
-          footerText: 'Wealth Trade Customer Success Team',
+            'Happy Birthday {{1}}! On your special day, Wealth Transformers India Pvt Ltd extends warmest wishes for great health, prosperity and compounding success.',
+          footerText: 'Wealth Transformers Customer Success Team',
           variableSchema: { '1': 'client.full_name' },
         },
       },
@@ -172,7 +172,7 @@ async function main(): Promise<void> {
           status: TemplateStatus.APPROVED,
           bodyText:
             'Dear {{1}}, congratulations on your wedding anniversary! Wishing you both joyful compounding, health and lifelong prosperity.',
-          footerText: 'Wealth Trade Advisory Desk',
+          footerText: 'Wealth Transformers Advisory Desk',
           variableSchema: { '1': 'client.full_name' },
         },
       },

@@ -580,4 +580,75 @@ export class TemplatesService {
     });
     return { archived: true };
   }
+
+  /**
+   * Synchronizes templates from Meta WABA account into local repository.
+   */
+  async syncWabaTemplates(): Promise<{
+    syncedCount: number;
+    createdCount: number;
+    updatedCount: number;
+    templates: any[];
+  }> {
+    const wabaList = await this.metaAdapter.fetchWabaTemplates();
+    let createdCount = 0;
+    let updatedCount = 0;
+
+    for (const wabaTmpl of wabaList) {
+      const existing = await this.prisma.messageTemplate.findFirst({
+        where: { name: wabaTmpl.name, deletedAt: null },
+      });
+
+      const category = (wabaTmpl.category?.toUpperCase() || 'UTILITY') as TemplateCategory;
+      const status = (wabaTmpl.status?.toUpperCase() || 'APPROVED') as TemplateStatus;
+
+      const bodyComp = wabaTmpl.components?.find((c: any) => c.type === 'BODY');
+      const footerComp = wabaTmpl.components?.find((c: any) => c.type === 'FOOTER');
+      const headerComp = wabaTmpl.components?.find((c: any) => c.type === 'HEADER');
+
+      const bodyText = bodyComp?.text || `Automated template: ${wabaTmpl.name}`;
+      const footerText = footerComp?.text || null;
+      const headerType = headerComp?.format || 'NONE';
+
+      if (existing) {
+        await this.prisma.messageTemplate.update({
+          where: { id: existing.id },
+          data: {
+            status,
+            qualityRating: QualityRating.GREEN,
+            metaTemplateId: wabaTmpl.id,
+          },
+        });
+        updatedCount++;
+      } else {
+        await this.prisma.messageTemplate.create({
+          data: {
+            name: wabaTmpl.name,
+            category,
+            language: wabaTmpl.language || 'en',
+            status,
+            qualityRating: QualityRating.GREEN,
+            metaTemplateId: wabaTmpl.id,
+            createdByUserId: '00000000-0000-0000-0000-000000000000',
+            versions: {
+              create: {
+                versionNumber: 1,
+                bodyText,
+                footerText,
+                variableSchema: {},
+              },
+            },
+          },
+        });
+        createdCount++;
+      }
+    }
+
+    return {
+      syncedCount: wabaList.length,
+      createdCount,
+      updatedCount,
+      templates: wabaList,
+    };
+  }
 }

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConsentService } from '../consent/consent.service';
+import { LlmReplyService } from '../chat/llm-reply.service';
 import { DeliveryStatus, ConsentStatus, ConsentSource } from '@prisma/client';
 
 const STATUS_RANKS: Record<DeliveryStatus, number> = {
@@ -21,6 +22,7 @@ export class WebhooksService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly consentService: ConsentService,
+    private readonly llmReplyService: LlmReplyService,
   ) {}
 
   /**
@@ -105,7 +107,8 @@ export class WebhooksService {
    * Handles incoming message text to detect STOP keywords and execute automated opt-out.
    */
   private async handleIncomingMessage(msg: any): Promise<void> {
-    const text = (msg?.text?.body || '').trim().toUpperCase();
+    const rawBody = (msg?.text?.body || '').trim();
+    const text = rawBody.toUpperCase();
     const fromPhone = `+${msg.from.replace(/^\+/, '')}`;
 
     const isOptOut = OPT_OUT_KEYWORDS.some((kw) => text === kw || text.startsWith(kw + ' '));
@@ -117,6 +120,13 @@ export class WebhooksService {
         keyword: text,
         messageText: text,
       });
+      return;
+    }
+
+    // Inbound customer conversation — handle through LLM responder & authority escalation
+    if (rawBody.length > 0) {
+      this.logger.log(`💬 Inbound customer query from ${fromPhone}: "${rawBody}"`);
+      await this.llmReplyService.processInboundCustomerQuery(fromPhone, rawBody);
     }
   }
 }
