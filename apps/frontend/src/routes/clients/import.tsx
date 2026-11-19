@@ -99,19 +99,19 @@ export const ClientImportPage: React.FC = () => {
       <div>
         <Link
           to="/clients"
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 mb-2"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 mb-2 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Client Directory
         </Link>
-        <h1 className="text-2xl font-bold text-slate-900">Import Clients via CSV / Excel</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Import Clients via CSV / Excel</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           Bulk onboard client registries with automatic E.164 phone normalization and consent recording
         </p>
       </div>
 
       {/* Upload Box */}
-      <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-        <div className="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-8 text-center transition-colors">
+      <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+        <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-2xl p-8 text-center transition-colors">
           <input
             type="file"
             id="fileInput"
@@ -121,10 +121,10 @@ export const ClientImportPage: React.FC = () => {
           />
           <label htmlFor="fileInput" className="cursor-pointer">
             <UploadCloud className="w-12 h-12 text-blue-500 mx-auto mb-3" />
-            <p className="text-sm font-semibold text-slate-800">
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
               {selectedFile ? selectedFile.name : 'Click to select CSV or Excel file'}
             </p>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               {selectedFile
                 ? `${(selectedFile.size / 1024).toFixed(1)} KB`
                 : 'Accepts standard UTF-8 encoded .csv or .xlsx up to 25MB'}
@@ -136,11 +136,11 @@ export const ClientImportPage: React.FC = () => {
           <div className="space-y-4">
             {isUploading && (
               <div className="space-y-1.5">
-                <div className="flex justify-between text-xs text-slate-600 font-semibold">
+                <div className="flex justify-between text-xs text-slate-600 dark:text-slate-300 font-semibold">
                   <span>Uploading to server & normalizing E.164 numbers...</span>
                   <span>{uploadProgress}%</span>
                 </div>
-                <div className="w-full bg-slate-100 rounded-full h-2">
+                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
                   <div
                     className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                     style={{ width: `${uploadProgress}%` }}
@@ -153,7 +153,7 @@ export const ClientImportPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="px-4 py-2 border border-slate-300 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50"
+                className="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
               >
                 Clear
               </button>
@@ -171,30 +171,30 @@ export const ClientImportPage: React.FC = () => {
 
         {/* Results Card */}
         {importResult && (
-          <div className="p-6 bg-slate-50 rounded-xl border border-slate-200 space-y-4">
-            <h3 className="font-bold text-slate-900 text-sm">Batch Import Summary</h3>
+          <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <h3 className="font-bold text-slate-900 dark:text-white text-sm">Batch Import Summary</h3>
             <div className="grid grid-cols-3 gap-3 text-center">
-              <div className="p-3 bg-white rounded-lg border border-slate-200">
-                <span className="text-[11px] uppercase font-semibold text-slate-400">Total Rows</span>
-                <p className="text-xl font-bold text-slate-800">{importResult.total}</p>
+              <div className="p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
+                <span className="text-[11px] uppercase font-semibold text-slate-400 dark:text-slate-500">Total Rows</span>
+                <p className="text-xl font-bold text-slate-800 dark:text-white">{importResult.total}</p>
               </div>
-              <div className="p-3 bg-emerald-50 rounded-lg border border-emerald-200">
-                <span className="text-[11px] uppercase font-semibold text-emerald-700">Imported</span>
-                <p className="text-xl font-bold text-emerald-800">{importResult.imported}</p>
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                <span className="text-[11px] uppercase font-semibold text-emerald-700 dark:text-emerald-300">Imported</span>
+                <p className="text-xl font-bold text-emerald-800 dark:text-emerald-200">{importResult.imported}</p>
               </div>
-              <div className="p-3 bg-rose-50 rounded-lg border border-rose-200">
-                <span className="text-[11px] uppercase font-semibold text-rose-700">Failed / Rejected</span>
-                <p className="text-xl font-bold text-rose-800">{importResult.failed}</p>
+              <div className="p-3 bg-rose-50 dark:bg-rose-950/40 rounded-lg border border-rose-200 dark:border-rose-800">
+                <span className="text-[11px] uppercase font-semibold text-rose-700 dark:text-rose-300">Failed / Rejected</span>
+                <p className="text-xl font-bold text-rose-800 dark:text-rose-200">{importResult.failed}</p>
               </div>
             </div>
 
             {importResult.errors.length > 0 && (
               <div className="space-y-1.5 pt-2">
-                <span className="text-xs font-semibold text-rose-800 block">Row-level Validation Diagnostics:</span>
+                <span className="text-xs font-semibold text-rose-800 dark:text-rose-300 block">Row-level Validation Diagnostics:</span>
                 {importResult.errors.map((err, i) => (
                   <div
                     key={i}
-                    className="p-2 bg-rose-50/60 border border-rose-200 rounded text-xs text-rose-700 font-mono"
+                    className="p-2 bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded text-xs text-rose-700 dark:text-rose-300 font-mono"
                   >
                     {err}
                   </div>
@@ -202,10 +202,10 @@ export const ClientImportPage: React.FC = () => {
               </div>
             )}
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200">
+            <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-700">
               <button
                 onClick={() => navigate('/clients')}
-                className="px-5 py-2 bg-slate-900 text-white rounded-lg text-xs font-bold"
+                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors"
               >
                 View in Client Directory
               </button>
@@ -215,19 +215,19 @@ export const ClientImportPage: React.FC = () => {
       </div>
 
       {/* Template Guide */}
-      <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-xs flex items-center justify-between">
+      <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
+          <FileSpreadsheet className="w-8 h-8 text-emerald-600 dark:text-emerald-400" />
           <div>
-            <h4 className="text-sm font-bold text-slate-900">Need the Standard CSV Template?</h4>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <h4 className="text-sm font-bold text-slate-900 dark:text-white">Need the Standard CSV Template?</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Includes pre-configured headers: fullName, whatsappNumber, email, categoryTier, preferredLanguage, dateOfBirth
             </p>
           </div>
         </div>
         <button
           onClick={downloadSampleCsv}
-          className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-300 hover:bg-slate-50 rounded-lg text-xs font-semibold text-slate-700 shadow-xs"
+          className="flex items-center gap-1.5 px-3.5 py-2 border border-slate-300 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-xs transition-colors"
         >
           <Download className="w-4 h-4" /> Download Sample Template
         </button>

@@ -19,13 +19,13 @@ const ViewerDashboard = lazy(() =>
 
 const LoadingSkeleton = () => (
   <div className="space-y-6 animate-pulse">
-    <div className="h-8 bg-slate-200 rounded w-1/3"></div>
+    <div className="h-8 bg-slate-200 dark:bg-slate-800 rounded w-1/3"></div>
     <div className="grid grid-cols-4 gap-6">
       {Array.from({ length: 4 }).map((_, i) => (
-        <div key={i} className="h-28 bg-slate-200 rounded-xl"></div>
+        <div key={i} className="h-28 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
       ))}
     </div>
-    <div className="h-64 bg-slate-200 rounded-xl"></div>
+    <div className="h-64 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
   </div>
 );
 

@@ -34,10 +34,10 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         <div
           className={`p-3 rounded-full flex-shrink-0 h-fit ${
             isDanger
-              ? 'bg-rose-100 text-rose-600'
+              ? 'bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'
               : isWarning
-              ? 'bg-amber-100 text-amber-600'
-              : 'bg-blue-100 text-blue-600'
+              ? 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400'
+              : 'bg-blue-100 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400'
           }`}
         >
           {isDanger || isWarning ? (
@@ -47,16 +47,16 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           )}
         </div>
         <div className="flex-1">
-          <p className="text-sm text-slate-600 leading-relaxed">{message}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{message}</p>
         </div>
       </div>
 
-      <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100">
+      <div className="mt-6 flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
         <button
           type="button"
           onClick={onClose}
           disabled={isLoading}
-          className="px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+          className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors disabled:opacity-50"
         >
           {cancelLabel}
         </button>

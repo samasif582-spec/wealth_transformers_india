@@ -260,7 +260,7 @@ export const BillingPage: React.FC = () => {
       )}
 
       {/* Quota Progress Bar */}
-      <div className="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-3">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="font-semibold text-slate-700 dark:text-slate-300">
             Monthly Quota Utilization
@@ -269,7 +269,7 @@ export const BillingPage: React.FC = () => {
             {usage?.totalMessagesSent.toLocaleString()} / {usage?.monthlyQuota.toLocaleString()} messages ({quotaUsedPct}%)
           </span>
         </div>
-        <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-700 overflow-hidden">
+        <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
           <div
             className={`h-full transition-all duration-500 rounded-full ${
               isOver
@@ -317,7 +317,7 @@ export const BillingPage: React.FC = () => {
 
       {/* Conversation Tier Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
               Utility Tier
@@ -328,17 +328,17 @@ export const BillingPage: React.FC = () => {
             <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {usage?.breakdown.utilityCount.toLocaleString() || 0}
             </p>
-            <p className="text-xs text-slate-500 mt-1">Birthdays, Anniversaries, OTPs, Status</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Birthdays, Anniversaries, OTPs, Status</p>
           </div>
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
-            <span className="text-slate-500">Category Cost</span>
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-500 dark:text-slate-400">Category Cost</span>
             <span className="font-bold text-slate-800 dark:text-slate-200">
               ₹{usage?.breakdown.utilityCostInr.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
               Marketing Tier
@@ -349,17 +349,17 @@ export const BillingPage: React.FC = () => {
             <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {usage?.breakdown.marketingCount.toLocaleString() || 0}
             </p>
-            <p className="text-xs text-slate-500 mt-1">Offers, Festivals, Broadcasts</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Offers, Festivals, Broadcasts</p>
           </div>
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
-            <span className="text-slate-500">Category Cost</span>
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-500 dark:text-slate-400">Category Cost</span>
             <span className="font-bold text-slate-800 dark:text-slate-200">
               ₹{usage?.breakdown.marketingCostInr.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-800/80 p-6 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs space-y-4">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
               Service Tier
@@ -370,10 +370,10 @@ export const BillingPage: React.FC = () => {
             <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
               {usage?.breakdown.serviceCount.toLocaleString() || 0}
             </p>
-            <p className="text-xs text-slate-500 mt-1">Inbound replies & support inquiries</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Inbound replies & support inquiries</p>
           </div>
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
-            <span className="text-slate-500">Category Cost</span>
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+            <span className="text-slate-500 dark:text-slate-400">Category Cost</span>
             <span className="font-bold text-slate-800 dark:text-slate-200">
               ₹{usage?.breakdown.serviceCostInr.toLocaleString('en-IN')}
             </span>
@@ -382,8 +382,8 @@ export const BillingPage: React.FC = () => {
       </div>
 
       {/* Campaign Attributions Table */}
-      <div className="bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 overflow-hidden shadow-xs">
-        <div className="p-5 border-b border-slate-100 dark:border-slate-700/80 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-white">
               Campaign Cost Attribution
@@ -392,14 +392,14 @@ export const BillingPage: React.FC = () => {
               Breakdown of message volume and WhatsApp cost per initiative.
             </p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-slate-700 rounded-lg text-slate-600 dark:text-slate-300">
+          <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
             SAC Code 998413
           </span>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 text-xs uppercase font-semibold">
+            <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 text-xs uppercase font-semibold">
               <tr>
                 <th className="px-6 py-3.5">Campaign Name</th>
                 <th className="px-6 py-3.5">Category</th>
@@ -407,10 +407,10 @@ export const BillingPage: React.FC = () => {
                 <th className="px-6 py-3.5 text-right">Estimated Cost (INR)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-700/50 text-slate-700 dark:text-slate-300">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
               {report?.campaignAttributions && report.campaignAttributions.length > 0 ? (
                 report.campaignAttributions.map((c, i) => (
-                  <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr key={i} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-colors">
                     <td className="px-6 py-4 font-medium text-slate-900 dark:text-white">
                       {c.campaignName}
                     </td>
@@ -435,7 +435,7 @@ export const BillingPage: React.FC = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan={4} className="px-6 py-8 text-center text-slate-400 italic">
+                  <td colSpan={4} className="px-6 py-8 text-center text-slate-400 dark:text-slate-500 italic">
                     No campaigns dispatched in this cycle yet.
                   </td>
                 </tr>

@@ -12,7 +12,8 @@ const getInitialTheme = (): Theme => {
   if (typeof window === 'undefined') return 'dark';
   const saved = localStorage.getItem('wt_theme') as Theme;
   if (saved === 'light' || saved === 'dark') return saved;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  // Default to sleek dark mode across the entire platform
+  return 'dark';
 };
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
@@ -22,8 +23,10 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     localStorage.setItem('wt_theme', nextTheme);
     if (nextTheme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
     }
     set({ theme: nextTheme });
   },
@@ -31,19 +34,23 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     localStorage.setItem('wt_theme', theme);
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.body.classList.add('dark');
     } else {
       document.documentElement.classList.remove('dark');
+      document.body.classList.remove('dark');
     }
     set({ theme });
   },
 }));
 
-// Apply theme on load
+// Apply theme on initial script load
 if (typeof window !== 'undefined') {
   const initial = getInitialTheme();
   if (initial === 'dark') {
     document.documentElement.classList.add('dark');
+    document.body.classList.add('dark');
   } else {
     document.documentElement.classList.remove('dark');
+    document.body.classList.remove('dark');
   }
 }

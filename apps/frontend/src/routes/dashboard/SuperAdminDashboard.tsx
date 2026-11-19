@@ -129,8 +129,8 @@ export const SuperAdminDashboard: React.FC = () => {
       header: 'Full Name',
       render: (u) => (
         <div>
-          <p className="font-semibold text-slate-900">{u.fullName}</p>
-          <p className="text-xs text-slate-400">{u.email}</p>
+          <p className="font-semibold text-slate-900 dark:text-white">{u.fullName}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">{u.email}</p>
         </div>
       ),
     },
@@ -161,7 +161,7 @@ export const SuperAdminDashboard: React.FC = () => {
       key: 'lastLoginAt',
       header: 'Last Seen',
       render: (u) => (
-        <span className="text-xs text-slate-500 font-mono">
+        <span className="text-xs text-slate-500 dark:text-slate-400 font-mono">
           {u.lastLoginAt ? new Date(u.lastLoginAt).toLocaleString() : 'Never'}
         </span>
       ),
@@ -174,7 +174,7 @@ export const SuperAdminDashboard: React.FC = () => {
           {u.accountStatus === 'LOCKED' && (
             <button
               onClick={() => setUnlockUserId(u.id)}
-              className="px-2 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded text-xs font-medium flex items-center gap-1"
+              className="px-2 py-1 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 hover:bg-amber-100 dark:hover:bg-amber-900/50 rounded text-xs font-medium flex items-center gap-1 transition-colors"
             >
               <Unlock className="w-3 h-3" /> Unlock
             </button>
@@ -190,10 +190,10 @@ export const SuperAdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900">Platform Command Center</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Platform Command Center</h1>
             <Badge variant="purple">Super_Admin</Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Global system governance, tenant quotas, SEBI compliance & microservice infrastructure
           </p>
         </div>
@@ -201,14 +201,14 @@ export const SuperAdminDashboard: React.FC = () => {
           <button
             onClick={handleRefreshHealth}
             disabled={isHealthRefreshing}
-            className="flex items-center gap-2 px-3.5 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-xs"
+            className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs"
           >
             <RefreshCw className={`w-4 h-4 ${isHealthRefreshing ? 'animate-spin text-blue-600' : ''}`} />
             Check Health
           </button>
           <button
             onClick={() => setIsInviteModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" /> Add System User
           </button>
@@ -217,50 +217,50 @@ export const SuperAdminDashboard: React.FC = () => {
 
       {/* Infrastructure Node Health Cards (Real Database Probes) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase">PostgreSQL Cluster</p>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800">
+              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
                 Port 5435 {healthStatus?.database?.status === 'ok' ? 'ONLINE' : 'ACTIVE'}
               </span>
             </div>
           </div>
-          <Database className="w-6 h-6 text-emerald-600 opacity-80" />
+          <Database className="w-6 h-6 text-emerald-600 dark:text-emerald-400 opacity-80" />
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase">Redis BullMQ Cache</p>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800">Port 6379 ONLINE</span>
+              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Port 6379 ONLINE</span>
             </div>
           </div>
-          <Activity className="w-6 h-6 text-emerald-600 opacity-80" />
+          <Activity className="w-6 h-6 text-emerald-600 dark:text-emerald-400 opacity-80" />
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase">n8n Automation Engine</p>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800">Port 5678 SYNCED</span>
+              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Port 5678 SYNCED</span>
             </div>
           </div>
-          <Sliders className="w-6 h-6 text-purple-600 opacity-80" />
+          <Sliders className="w-6 h-6 text-purple-600 dark:text-purple-400 opacity-80" />
         </div>
 
-        <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
+        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase">Meta Cloud WABA</p>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800">Tier 1 Connected</span>
+              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Tier 1 Connected</span>
             </div>
           </div>
-          <ShieldCheck className="w-6 h-6 text-blue-600 opacity-80" />
+          <ShieldCheck className="w-6 h-6 text-blue-600 dark:text-blue-400 opacity-80" />
         </div>
       </div>
 
@@ -328,8 +328,8 @@ export const SuperAdminDashboard: React.FC = () => {
       {/* RBAC User Directory (Real Data Table) */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900">User Access Control & Session Directory</h2>
-          <span className="text-xs text-slate-500">Auto-lock after 5 invalid attempts • RS256 token rotation</span>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">User Access Control & Session Directory</h2>
+          <span className="text-xs text-slate-500 dark:text-slate-400">Auto-lock after 5 invalid attempts • RS256 token rotation</span>
         </div>
         <DataTable
           columns={userColumns}
@@ -350,7 +350,7 @@ export const SuperAdminDashboard: React.FC = () => {
       >
         <form onSubmit={handleCreateUser} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               Full Legal Name *
             </label>
             <input
@@ -358,12 +358,12 @@ export const SuperAdminDashboard: React.FC = () => {
               required
               value={newUser.fullName}
               onChange={(e) => setNewUser({ ...newUser, fullName: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g. Ramesh Chandra"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               Corporate Email Address *
             </label>
             <input
@@ -371,18 +371,18 @@ export const SuperAdminDashboard: React.FC = () => {
               required
               value={newUser.email}
               onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
-              placeholder="user@wealthtrade.in"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="user@wealthtransformers.in"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               Role Authority Level *
             </label>
             <select
               value={newUser.role}
               onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
             >
               <option value="Admin">Admin (Campaign Approvals & Management)</option>
               <option value="Marketing_Employee">Marketing Employee (Templates & Campaigns)</option>
@@ -390,17 +390,17 @@ export const SuperAdminDashboard: React.FC = () => {
               <option value="Viewer">Viewer (Read-only Compliance & Auditing)</option>
             </select>
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setIsInviteModalOpen(false)}
-              className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50"
+              className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
             >
               Issue Access Credentials
             </button>

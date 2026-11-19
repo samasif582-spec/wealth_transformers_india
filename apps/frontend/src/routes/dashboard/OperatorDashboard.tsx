@@ -188,10 +188,10 @@ export const OperatorDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900">Message Queue & Dispatch Engine</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Message Queue & Dispatch Engine</h1>
             <Badge variant="warning">Operator</Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Real-time BullMQ telemetry, worker thread health & dead-letter queue management
           </p>
         </div>
@@ -199,7 +199,7 @@ export const OperatorDashboard: React.FC = () => {
           <button
             onClick={fetchOperatorTelemetry}
             disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Refresh Telemetry"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -207,7 +207,7 @@ export const OperatorDashboard: React.FC = () => {
           <button
             onClick={handleRetryAll}
             disabled={failedJobs.length === 0 || isRetryingAll}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-40"
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-40"
           >
             <RotateCcw className={`w-4 h-4 ${isRetryingAll ? 'animate-spin' : ''}`} /> Retry All Failed Jobs
           </button>
@@ -215,119 +215,119 @@ export const OperatorDashboard: React.FC = () => {
       </div>
 
       {/* Real-time Rate Limiter Indicator */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
           <div>
-            <span className="text-xs font-semibold uppercase text-slate-400">Meta Throughput Throttler</span>
-            <h3 className="text-lg font-bold text-slate-900 mt-0.5">
-              Target Ceiling: <span className="text-blue-600">80 msg/sec</span> (Meta Tier 1)
+            <span className="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Meta Throughput Throttler</span>
+            <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-0.5">
+              Target Ceiling: <span className="text-blue-600 dark:text-blue-400">80 msg/sec</span> (Meta Tier 1)
             </h3>
-            <p className="text-xs text-slate-500">
-              Database Latency: <span className="font-mono font-bold text-emerald-600">{healthStatus?.database?.latency_ms ?? 1}ms</span> • Redis State: <span className="font-mono font-bold text-emerald-600">CONNECTED</span>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Database Latency: <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">{healthStatus?.database?.latency_ms ?? 1}ms</span> • Redis State: <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">CONNECTED</span>
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
+            <span className="text-xs font-semibold px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 rounded-full border border-emerald-200 dark:border-emerald-800">
               Worker Concurrency: 10
             </span>
           </div>
         </div>
         {/* Visual Velocity Bar */}
-        <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 overflow-hidden">
           <div
             className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-500"
             style={{ width: `${Math.min(100, Math.max(5, (queueStats.messages?.QUEUED || 0) * 10))}%` }}
           ></div>
         </div>
-        <div className="flex justify-between text-[11px] text-slate-400 mt-1.5 font-mono">
+        <div className="flex justify-between text-[11px] text-slate-400 dark:text-slate-500 mt-1.5 font-mono">
           <span>0 msg/s</span>
-          <span className="text-blue-600 font-bold">Active Jobs Queued: {queueStats.messages?.QUEUED || 0}</span>
+          <span className="text-blue-600 dark:text-blue-400 font-bold">Active Jobs Queued: {queueStats.messages?.QUEUED || 0}</span>
           <span>Max 80 msg/s</span>
         </div>
       </div>
 
       {/* Queue Health Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800 font-mono">campaign-messages</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">campaign-messages</span>
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-slate-50 rounded">
-              <span className="text-slate-400 block text-[10px] uppercase font-semibold">Queued</span>
-              <span className="font-bold text-slate-800">{queueStats.messages?.QUEUED || 0}</span>
+            <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded">
+              <span className="text-slate-400 dark:text-slate-500 block text-[10px] uppercase font-semibold">Queued</span>
+              <span className="font-bold text-slate-800 dark:text-white">{queueStats.messages?.QUEUED || 0}</span>
             </div>
-            <div className="p-2 bg-blue-50 rounded">
-              <span className="text-blue-500 block text-[10px] uppercase font-semibold">Sent</span>
-              <span className="font-bold text-blue-700">{queueStats.messages?.SENT || 0}</span>
+            <div className="p-2 bg-blue-50 dark:bg-blue-950/40 rounded">
+              <span className="text-blue-500 dark:text-blue-400 block text-[10px] uppercase font-semibold">Sent</span>
+              <span className="font-bold text-blue-700 dark:text-blue-200">{queueStats.messages?.SENT || 0}</span>
             </div>
-            <div className="p-2 bg-emerald-50 rounded">
-              <span className="text-emerald-500 block text-[10px] uppercase font-semibold">Delivered</span>
-              <span className="font-bold text-emerald-700">{totalCompleted}</span>
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded">
+              <span className="text-emerald-500 dark:text-emerald-400 block text-[10px] uppercase font-semibold">Delivered</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-200">{totalCompleted}</span>
             </div>
-            <div className={`p-2 rounded ${totalFailed > 0 ? 'bg-rose-50 text-rose-700' : 'bg-slate-50 text-slate-500'}`}>
+            <div className={`p-2 rounded ${totalFailed > 0 ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300' : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400'}`}>
               <span className="block text-[10px] uppercase font-semibold">Failed</span>
               <span className="font-bold">{totalFailed}</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800 font-mono">webhook-processing</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">webhook-processing</span>
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-slate-50 rounded">
-              <span className="text-slate-400 block text-[10px] uppercase font-semibold">Pending</span>
-              <span className="font-bold text-slate-800">{queueStats.webhooks?.PENDING || 0}</span>
+            <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded">
+              <span className="text-slate-400 dark:text-slate-500 block text-[10px] uppercase font-semibold">Pending</span>
+              <span className="font-bold text-slate-800 dark:text-white">{queueStats.webhooks?.PENDING || 0}</span>
             </div>
-            <div className="p-2 bg-emerald-50 rounded">
-              <span className="text-emerald-500 block text-[10px] uppercase font-semibold">Processed</span>
-              <span className="font-bold text-emerald-700">{queueStats.webhooks?.PROCESSED || 0}</span>
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded">
+              <span className="text-emerald-500 dark:text-emerald-400 block text-[10px] uppercase font-semibold">Processed</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-200">{queueStats.webhooks?.PROCESSED || 0}</span>
             </div>
-            <div className={`p-2 rounded col-span-2 ${(queueStats.webhooks?.FAILED || 0) > 0 ? 'bg-rose-50 text-rose-700' : 'bg-slate-50 text-slate-500'}`}>
+            <div className={`p-2 rounded col-span-2 ${(queueStats.webhooks?.FAILED || 0) > 0 ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300' : 'bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400'}`}>
               <span className="block text-[10px] uppercase font-semibold">Errors</span>
               <span className="font-bold">{queueStats.webhooks?.FAILED || 0}</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800 font-mono">consent-dlq</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">consent-dlq</span>
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-slate-50 rounded">
-              <span className="text-slate-400 block text-[10px] uppercase font-semibold">Active</span>
-              <span className="font-bold text-slate-800">0</span>
+            <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded">
+              <span className="text-slate-400 dark:text-slate-500 block text-[10px] uppercase font-semibold">Active</span>
+              <span className="font-bold text-slate-800 dark:text-white">0</span>
             </div>
-            <div className="p-2 bg-emerald-50 rounded">
-              <span className="text-emerald-500 block text-[10px] uppercase font-semibold">Healthy</span>
-              <span className="font-bold text-emerald-700">100%</span>
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded">
+              <span className="text-emerald-500 dark:text-emerald-400 block text-[10px] uppercase font-semibold">Healthy</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-200">100%</span>
             </div>
-            <div className="p-2 bg-slate-50 rounded col-span-2">
-              <span className="block text-[10px] uppercase font-semibold text-slate-400">Fallback Strategy</span>
-              <span className="font-bold text-slate-700">Audit Redaction</span>
+            <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded col-span-2">
+              <span className="block text-[10px] uppercase font-semibold text-slate-400 dark:text-slate-500">Fallback Strategy</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">Audit Redaction</span>
             </div>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs space-y-3">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-800 font-mono">template-quality-sync</span>
+            <span className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">template-quality-sync</span>
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
           </div>
           <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 bg-emerald-50 rounded col-span-2">
-              <span className="text-emerald-600 block text-[10px] uppercase font-semibold">Cron Schedule</span>
-              <span className="font-bold text-emerald-800">02:00 UTC (Daily)</span>
+            <div className="p-2 bg-emerald-50 dark:bg-emerald-950/40 rounded col-span-2">
+              <span className="text-emerald-600 dark:text-emerald-400 block text-[10px] uppercase font-semibold">Cron Schedule</span>
+              <span className="font-bold text-emerald-800 dark:text-emerald-200">02:00 UTC (Daily)</span>
             </div>
-            <div className="p-2 bg-slate-50 rounded col-span-2">
-              <span className="block text-[10px] uppercase font-semibold text-slate-400">Red Score Auto-Block</span>
-              <span className="font-bold text-slate-700">Active (P6 Guard)</span>
+            <div className="p-2 bg-slate-50 dark:bg-slate-800/60 rounded col-span-2">
+              <span className="block text-[10px] uppercase font-semibold text-slate-400 dark:text-slate-500">Red Score Auto-Block</span>
+              <span className="font-bold text-slate-700 dark:text-slate-300">Active (P6 Guard)</span>
             </div>
           </div>
         </div>
@@ -337,12 +337,12 @@ export const OperatorDashboard: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Dead-Letter Queue & Undeliverables</h2>
-            <p className="text-xs text-slate-500">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Dead-Letter Queue & Undeliverables</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Retries utilize exponential backoff (30s × 2^attempts, max 5). Non-retriable errors marked UNDELIVERABLE.
             </p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-rose-50 text-rose-700 border border-rose-200 rounded-full">
+          <span className="text-xs font-semibold px-2.5 py-1 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800 rounded-full">
             {failedJobs.length} Failed Records
           </span>
         </div>

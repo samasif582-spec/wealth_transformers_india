@@ -190,14 +190,14 @@ export const CampaignCreatePage: React.FC = () => {
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Top Banner */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Campaign Creation Wizard</h1>
-        <p className="text-sm text-slate-500 mt-1">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Campaign Creation Wizard</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
           5-step guided orchestration with SEBI disclaimer validation and audience opt-in compliance
         </p>
       </div>
 
       {/* Wizard Progress Stepper */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div className="grid grid-cols-5 gap-2">
           {steps.map((s) => {
             const isCompleted = currentStep > s.number;
@@ -207,19 +207,19 @@ export const CampaignCreatePage: React.FC = () => {
                 key={s.number}
                 className={`p-3 rounded-xl border text-center transition-all ${
                   isCurrent
-                    ? 'border-blue-500 bg-blue-50/50 shadow-xs'
+                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 shadow-xs'
                     : isCompleted
-                    ? 'border-emerald-300 bg-emerald-50/30 text-emerald-800'
-                    : 'border-slate-100 bg-slate-50 text-slate-400'
+                    ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
+                    : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-slate-400'
                 }`}
               >
                 <div className="flex items-center justify-center gap-1.5 mb-1">
                   {isCompleted ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   ) : (
                     <span
                       className={`w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${
-                        isCurrent ? 'bg-blue-600 text-white' : 'bg-slate-200 text-slate-600'
+                        isCurrent ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
                       }`}
                     >
                       {s.number}
@@ -227,13 +227,17 @@ export const CampaignCreatePage: React.FC = () => {
                   )}
                   <span
                     className={`text-xs font-bold ${
-                      isCurrent ? 'text-blue-700' : isCompleted ? 'text-emerald-800' : 'text-slate-500'
+                      isCurrent
+                        ? 'text-blue-700 dark:text-blue-400'
+                        : isCompleted
+                        ? 'text-emerald-800 dark:text-emerald-300'
+                        : 'text-slate-500 dark:text-slate-400'
                     }`}
                   >
                     {s.title}
                   </span>
                 </div>
-                <p className="text-[10px] text-slate-400 hidden sm:block">{s.desc}</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 hidden sm:block">{s.desc}</p>
               </div>
             );
           })}
@@ -241,17 +245,17 @@ export const CampaignCreatePage: React.FC = () => {
       </div>
 
       {/* Step Content Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8 min-h-[420px]">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 min-h-[420px]">
         {/* STEP 1: Essentials */}
         {currentStep === 1 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Step 1: Campaign Essentials</h2>
-              <p className="text-xs text-slate-500">Define the campaign objective and business classification</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Step 1: Campaign Essentials</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Define the campaign objective and business classification</p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1.5">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1.5">
                 Campaign Name *
               </label>
               <input
@@ -260,12 +264,12 @@ export const CampaignCreatePage: React.FC = () => {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g. Q3 Market Momentum & Alpha Advisory"
-                className="w-full px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                className="w-full px-4 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-2">
                 Campaign Classification Type *
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -281,21 +285,21 @@ export const CampaignCreatePage: React.FC = () => {
                     onClick={() => setFormData({ ...formData, type: type.id as any })}
                     className={`p-4 rounded-xl border text-left transition-all ${
                       formData.type === type.id
-                        ? 'border-blue-600 bg-blue-50/50 ring-2 ring-blue-500/20'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                        ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 ring-2 ring-blue-500/20'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800/60'
                     }`}
                   >
-                    <span className="font-bold text-sm block text-slate-900">{type.label}</span>
-                    <span className="text-[11px] text-slate-400 block mt-1">{type.desc}</span>
+                    <span className="font-bold text-sm block text-slate-900 dark:text-white">{type.label}</span>
+                    <span className="text-[11px] text-slate-400 dark:text-slate-500 block mt-1">{type.desc}</span>
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-3">
-              <ShieldCheck className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-slate-600 leading-relaxed">
-                <span className="font-bold text-slate-800">SEBI Compliance Rule:</span> Promotional and Festival dispatches undergo supervisory approval prior to execution. Birthday and Anniversary dispatches are exempt when utilizing approved utility templates.
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                <span className="font-bold text-slate-800 dark:text-slate-100">SEBI Compliance Rule:</span> Promotional and Festival dispatches undergo supervisory approval prior to execution. Birthday and Anniversary dispatches are exempt when utilizing approved utility templates.
               </div>
             </div>
           </div>
@@ -305,16 +309,16 @@ export const CampaignCreatePage: React.FC = () => {
         {currentStep === 2 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Step 2: WhatsApp Meta Template</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Step 2: WhatsApp Meta Template</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Select an approved Meta message template with pre-verified SEBI footers
               </p>
             </div>
 
             {loadingTemplates ? (
-              <div className="py-12 text-center text-slate-500 text-sm">Loading available templates from database...</div>
+              <div className="py-12 text-center text-slate-500 dark:text-slate-400 text-sm">Loading available templates from database...</div>
             ) : availableTemplates.length === 0 ? (
-              <div className="py-12 text-center text-slate-500 text-sm">
+              <div className="py-12 text-center text-slate-500 dark:text-slate-400 text-sm">
                 No templates found in database. Create a template first in the Templates module.
               </div>
             ) : (
@@ -333,25 +337,25 @@ export const CampaignCreatePage: React.FC = () => {
                     }
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       formData.templateId === tpl.id
-                        ? 'border-blue-600 bg-blue-50/30 ring-2 ring-blue-500/20'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                        ? 'border-blue-600 bg-blue-50/30 dark:bg-blue-950/40 ring-2 ring-blue-500/20'
+                        : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-800/60'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-slate-900 font-mono">{tpl.name}</span>
+                        <span className="font-bold text-sm text-slate-900 dark:text-white font-mono">{tpl.name}</span>
                         <Badge variant="success">Quality: {tpl.quality}</Badge>
                       </div>
-                      <span className="text-xs font-semibold px-2 py-0.5 bg-slate-100 text-slate-600 rounded">
+                      <span className="text-xs font-semibold px-2 py-0.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded">
                         {tpl.category} ({tpl.language})
                       </span>
                     </div>
-                    <p className="text-xs text-slate-700 bg-white p-3 rounded-lg border border-slate-100 font-sans leading-relaxed">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 p-3 rounded-lg border border-slate-100 dark:border-slate-700 font-sans leading-relaxed">
                       {tpl.body}
                     </p>
                     {tpl.footer && (
-                      <p className="text-[11px] text-slate-400 mt-2 italic flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <p className="text-[11px] text-slate-400 dark:text-slate-400 mt-2 italic flex items-center gap-1">
+                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                         Footer: {tpl.footer}
                       </p>
                     )}
@@ -366,14 +370,14 @@ export const CampaignCreatePage: React.FC = () => {
         {currentStep === 3 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Step 3: Audience & Consent Segmentation</h2>
-              <p className="text-xs text-slate-500">
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Step 3: Audience & Consent Segmentation</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Property P1 Enforcement: Non-opted-in & soft-deleted clients are automatically excluded
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-2">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-2">
                 Target Category Tiers *
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -392,31 +396,31 @@ export const CampaignCreatePage: React.FC = () => {
                       }}
                       className={`p-3.5 rounded-xl border text-center transition-all ${
                         isChecked
-                          ? 'border-blue-600 bg-blue-50/50 text-blue-700 font-bold'
-                          : 'border-slate-200 text-slate-600 bg-white'
+                          ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 font-bold'
+                          : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800/60'
                       }`}
                     >
                       <span className="text-sm block">{cat}</span>
-                      <span className="text-[11px] text-slate-400 block mt-0.5">{count} registered</span>
+                      <span className="text-[11px] text-slate-400 dark:text-slate-500 block mt-0.5">{count} registered</span>
                     </button>
                   );
                 })}
               </div>
             </div>
 
-            <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between">
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center justify-between">
               <div>
-                <span className="text-xs font-semibold text-emerald-800 uppercase block">
+                <span className="text-xs font-semibold text-emerald-800 dark:text-emerald-300 uppercase block">
                   Eligible Database Audience
                 </span>
-                <span className="text-2xl font-bold text-emerald-900 mt-0.5 block">
+                <span className="text-2xl font-bold text-emerald-900 dark:text-emerald-100 mt-0.5 block">
                   {estimatedAudience.toLocaleString()} Clients
                 </span>
-                <span className="text-[11px] text-emerald-700">
+                <span className="text-[11px] text-emerald-700 dark:text-emerald-400">
                   Zero non-consenting recipients (100% DPDP compliant)
                 </span>
               </div>
-              <ShieldCheck className="w-10 h-10 text-emerald-600 opacity-60" />
+              <ShieldCheck className="w-10 h-10 text-emerald-600 dark:text-emerald-400 opacity-60" />
             </div>
           </div>
         )}
@@ -425,8 +429,8 @@ export const CampaignCreatePage: React.FC = () => {
         {currentStep === 4 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Step 4: Dispatch Velocity & Timing</h2>
-              <p className="text-xs text-slate-500">Configure real-time immediate broadcast or future scheduling</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Step 4: Dispatch Velocity & Timing</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Configure real-time immediate broadcast or future scheduling</p>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -435,12 +439,12 @@ export const CampaignCreatePage: React.FC = () => {
                 onClick={() => setFormData({ ...formData, scheduleType: 'NOW' })}
                 className={`p-5 rounded-xl border text-left transition-all ${
                   formData.scheduleType === 'NOW'
-                    ? 'border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20'
-                    : 'border-slate-200 bg-white'
+                    ? 'border-blue-600 bg-blue-50/40 dark:bg-blue-950/40 ring-2 ring-blue-500/20'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60'
                 }`}
               >
-                <span className="font-bold text-slate-900 block">Send Immediately</span>
-                <span className="text-xs text-slate-400 mt-1 block">
+                <span className="font-bold text-slate-900 dark:text-white block">Send Immediately</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 mt-1 block">
                   Enqueue immediately upon supervisor approval
                 </span>
               </button>
@@ -450,12 +454,12 @@ export const CampaignCreatePage: React.FC = () => {
                 onClick={() => setFormData({ ...formData, scheduleType: 'SCHEDULED' })}
                 className={`p-5 rounded-xl border text-left transition-all ${
                   formData.scheduleType === 'SCHEDULED'
-                    ? 'border-blue-600 bg-blue-50/40 ring-2 ring-blue-500/20'
-                    : 'border-slate-200 bg-white'
+                    ? 'border-blue-600 bg-blue-50/40 dark:bg-blue-950/40 ring-2 ring-blue-500/20'
+                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800/60'
                 }`}
               >
-                <span className="font-bold text-slate-900 block">Schedule for Later</span>
-                <span className="text-xs text-slate-400 mt-1 block">
+                <span className="font-bold text-slate-900 dark:text-white block">Schedule for Later</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 mt-1 block">
                   Automate dispatch on a specific date & time
                 </span>
               </button>
@@ -463,20 +467,20 @@ export const CampaignCreatePage: React.FC = () => {
 
             {formData.scheduleType === 'SCHEDULED' && (
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Scheduled Dispatch Timestamp
                 </label>
                 <input
                   type="datetime-local"
                   value={formData.scheduledAt}
                   onChange={(e) => setFormData({ ...formData, scheduledAt: e.target.value })}
-                  className="px-4 py-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="px-4 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
             )}
 
-            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600">
-              <span className="font-bold text-slate-800">Throttling Guarantee:</span> BullMQ will distribute outbound traffic evenly at 80 messages per second to guarantee zero rate-limit breaches on your Meta Cloud API account.
+            <div className="p-4 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-600 dark:text-slate-300">
+              <span className="font-bold text-slate-800 dark:text-slate-100">Throttling Guarantee:</span> BullMQ will distribute outbound traffic evenly at 80 messages per second to guarantee zero rate-limit breaches on your Meta Cloud API account.
             </div>
           </div>
         )}
@@ -485,27 +489,27 @@ export const CampaignCreatePage: React.FC = () => {
         {currentStep === 5 && (
           <div className="space-y-6">
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Step 5: Review & Statutory Cost Verification</h2>
-              <p className="text-xs text-slate-500">Confirm campaign parameters, template preview and financial costs</p>
+              <h2 className="text-lg font-bold text-slate-900 dark:text-white">Step 5: Review & Statutory Cost Verification</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Confirm campaign parameters, template preview and financial costs</p>
             </div>
 
             {/* Overview Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
               <div>
-                <span className="text-slate-400 block font-medium">Campaign</span>
-                <span className="font-bold text-slate-800 mt-0.5 block">{formData.name}</span>
+                <span className="text-slate-400 dark:text-slate-500 block font-medium">Campaign</span>
+                <span className="font-bold text-slate-800 dark:text-slate-100 mt-0.5 block">{formData.name}</span>
               </div>
               <div>
-                <span className="text-slate-400 block font-medium">Type</span>
-                <span className="font-bold text-slate-800 mt-0.5 block">{formData.type}</span>
+                <span className="text-slate-400 dark:text-slate-500 block font-medium">Type</span>
+                <span className="font-bold text-slate-800 dark:text-slate-100 mt-0.5 block">{formData.type}</span>
               </div>
               <div>
-                <span className="text-slate-400 block font-medium">Target Audience</span>
-                <span className="font-bold text-emerald-700 mt-0.5 block">{estimatedAudience} Clients</span>
+                <span className="text-slate-400 dark:text-slate-500 block font-medium">Target Audience</span>
+                <span className="font-bold text-emerald-700 dark:text-emerald-400 mt-0.5 block">{estimatedAudience} Clients</span>
               </div>
               <div>
-                <span className="text-slate-400 block font-medium">Dispatch Mode</span>
-                <span className="font-bold text-slate-800 mt-0.5 block">{formData.scheduleType}</span>
+                <span className="text-slate-400 dark:text-slate-500 block font-medium">Dispatch Mode</span>
+                <span className="font-bold text-slate-800 dark:text-slate-100 mt-0.5 block">{formData.scheduleType}</span>
               </div>
             </div>
 
@@ -542,7 +546,7 @@ export const CampaignCreatePage: React.FC = () => {
           type="button"
           onClick={handleBack}
           disabled={currentStep === 1}
-          className="flex items-center gap-2 px-5 py-2.5 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-xl text-sm font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-xs"
+          className="flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-xs"
         >
           <ChevronLeft className="w-4 h-4" /> Back
         </button>

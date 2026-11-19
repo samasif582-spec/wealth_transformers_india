@@ -153,10 +153,10 @@ export const ViewerDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900">Compliance & Performance Observatory</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Compliance & Performance Observatory</h1>
             <Badge variant="default">Viewer (Read-Only)</Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Independent audit view of WhatsApp communications, consent compliance and message delivery
           </p>
         </div>
@@ -164,13 +164,13 @@ export const ViewerDashboard: React.FC = () => {
           <button
             onClick={fetchViewerData}
             disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Refresh Audit Observatory"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-lg text-xs font-semibold text-slate-600">
-            <FileCheck className="w-4 h-4 text-emerald-600" />
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300">
+            <FileCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             Append-Only Audit Log Enforced (P4)
           </div>
         </div>
@@ -212,42 +212,42 @@ export const ViewerDashboard: React.FC = () => {
       </div>
 
       {/* Delivery Funnel Breakdown */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-        <h3 className="text-sm font-bold text-slate-900 mb-4">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-4">
           End-to-End Delivery Funnel (Monotonic Status Lifecycle P3)
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 text-center">
-          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-            <span className="text-xs uppercase font-semibold text-slate-400">1. Queued</span>
-            <p className="text-2xl font-bold text-slate-800 mt-1">{totalMessages}</p>
-            <span className="text-[11px] text-slate-400">100.0%</span>
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+            <span className="text-xs uppercase font-semibold text-slate-400 dark:text-slate-500">1. Queued</span>
+            <p className="text-2xl font-bold text-slate-800 dark:text-white mt-1">{totalMessages}</p>
+            <span className="text-[11px] text-slate-400 dark:text-slate-500">100.0%</span>
           </div>
-          <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
-            <span className="text-xs uppercase font-semibold text-blue-600">2. Sent (Meta API)</span>
-            <p className="text-2xl font-bold text-blue-700 mt-1">{totalMessages}</p>
-            <span className="text-[11px] text-blue-500">100.0%</span>
+          <div className="p-4 bg-blue-50 dark:bg-blue-950/40 rounded-xl border border-blue-200 dark:border-blue-900/60">
+            <span className="text-xs uppercase font-semibold text-blue-600 dark:text-blue-400">2. Sent (Meta API)</span>
+            <p className="text-2xl font-bold text-blue-700 dark:text-blue-200 mt-1">{totalMessages}</p>
+            <span className="text-[11px] text-blue-500 dark:text-blue-400">100.0%</span>
           </div>
-          <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-200">
-            <span className="text-xs uppercase font-semibold text-indigo-600">3. Delivered (Device)</span>
-            <p className="text-2xl font-bold text-indigo-700 mt-1">{deliveredCount}</p>
-            <span className="text-[11px] text-indigo-500">{deliveryRate}%</span>
+          <div className="p-4 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl border border-indigo-200 dark:border-indigo-900/60">
+            <span className="text-xs uppercase font-semibold text-indigo-600 dark:text-indigo-400">3. Delivered (Device)</span>
+            <p className="text-2xl font-bold text-indigo-700 dark:text-indigo-200 mt-1">{deliveredCount}</p>
+            <span className="text-[11px] text-indigo-500 dark:text-indigo-400">{deliveryRate}%</span>
           </div>
-          <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200">
-            <span className="text-xs uppercase font-semibold text-emerald-600">4. Read (Opened)</span>
-            <p className="text-2xl font-bold text-emerald-700 mt-1">{readCount}</p>
-            <span className="text-[11px] text-emerald-500">{readRate}%</span>
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-900/60">
+            <span className="text-xs uppercase font-semibold text-emerald-600 dark:text-emerald-400">4. Read (Opened)</span>
+            <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-200 mt-1">{readCount}</p>
+            <span className="text-[11px] text-emerald-500 dark:text-emerald-400">{readRate}%</span>
           </div>
-          <div className="p-4 bg-rose-50 rounded-xl border border-rose-200">
-            <span className="text-xs uppercase font-semibold text-rose-600">Failed / DLQ</span>
-            <p className="text-2xl font-bold text-rose-700 mt-1">0</p>
-            <span className="text-[11px] text-rose-500">0.00%</span>
+          <div className="p-4 bg-rose-50 dark:bg-rose-950/40 rounded-xl border border-rose-200 dark:border-rose-900/60">
+            <span className="text-xs uppercase font-semibold text-rose-600 dark:text-rose-400">Failed / DLQ</span>
+            <p className="text-2xl font-bold text-rose-700 dark:text-rose-200 mt-1">0</p>
+            <span className="text-[11px] text-rose-500 dark:text-rose-400">0.00%</span>
           </div>
         </div>
       </div>
 
       {/* Compliance Event Log */}
       <div className="space-y-4">
-        <h2 className="text-lg font-bold text-slate-900">Immutable Compliance & Consent Stream (PostgreSQL RLS)</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-white">Immutable Compliance & Consent Stream (PostgreSQL RLS)</h2>
         <DataTable
           columns={columns}
           data={auditLogs}

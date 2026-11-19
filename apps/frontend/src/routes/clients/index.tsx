@@ -170,9 +170,9 @@ export const ClientsPage: React.FC = () => {
       header: 'Client Identity',
       render: (c) => (
         <div>
-          <p className="font-semibold text-slate-900">{c.fullName}</p>
-          <p className="text-xs text-slate-500 font-mono">{c.whatsappNumber}</p>
-          {c.email && <p className="text-[11px] text-slate-400">{c.email}</p>}
+          <p className="font-semibold text-slate-900 dark:text-white">{c.fullName}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">{c.whatsappNumber}</p>
+          {c.email && <p className="text-[11px] text-slate-400 dark:text-slate-500">{c.email}</p>}
         </div>
       ),
     },
@@ -211,11 +211,11 @@ export const ClientsPage: React.FC = () => {
           : null;
         return (
           <div>
-            <span className="text-xs uppercase font-bold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
+            <span className="text-xs uppercase font-bold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded">
               {c.preferredLanguage}
             </span>
             {dobFormatted && (
-              <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-1">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
                 <Gift className="w-3 h-3 text-pink-500" /> {dobFormatted}
               </p>
             )}
@@ -236,8 +236,8 @@ export const ClientsPage: React.FC = () => {
                   onClick={() => handleToggleConsent(c)}
                   className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
                     c.communicationConsent === 'OPTED_IN'
-                      ? 'bg-rose-50 text-rose-700 hover:bg-rose-100'
-                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                      ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50'
+                      : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
                   }`}
                 >
                   {c.communicationConsent === 'OPTED_IN' ? 'Opt-Out' : 'Opt-In'}
@@ -245,7 +245,7 @@ export const ClientsPage: React.FC = () => {
                 {(user?.role === 'Super_Admin' || user?.role === 'Admin') && (
                   <button
                     onClick={() => setEraseTarget(c)}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
                     title="DPDP Right-to-Erasure (Anonymize PII)"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -264,8 +264,8 @@ export const ClientsPage: React.FC = () => {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Client Directory & DPDP Consent</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Client Directory & DPDP Consent</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Maintain verified customer registry, communication consent history and automated greeting metadata
           </p>
         </div>
@@ -273,14 +273,14 @@ export const ClientsPage: React.FC = () => {
           <button
             onClick={fetchClients}
             disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Refresh Directory"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <Link
             to="/clients/import"
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-medium shadow-xs transition-colors"
+            className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium shadow-xs transition-colors"
           >
             <Upload className="w-4 h-4" /> Import CSV
           </Link>
@@ -294,7 +294,7 @@ export const ClientsPage: React.FC = () => {
       </div>
 
       {/* Filter / Search Bar */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
+      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
         <div className="relative flex-1 w-full">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
@@ -302,14 +302,14 @@ export const ClientsPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by client name, mobile (+91...) or email..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50"
+            className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
           />
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-medium border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="ALL">All Categories</option>
             <option value="HNI">HNI Clients</option>
@@ -320,7 +320,7 @@ export const ClientsPage: React.FC = () => {
           <select
             value={consentFilter}
             onChange={(e) => setConsentFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-medium border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="ALL">All Consents</option>
             <option value="OPTED_IN">Opted-In (Audience Eligible)</option>
@@ -348,7 +348,7 @@ export const ClientsPage: React.FC = () => {
       >
         <form onSubmit={handleAddClient} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               Full Legal Name *
             </label>
             <input
@@ -356,12 +356,12 @@ export const ClientsPage: React.FC = () => {
               required
               value={newClient.fullName}
               onChange={(e) => setNewClient({ ...newClient, fullName: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g. Anand Mahindra"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               WhatsApp Mobile (E.164 Standard) *
             </label>
             <input
@@ -369,20 +369,20 @@ export const ClientsPage: React.FC = () => {
               required
               value={newClient.phone}
               onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="+9198XXXXXXXX"
             />
-            <p className="text-[11px] text-slate-400 mt-1">Must start with country code e.g. +91 for India</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Must start with country code e.g. +91 for India</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Category Tier
               </label>
               <select
                 value={newClient.categoryTier}
                 onChange={(e) => setNewClient({ ...newClient, categoryTier: e.target.value as any })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
               >
                 <option value="RETAIL">Retail Investor</option>
                 <option value="HNI">HNI Client</option>
@@ -391,13 +391,13 @@ export const ClientsPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Language Preference
               </label>
               <select
                 value={newClient.preferredLanguage}
                 onChange={(e) => setNewClient({ ...newClient, preferredLanguage: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm bg-white"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
               >
                 <option value="hi">Hindi (hi)</option>
                 <option value="en">English (en)</option>
@@ -409,41 +409,41 @@ export const ClientsPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Date of Birth (For Greetings)
               </label>
               <input
                 type="date"
                 value={newClient.dateOfBirth}
                 onChange={(e) => setNewClient({ ...newClient, dateOfBirth: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Corporate Email
               </label>
               <input
                 type="email"
                 value={newClient.email}
                 onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
                 placeholder="client@domain.com"
               />
             </div>
           </div>
-          <div className="pt-4 border-t border-slate-100 flex justify-end gap-3">
+          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setIsAddModalOpen(false)}
-              className="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50"
+              className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors"
             >
               {isSubmitting ? 'Enrolling...' : 'Enroll Client'}
             </button>

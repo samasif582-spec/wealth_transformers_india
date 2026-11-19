@@ -121,13 +121,13 @@ export const AnalyticsPage: React.FC = () => {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Analytics & Engagement ROI</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Analytics & Engagement ROI</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Historical delivery analytics, open rates, Meta Cloud API costs and audience responsiveness
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex bg-slate-100 p-1 rounded-lg text-xs font-semibold">
+          <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-xs font-semibold">
             {[
               { id: '7', label: '7D' },
               { id: '30', label: '30D' },
@@ -136,8 +136,10 @@ export const AnalyticsPage: React.FC = () => {
               <button
                 key={range.id}
                 onClick={() => setTimeRange(range.id)}
-                className={`px-3 py-1 rounded-md transition-colors ${
-                  timeRange === range.id ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500'
+                className={`px-3 py-1 rounded-lg transition-colors ${
+                  timeRange === range.id
+                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                 }`}
               >
                 {range.label}
@@ -147,14 +149,14 @@ export const AnalyticsPage: React.FC = () => {
           <button
             onClick={fetchAnalytics}
             disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Refresh Analytics"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={handleExportReport}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-sm font-semibold shadow-xs"
+            className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold shadow-xs transition-colors"
           >
             <Download className="w-4 h-4" /> Export Report
           </button>
@@ -196,20 +198,20 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       {/* Daily Volume Chart */}
-      <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="font-bold text-slate-900 text-base">Message Volume & Readership Velocity</h3>
-            <p className="text-xs text-slate-500">Tracking dispatched vs delivered vs read over time from live PostgreSQL data</p>
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">Message Volume & Readership Velocity</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Tracking dispatched vs delivered vs read over time from live PostgreSQL data</p>
           </div>
           <div className="flex items-center gap-4 text-xs font-semibold">
-            <span className="flex items-center gap-1.5 text-slate-600">
+            <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
               <span className="w-3 h-3 rounded-full bg-blue-500"></span> Sent
             </span>
-            <span className="flex items-center gap-1.5 text-slate-600">
+            <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
               <span className="w-3 h-3 rounded-full bg-emerald-500"></span> Delivered
             </span>
-            <span className="flex items-center gap-1.5 text-slate-600">
+            <span className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
               <span className="w-3 h-3 rounded-full bg-purple-500"></span> Read
             </span>
           </div>
@@ -218,11 +220,11 @@ export const AnalyticsPage: React.FC = () => {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={timeSeries} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
-              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontSize: 12 }} />
-              <YAxis tickLine={false} axisLine={false} tick={{ fill: '#64748B', fontSize: 12 }} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" />
+              <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} />
+              <YAxis tickLine={false} axisLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} />
               <Tooltip
-                contentStyle={{ backgroundColor: '#1E293B', borderRadius: '8px', border: 'none', color: '#FFF' }}
+                contentStyle={{ backgroundColor: '#0F172A', borderRadius: '12px', border: '1px solid #334155', color: '#F8FAFC' }}
               />
               <Bar dataKey="sent" fill="#3B82F6" radius={[4, 4, 0, 0]} />
               <Bar dataKey="delivered" fill="#10B981" radius={[4, 4, 0, 0]} />
@@ -235,8 +237,8 @@ export const AnalyticsPage: React.FC = () => {
       {/* Grid: Audience Breakdown + Financial Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Audience Share */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-          <h3 className="font-bold text-slate-900 text-base mb-4">Client Portfolio Segmentation</h3>
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <h3 className="font-bold text-slate-900 dark:text-white text-base mb-4">Client Portfolio Segmentation</h3>
           <div className="h-56 w-full flex items-center justify-center">
             {categoryData.length === 0 ? (
               <span className="text-xs text-slate-400">Loading client segments...</span>
@@ -257,7 +259,7 @@ export const AnalyticsPage: React.FC = () => {
                     ))}
                   </Pie>
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#1E293B', borderRadius: '8px', border: 'none', color: '#FFF' }}
+                    contentStyle={{ backgroundColor: '#0F172A', borderRadius: '12px', border: '1px solid #334155', color: '#F8FAFC' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -267,8 +269,8 @@ export const AnalyticsPage: React.FC = () => {
             {categoryData.map((cat, i) => (
               <div key={i} className="flex items-center gap-2 text-xs">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: cat.color }}></span>
-                <span className="text-slate-600 font-medium">{cat.name}:</span>
-                <span className="font-bold text-slate-800">{cat.value} clients</span>
+                <span className="text-slate-600 dark:text-slate-400 font-medium">{cat.name}:</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200">{cat.value} clients</span>
               </div>
             ))}
           </div>

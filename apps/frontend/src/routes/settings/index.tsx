@@ -121,8 +121,8 @@ export const SettingsPage: React.FC = () => {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Application Configuration</h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Application Configuration</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Meta API credentials, statutory GST pricing, rate limiters and DPDP compliance parameters
           </p>
         </div>
@@ -130,7 +130,7 @@ export const SettingsPage: React.FC = () => {
           <button
             onClick={fetchSettings}
             disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Refresh Settings"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -147,7 +147,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Tabs Header */}
-      <div className="flex border-b border-slate-200 gap-6 text-sm font-medium">
+      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-medium">
         {[
           { id: 'pricing', label: 'Meta Pricing & GST', icon: DollarSign },
           { id: 'waba', label: 'WABA & Meta Cloud', icon: Key },
@@ -162,8 +162,8 @@ export const SettingsPage: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-2 pb-3 border-b-2 transition-colors ${
                 isActive
-                  ? 'border-blue-600 text-blue-600 font-bold'
-                  : 'border-transparent text-slate-500 hover:text-slate-800'
+                  ? 'border-blue-600 text-blue-600 dark:text-blue-400 font-bold'
+                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
             >
               <Icon className="w-4 h-4" />
@@ -174,20 +174,20 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Tab Panels */}
-      <form onSubmit={handleSave} className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
+      <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
         {/* TAB 1: Pricing */}
         {activeTab === 'pricing' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Statutory Meta Tariffs (India)</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Statutory Meta Tariffs (India)</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Calibrated against official WhatsApp Cloud API billing schedules with automated GST
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Marketing Conversation Base Rate (INR)
                 </label>
                 <div className="relative">
@@ -196,14 +196,14 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={settings.marketingRate}
                     onChange={(e) => setSettings({ ...settings, marketingRate: e.target.value })}
-                    className="w-full pl-8 pr-4 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full pl-8 pr-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">Official Meta India Rate: ₹0.7854</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Official Meta India Rate: ₹0.7854</p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Utility Conversation Base Rate (INR)
                 </label>
                 <div className="relative">
@@ -212,14 +212,14 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={settings.utilityRate}
                     onChange={(e) => setSettings({ ...settings, utilityRate: e.target.value })}
-                    className="w-full pl-8 pr-4 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full pl-8 pr-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">Official Meta India Rate: ₹0.1258</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Official Meta India Rate: ₹0.1258</p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Statutory Goods & Services Tax (GST %)
                 </label>
                 <div className="relative">
@@ -227,11 +227,11 @@ export const SettingsPage: React.FC = () => {
                     type="text"
                     value={settings.gstRate}
                     onChange={(e) => setSettings({ ...settings, gstRate: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-300 rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="w-full px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                   <span className="absolute right-3 top-2.5 text-slate-400 text-sm font-bold">%</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-1">Standard Indian GST: 18.0% (Property P8)</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Standard Indian GST: 18.0% (Property P8)</p>
               </div>
             </div>
           </div>
@@ -241,46 +241,46 @@ export const SettingsPage: React.FC = () => {
         {activeTab === 'waba' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-base font-bold text-slate-900">Meta WhatsApp Business Account (WABA)</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">Meta WhatsApp Business Account (WABA)</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Credentials retrieved from Meta for Developers portal for WhatsApp Cloud API
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   WABA ID
                 </label>
                 <input
                   type="text"
                   value={settings.wabaId}
                   onChange={(e) => setSettings({ ...settings, wabaId: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Phone Number ID
                 </label>
                 <input
                   type="text"
                   value={settings.phoneNumberId}
                   onChange={(e) => setSettings({ ...settings, phoneNumberId: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono outline-none"
                 />
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Webhook Verify Token
                 </label>
                 <input
                   type="text"
                   value={settings.verifyToken}
                   onChange={(e) => setSettings({ ...settings, verifyToken: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono outline-none"
                 />
               </div>
             </div>
@@ -291,50 +291,50 @@ export const SettingsPage: React.FC = () => {
         {activeTab === 'workers' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-base font-bold text-slate-900">BullMQ & Queue Limits</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">BullMQ & Queue Limits</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Throughput rate limits to strictly conform with Meta Cloud API Tier 1 constraints
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Messages Per Second Throttler
                 </label>
                 <input
                   type="number"
                   value={settings.messagesPerSecond}
                   onChange={(e) => setSettings({ ...settings, messagesPerSecond: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono outline-none"
                 />
-                <p className="text-[11px] text-slate-400 mt-1">Default: 80 msg/sec</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Default: 80 msg/sec</p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Worker Thread Concurrency
                 </label>
                 <input
                   type="number"
                   value={settings.workerConcurrency}
                   onChange={(e) => setSettings({ ...settings, workerConcurrency: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono outline-none"
                 />
-                <p className="text-[11px] text-slate-400 mt-1">Default: 10 parallel jobs</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Default: 10 parallel jobs</p>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+                <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                   Asset Storage Quota (GB)
                 </label>
                 <input
                   type="number"
                   value={settings.storageQuotaGb}
                   onChange={(e) => setSettings({ ...settings, storageQuotaGb: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono"
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono outline-none"
                 />
-                <p className="text-[11px] text-slate-400 mt-1">Default: 10 GB (Cloudflare R2)</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Default: 10 GB (Cloudflare R2)</p>
               </div>
             </div>
           </div>
@@ -344,23 +344,23 @@ export const SettingsPage: React.FC = () => {
         {activeTab === 'optout' && (
           <div className="space-y-6">
             <div>
-              <h3 className="text-base font-bold text-slate-900">DPDP Automated Opt-Out Keywords</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white">DPDP Automated Opt-Out Keywords</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 Any incoming WhatsApp reply matching these keywords automatically registers an immutable opt-out
               </p>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 mb-1">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Comma-separated Trigger Keywords
               </label>
               <textarea
                 rows={3}
                 value={settings.optOutKeywords}
                 onChange={(e) => setSettings({ ...settings, optOutKeywords: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-mono uppercase"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono uppercase outline-none"
               />
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
                 Case-insensitive matching across English, Hindi, Gujarati and Marathi
               </p>
             </div>

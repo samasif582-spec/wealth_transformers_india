@@ -95,8 +95,8 @@ export const MarketingDashboard: React.FC = () => {
       header: 'Campaign Name',
       render: (c) => (
         <div>
-          <p className="font-semibold text-slate-900">{c.name}</p>
-          <p className="text-xs text-slate-400 font-mono">ID: {c.id.slice(0, 8)}... | {c.template?.name || 'Meta Template'}</p>
+          <p className="font-semibold text-slate-900 dark:text-white">{c.name}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 font-mono">ID: {c.id.slice(0, 8)}... | {c.template?.name || 'Meta Template'}</p>
         </div>
       ),
     },
@@ -118,7 +118,7 @@ export const MarketingDashboard: React.FC = () => {
       key: 'resolvedRecipientCount',
       header: 'Audience Eligible (P1)',
       render: (c) => (
-        <span className="font-semibold text-slate-800">
+        <span className="font-semibold text-slate-800 dark:text-slate-200">
           {(c.resolvedRecipientCount || c._count?.recipients || 0).toLocaleString()} clients
         </span>
       ),
@@ -162,7 +162,7 @@ export const MarketingDashboard: React.FC = () => {
       render: (c) => (
         <button
           onClick={() => navigate(`/campaigns/${c.id}`)}
-          className="flex items-center gap-1 px-2.5 py-1 text-slate-700 bg-slate-50 hover:bg-slate-100 rounded text-xs font-semibold"
+          className="flex items-center gap-1 px-2.5 py-1 text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 rounded text-xs font-semibold transition-colors"
         >
           <Eye className="w-3.5 h-3.5" /> Details
         </button>
@@ -176,10 +176,10 @@ export const MarketingDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900">Campaign Growth Center</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Campaign Growth Center</h1>
             <Badge variant="success">Marketing_Employee</Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Design targeted campaigns, manage Meta WhatsApp templates & evaluate engagement analytics
           </p>
         </div>
@@ -187,7 +187,7 @@ export const MarketingDashboard: React.FC = () => {
           <button
             onClick={fetchMarketingData}
             disabled={loading}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 transition-colors"
+            className="p-2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
             title="Refresh Live Data"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -220,45 +220,45 @@ export const MarketingDashboard: React.FC = () => {
 
         <button
           onClick={() => navigate('/templates')}
-          className="p-5 text-left bg-white border border-slate-200 rounded-2xl shadow-xs hover:border-blue-400 hover:shadow-sm transition-all group"
+          className="p-5 text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-sm transition-all group"
         >
-          <div className="p-2.5 bg-purple-50 text-purple-600 rounded-xl w-fit mb-4">
+          <div className="p-2.5 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl w-fit mb-4">
             <FileText className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-slate-900 group-hover:text-blue-600 transition-colors">
+          <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
             Meta Templates ({templatesCount})
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             SEBI compliant templates with dynamic variable placeholders
           </p>
         </button>
 
         <button
           onClick={() => navigate('/clients/import')}
-          className="p-5 text-left bg-white border border-slate-200 rounded-2xl shadow-xs hover:border-emerald-400 hover:shadow-sm transition-all group"
+          className="p-5 text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-sm transition-all group"
         >
-          <div className="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl w-fit mb-4">
+          <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-xl w-fit mb-4">
             <Users className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-slate-900 group-hover:text-emerald-600 transition-colors">
+          <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
             Import Clients CSV
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Bulk client onboarding with automated phone normalization
           </p>
         </button>
 
         <button
           onClick={() => navigate('/analytics')}
-          className="p-5 text-left bg-white border border-slate-200 rounded-2xl shadow-xs hover:border-amber-400 hover:shadow-sm transition-all group"
+          className="p-5 text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs hover:border-amber-400 dark:hover:border-amber-500 hover:shadow-sm transition-all group"
         >
-          <div className="p-2.5 bg-amber-50 text-amber-600 rounded-xl w-fit mb-4">
+          <div className="p-2.5 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl w-fit mb-4">
             <TrendingUp className="w-6 h-6" />
           </div>
-          <h3 className="font-bold text-base text-slate-900 group-hover:text-amber-600 transition-colors">
+          <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
             Performance ROI
           </h3>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Read rate insights, cost per conversation & delivery audit
           </p>
         </button>
@@ -301,10 +301,10 @@ export const MarketingDashboard: React.FC = () => {
       {/* Campaign Performance Table */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900">Recent Dispatches & Real Campaigns</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-white">Recent Dispatches & Real Campaigns</h2>
           <button
             onClick={() => navigate('/campaigns')}
-            className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+            className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
           >
             View All Campaigns ({campaignsTotal}) →
           </button>

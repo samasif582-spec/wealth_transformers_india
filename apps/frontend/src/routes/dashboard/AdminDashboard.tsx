@@ -102,8 +102,8 @@ export const AdminDashboard: React.FC = () => {
       header: 'Campaign Name',
       render: (c) => (
         <div>
-          <p className="font-semibold text-slate-900">{c.name}</p>
-          <p className="text-xs text-slate-400">Template: {c.template?.name || 'Standard'}</p>
+          <p className="font-semibold text-slate-900 dark:text-white">{c.name}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500">Template: {c.template?.name || 'Standard'}</p>
         </div>
       ),
     },
@@ -123,7 +123,7 @@ export const AdminDashboard: React.FC = () => {
       key: 'resolvedRecipientCount',
       header: 'Audience (Opted-In)',
       render: (c) => (
-        <span className="font-medium text-slate-700">
+        <span className="font-medium text-slate-700 dark:text-slate-300">
           {(c.resolvedRecipientCount || 0).toLocaleString()} clients
         </span>
       ),
@@ -133,7 +133,7 @@ export const AdminDashboard: React.FC = () => {
       header: 'Submitted By',
       render: (c) => (
         <div>
-          <p className="text-xs font-medium text-slate-800">{c.createdBy?.fullName || c.createdBy?.email || 'Marketing'}</p>
+          <p className="text-xs font-medium text-slate-800 dark:text-slate-200">{c.createdBy?.fullName || c.createdBy?.email || 'Marketing'}</p>
           <p className="text-[11px] text-slate-400 font-mono">
             {c.createdAt ? new Date(c.createdAt).toLocaleTimeString() : 'Recent'}
           </p>
@@ -153,7 +153,7 @@ export const AdminDashboard: React.FC = () => {
           </button>
           <button
             onClick={() => setSelectedCampaign({ id: c.id, action: 'reject' })}
-            className="flex items-center gap-1 px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-semibold transition-colors"
+            className="flex items-center gap-1 px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-semibold transition-colors"
           >
             <XCircle className="w-3.5 h-3.5" /> Reject
           </button>
@@ -168,10 +168,10 @@ export const AdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900">Operations Control</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Operations Control</h1>
             <Badge variant="info">Admin</Badge>
           </div>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Supervise campaign dispatches, compliance approvals, audience segments & delivery health
           </p>
         </div>
@@ -181,7 +181,7 @@ export const AdminDashboard: React.FC = () => {
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-xs ${
               isQueuePaused
                 ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300'
+                : 'bg-amber-100 dark:bg-amber-950/60 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700'
             }`}
           >
             {isQueuePaused ? (
@@ -234,12 +234,12 @@ export const AdminDashboard: React.FC = () => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-bold text-slate-900">Campaigns Pending Executive Approval</h2>
-            <p className="text-xs text-slate-500">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white">Campaigns Pending Executive Approval</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
               Promotional & Announcement dispatches require 100% verified template and SEBI footer checks
             </p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full">
+          <span className="text-xs font-semibold px-2.5 py-1 bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 rounded-full">
             {pendingCampaigns.length} Require Review
           </span>
         </div>
@@ -256,8 +256,8 @@ export const AdminDashboard: React.FC = () => {
 
       {/* DPDP Consent Compliance Card */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <h3 className="text-sm font-bold text-slate-900 mb-3">Client Category Distribution</h3>
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Client Category Distribution</h3>
           <div className="space-y-3">
             {[
               { label: 'HNI (High Net Worth)', count: 5, pct: '38%', color: 'bg-purple-500' },
@@ -267,10 +267,10 @@ export const AdminDashboard: React.FC = () => {
             ].map((item, idx) => (
               <div key={idx} className="space-y-1">
                 <div className="flex justify-between text-xs">
-                  <span className="font-medium text-slate-700">{item.label}</span>
-                  <span className="text-slate-500 font-semibold">{item.count} ({item.pct})</span>
+                  <span className="font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold">{item.count} ({item.pct})</span>
                 </div>
-                <div className="w-full bg-slate-100 rounded-full h-2">
+                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
                   <div className={`${item.color} h-2 rounded-full`} style={{ width: item.pct }}></div>
                 </div>
               </div>
@@ -278,41 +278,41 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <h3 className="text-sm font-bold text-slate-900 mb-3">DPDP Consent Compliance</h3>
-          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
-            <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">DPDP Consent Compliance</h3>
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2">
+            <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
               <ShieldCheck className="w-4 h-4" /> Real Opt-In Ratio Enforced
             </div>
-            <p className="text-xs text-emerald-700 leading-relaxed">
+            <p className="text-xs text-emerald-700 dark:text-emerald-400 leading-relaxed">
               All marketing dispatches strictly enforce Property P1 (excluding non-OPTED_IN clients).
               Automated STOP keyword opt-out workflow (06-opt-out) is active.
             </p>
           </div>
-          <div className="mt-3 text-xs text-slate-500 flex justify-between">
+          <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 flex justify-between">
             <span>Opted-In: {clientStats.optedIn}</span>
             <span>Opted-Out: {clientStats.optedOut}</span>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 mb-2">Automated Schedule Status</h3>
-            <p className="text-xs text-slate-500 mb-4">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2">Automated Schedule Status</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
               Daily cron jobs active via n8n automation engine:
             </p>
             <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
-                <span className="font-medium text-slate-700">01 - Birthday Automation</span>
-                <span className="text-emerald-600 font-semibold">03:30 UTC Daily</span>
+              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                <span className="font-medium text-slate-700 dark:text-slate-300">01 - Birthday Automation</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">03:30 UTC Daily</span>
               </div>
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100">
-                <span className="font-medium text-slate-700">02 - Anniversary Automation</span>
-                <span className="text-emerald-600 font-semibold">03:45 UTC Daily</span>
+              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+                <span className="font-medium text-slate-700 dark:text-slate-300">02 - Anniversary Automation</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">03:45 UTC Daily</span>
               </div>
               <div className="flex items-center justify-between py-1.5">
-                <span className="font-medium text-slate-700">03 - Festival Campaign Dispatch</span>
-                <span className="text-emerald-600 font-semibold">04:00 UTC Daily</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300">03 - Festival Campaign Dispatch</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">04:00 UTC Daily</span>
               </div>
             </div>
           </div>

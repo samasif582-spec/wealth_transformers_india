@@ -276,7 +276,7 @@ export const TemplatesPage: React.FC = () => {
   ];
 
   return (
-    <div className="p-8 space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
@@ -291,7 +291,7 @@ export const TemplatesPage: React.FC = () => {
           <button
             onClick={handleSyncQuality}
             disabled={isSyncing}
-            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs"
+            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             Sync Meta Quality
@@ -307,7 +307,7 @@ export const TemplatesPage: React.FC = () => {
       </div>
 
       {/* Compliance Notice */}
-      <div className="p-4 bg-emerald-50/70 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/40 rounded-2xl flex items-start gap-3">
+      <div className="p-4 bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 rounded-2xl flex items-start gap-3">
         <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
         <div className="text-xs text-emerald-800 dark:text-emerald-300">
           <span className="font-bold">SEBI Regulatory Notice:</span> Marketing category templates
@@ -316,7 +316,7 @@ export const TemplatesPage: React.FC = () => {
       </div>
 
       {/* Templates Table */}
-      <div className="bg-white dark:bg-slate-800/80 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-xs overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
         <DataTable
           columns={columns}
           data={templates}
@@ -359,7 +359,7 @@ export const TemplatesPage: React.FC = () => {
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm font-mono focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="e.g. market_momentum_brief_v1"
             />
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
               Lowercase letters, numbers, and underscores only
             </p>
           </div>
@@ -474,7 +474,7 @@ export const TemplatesPage: React.FC = () => {
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-xl text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
               placeholder="Dear {{1}}, here is your portfolio update for {{2}}..."
             />
-            <p className="text-[11px] text-slate-400 mt-1">
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">
               Use {'{{1}}'}, {'{{2}}'}, etc. for sequential recipient placeholders.
             </p>
           </div>
