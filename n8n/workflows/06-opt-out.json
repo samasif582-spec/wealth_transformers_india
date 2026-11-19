@@ -1,0 +1,112 @@
+{
+  "name": "06 - Opt-Out & STOP Keyword Automated Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "incoming-message",
+        "options": {}
+      },
+      "id": "e6f6c84b-0606-4c12-9c98-111111111111",
+      "name": "Webhook (Incoming WhatsApp Message)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "incoming-whatsapp-message-hook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Inspect incoming message text for opt-out keywords\nconst body = $input.item.json.body || $input.item.json;\nconst entries = body.entry || [];\nconst optOutKeywords = ['STOP', 'UNSUBSCRIBE', 'OPT OUT', 'OPTOUT', 'CANCEL', 'ROKO', 'BAND KARO'];\nconst matches = [];\n\nfor (const entry of entries) {\n  for (const change of (entry.changes || [])) {\n    for (const message of (change.value?.messages || [])) {\n      const text = (message.text?.body || '').trim().toUpperCase();\n      const sender = message.from; // Phone number\n      const matched = optOutKeywords.some(kw => text === kw || text.startsWith(kw + ' '));\n      if (matched) {\n        matches.push({\n          senderPhone: sender,\n          keywordMatched: text,\n          receivedAt: new Date().toISOString()\n        });\n      }\n    }\n  }\n}\n\nreturn matches.length > 0 ? matches.map(m => ({ json: m })) : [{ json: { isOptOut: false } }];"
+      },
+      "id": "e6f6c84b-0606-4c12-9c98-222222222222",
+      "name": "Check Opt-Out Keywords",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.senderPhone}}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "e6f6c84b-0606-4c12-9c98-333333333333",
+      "name": "Is Keyword Matched?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_BACKEND_URL || 'http://localhost:3000'}}/api/v1/internal/clients/opt-out-by-phone",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Internal-Api-Key",
+              "value": "={{$env.INTERNAL_API_SECRET}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"phone\": \"{{$json.senderPhone}}\",\n  \"reason\": \"Keyword trigger: {{$json.keywordMatched}}\",\n  \"source\": \"WHATSAPP_REPLY\"\n}",
+        "options": {}
+      },
+      "id": "e6f6c84b-0606-4c12-9c98-444444444444",
+      "name": "Execute Immutable Opt-Out in Backend",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [920, 240]
+    }
+  ],
+  "connections": {
+    "Webhook (Incoming WhatsApp Message)": {
+      "main": [
+        [
+          {
+            "node": "Check Opt-Out Keywords",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Opt-Out Keywords": {
+      "main": [
+        [
+          {
+            "node": "Is Keyword Matched?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Keyword Matched?": {
+      "main": [
+        [
+          {
+            "node": "Execute Immutable Opt-Out in Backend",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": true
+}

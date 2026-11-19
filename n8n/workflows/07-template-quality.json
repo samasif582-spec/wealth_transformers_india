@@ -1,0 +1,127 @@
+{
+  "name": "07 - Template Quality & Status Polling Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 2 * * *"
+            }
+          ]
+        }
+      },
+      "id": "e7f7c84b-0707-4c12-9c98-111111111111",
+      "name": "Daily Quality Check (02:00 UTC)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_BACKEND_URL || 'http://localhost:3000'}}/api/v1/internal/templates/sync-all-quality",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Internal-Api-Key",
+              "value": "={{$env.INTERNAL_API_SECRET}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e7f7c84b-0707-4c12-9c98-222222222222",
+      "name": "Sync Quality Ratings from Meta",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.hasRedRating === true}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e7f7c84b-0707-4c12-9c98-333333333333",
+      "name": "Any Template Quality RED?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_BACKEND_URL || 'http://localhost:3000'}}/api/v1/internal/automation/execution-error",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Internal-Api-Key",
+              "value": "={{$env.INTERNAL_API_SECRET}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"workflowId\": \"07-template-quality\",\n  \"error\": \"CRITICAL: One or more WhatsApp templates flagged with RED quality score!\",\n  \"details\": {{$json}}\n}",
+        "options": {}
+      },
+      "id": "e7f7c84b-0707-4c12-9c98-444444444444",
+      "name": "Log Red Template Quality Alert",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [940, 240]
+    }
+  ],
+  "connections": {
+    "Daily Quality Check (02:00 UTC)": {
+      "main": [
+        [
+          {
+            "node": "Sync Quality Ratings from Meta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sync Quality Ratings from Meta": {
+      "main": [
+        [
+          {
+            "node": "Any Template Quality RED?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any Template Quality RED?": {
+      "main": [
+        [
+          {
+            "node": "Log Red Template Quality Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": true
+}

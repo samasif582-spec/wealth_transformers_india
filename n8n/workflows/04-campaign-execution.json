@@ -1,0 +1,77 @@
+{
+  "name": "04 - Scheduled Campaign Execution Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "campaign-execute",
+        "options": {}
+      },
+      "id": "e4f4c84b-0404-4c12-9c98-111111111111",
+      "name": "Webhook Trigger (Campaign Execute)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "campaign-execute-hook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_BACKEND_URL || 'http://localhost:3000'}}/api/v1/internal/campaigns/{{$json.body.campaignId}}/execute",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Internal-Api-Key",
+              "value": "={{$env.INTERNAL_API_SECRET}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e4f4c84b-0404-4c12-9c98-222222222222",
+      "name": "Trigger Backend Campaign Execution",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e4f4c84b-0404-4c12-9c98-333333333333",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [720, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger (Campaign Execute)": {
+      "main": [
+        [
+          {
+            "node": "Trigger Backend Campaign Execution",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Trigger Backend Campaign Execution": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": true
+}

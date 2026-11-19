@@ -1,0 +1,112 @@
+{
+  "name": "05 - Delivery Status Monotonic Processor",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "delivery-status-sync",
+        "options": {}
+      },
+      "id": "e5f5c84b-0505-4c12-9c98-111111111111",
+      "name": "Webhook (Meta Status Event)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "delivery-status-sync-hook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Normalise Meta WhatsApp Cloud API status webhook entry\nconst body = $input.item.json.body || $input.item.json;\nconst entries = body.entry || [];\nconst results = [];\n\nfor (const entry of entries) {\n  for (const change of (entry.changes || [])) {\n    if (change.field === 'messages') {\n      for (const status of (change.value.statuses || [])) {\n        results.push({\n          wamid: status.id,\n          status: status.status.toUpperCase(),\n          recipientPhone: status.recipient_id,\n          timestamp: new Date(parseInt(status.timestamp, 10) * 1000).toISOString(),\n          errors: status.errors || []\n        });\n      }\n    }\n  }\n}\n\nreturn results.length > 0 ? results.map(r => ({ json: r })) : [{ json: { empty: true } }];"
+      },
+      "id": "e5f5c84b-0505-4c12-9c98-222222222222",
+      "name": "Extract Statuses",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{!$json.empty}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "id": "e5f5c84b-0505-4c12-9c98-333333333333",
+      "name": "Has Status Items?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{$env.N8N_BACKEND_URL || 'http://localhost:3000'}}/api/v1/internal/webhooks/status-update",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-Internal-Api-Key",
+              "value": "={{$env.INTERNAL_API_SECRET}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{JSON.stringify($json)}}",
+        "options": {}
+      },
+      "id": "e5f5c84b-0505-4c12-9c98-444444444444",
+      "name": "Forward To Backend Monotonic Updater",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [920, 240]
+    }
+  ],
+  "connections": {
+    "Webhook (Meta Status Event)": {
+      "main": [
+        [
+          {
+            "node": "Extract Statuses",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Statuses": {
+      "main": [
+        [
+          {
+            "node": "Has Status Items?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Status Items?": {
+      "main": [
+        [
+          {
+            "node": "Forward To Backend Monotonic Updater",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "active": true
+}

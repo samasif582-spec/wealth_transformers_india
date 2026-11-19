@@ -1,0 +1,580 @@
+// prisma/schema.prisma
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum UserRole {
+  Super_Admin
+  Admin
+  Marketing_Employee
+  Operator
+  Viewer
+}
+
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  LOCKED
+}
+
+enum CategoryTier {
+  RETAIL
+  HNI
+  CORPORATE
+  PROSPECT
+}
+
+enum ConsentStatus {
+  OPTED_IN
+  OPTED_OUT
+  PENDING
+}
+
+enum ConsentSource {
+  IMPORT
+  MANUAL_ENTRY
+  WHATSAPP_REPLY
+  FORM
+  API
+}
+
+enum TemplateCategory {
+  MARKETING
+  UTILITY
+  AUTHENTICATION
+}
+
+enum TemplateStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  PAUSED
+}
+
+enum TemplateHeaderType {
+  TEXT
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+enum ButtonType {
+  CALL_TO_ACTION
+  QUICK_REPLY
+}
+
+enum CampaignType {
+  BIRTHDAY
+  ANNIVERSARY
+  FESTIVAL
+  ANNOUNCEMENT
+  PROMOTIONAL
+  SERVICE_NOTIFICATION
+}
+
+enum CampaignStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  REJECTED
+  SCHEDULED
+  EXECUTING
+  PAUSED
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  QUEUED
+  SENT
+  DELIVERED
+  READ
+  FAILED
+  UNDELIVERABLE
+}
+
+enum WebhookEventStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+enum MediaFileType {
+  JPEG
+  PNG
+  PDF
+  MP4
+}
+
+enum AuditActionType {
+  CREATE
+  UPDATE
+  DELETE
+  RESTORE
+  LOGIN
+  LOGOUT
+  EXPORT
+  CAMPAIGN_EXECUTE
+  CONSENT_CHANGE
+  ROLE_CHANGE
+  SETTINGS_CHANGE
+  TEMPLATE_SUBMIT
+  CAMPAIGN_APPROVE
+  CAMPAIGN_REJECT
+}
+
+enum AutomationRuleType {
+  BIRTHDAY
+  ANNIVERSARY
+  FESTIVAL
+  CAMPAIGN_EXECUTION
+  DELIVERY_STATUS
+  OPT_OUT
+}
+
+enum AutomationStatus {
+  ACTIVE
+  INACTIVE
+  ERROR
+}
+
+enum NotificationChannelType {
+  EMAIL
+  WEBHOOK
+}
+
+enum QualityRating {
+  GREEN
+  YELLOW
+  RED
+  UNKNOWN
+}
+
+// ─────────────────────────────────────────────
+// USERS & ROLES
+// ─────────────────────────────────────────────
+
+model User {
+  id               String        @id @default(uuid()) @db.Uuid
+  email            String        @unique @db.VarChar(320)
+  passwordHash     String        @map("password_hash") @db.VarChar(72)
+  fullName         String        @map("full_name") @db.VarChar(150)
+  role             UserRole
+  accountStatus    AccountStatus @default(ACTIVE) @map("account_status")
+  failedLoginCount Int           @default(0) @map("failed_login_count")
+  lockedAt         DateTime?     @map("locked_at") @db.Timestamptz
+  lastActivityAt   DateTime?     @map("last_activity_at") @db.Timestamptz
+  totpSecret       String?       @map("totp_secret") @db.VarChar(256)
+  totpEnabled      Boolean       @default(false) @map("totp_enabled")
+  refreshTokenHash String?       @map("refresh_token_hash") @db.VarChar(255)
+  createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt        DateTime?     @map("deleted_at") @db.Timestamptz
+
+  auditLogsAsActor AuditLog[]       @relation("AuditActor")
+  consentRecords   WhatsappConsent[] @relation("ConsentOperator")
+  campaigns        Campaign[]       @relation("CampaignCreator")
+  campaignApprovals Campaign[]      @relation("CampaignApprover")
+
+  @@index([email])
+  @@index([role])
+  @@index([accountStatus])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────
+// CLIENTS
+// ─────────────────────────────────────────────
+
+model Client {
+  id                   String        @id @default(uuid()) @db.Uuid
+  fullName             String        @map("full_name") @db.VarChar(150)
+  whatsappNumber       String        @unique @map("whatsapp_number") @db.VarChar(20)
+  email                String?       @unique @db.VarChar(320)
+  dateOfBirth          DateTime?     @map("date_of_birth") @db.Date
+  weddingAnniversary   DateTime?     @map("wedding_anniversary") @db.Date
+  categoryTier         CategoryTier  @map("category_tier")
+  communicationConsent ConsentStatus @default(PENDING) @map("communication_consent")
+  preferredLanguage    String        @map("preferred_language") @db.VarChar(5)
+  accountStatus        AccountStatus @default(ACTIVE) @map("account_status")
+  createdAt            DateTime      @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt            DateTime      @updatedAt @map("updated_at") @db.Timestamptz
+  deletedAt            DateTime?     @map("deleted_at") @db.Timestamptz
+
+  consentRecords     WhatsappConsent[]
+  messageLogs        MessageLog[]
+  campaignRecipients CampaignRecipient[]
+  tags               ClientTag[]
+
+  /// Full-text search tsvector — maintained by DB trigger
+  searchVector Unsupported("tsvector")? @map("search_vector")
+
+  @@index([whatsappNumber])
+  @@index([email])
+  @@index([categoryTier])
+  @@index([communicationConsent])
+  @@index([accountStatus])
+  @@index([preferredLanguage])
+  @@index([dateOfBirth])
+  @@index([createdAt])
+  @@index([deletedAt])
+  @@map("clients")
+}
+
+model ClientTag {
+  id        String   @id @default(uuid()) @db.Uuid
+  clientId  String   @map("client_id") @db.Uuid
+  tag       String   @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@unique([clientId, tag])
+  @@index([tag])
+  @@map("client_tags")
+}
+
+// ─────────────────────────────────────────────
+// CONSENT
+// ─────────────────────────────────────────────
+
+model WhatsappConsent {
+  id                String        @id @default(uuid()) @db.Uuid
+  clientId          String        @map("client_id") @db.Uuid
+  consentStatus     ConsentStatus @map("consent_status")
+  consentSource     ConsentSource @map("consent_source")
+  evidenceReference String?       @map("evidence_reference") @db.VarChar(2048)
+  reason            String?       @db.VarChar(500)
+  recordedByUserId  String?       @map("recorded_by_user_id") @db.Uuid
+  recordedAt        DateTime      @default(now()) @map("recorded_at") @db.Timestamptz
+
+  client     Client @relation(fields: [clientId], references: [id])
+  recordedBy User?  @relation("ConsentOperator", fields: [recordedByUserId], references: [id])
+
+  @@index([clientId, recordedAt(sort: Desc)])
+  @@index([consentStatus])
+  @@index([recordedAt])
+  @@map("whatsapp_consents")
+}
+
+// ─────────────────────────────────────────────
+// TEMPLATES
+// ─────────────────────────────────────────────
+
+model MessageTemplate {
+  id               String           @id @default(uuid()) @db.Uuid
+  name             String           @unique @db.VarChar(512)
+  category         TemplateCategory
+  language         String           @db.VarChar(5)
+  status           TemplateStatus   @default(DRAFT)
+  metaTemplateId   String?          @map("meta_template_id") @db.VarChar(255)
+  qualityRating    QualityRating    @default(UNKNOWN) @map("quality_rating")
+  qualityCheckedAt DateTime?        @map("quality_checked_at") @db.Timestamptz
+  createdByUserId  String           @map("created_by_user_id") @db.Uuid
+  deletedAt        DateTime?        @map("deleted_at") @db.Timestamptz
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  versions    TemplateVersion[]
+  campaigns   Campaign[]
+  mediaAssets MediaAsset[]
+
+  @@index([status])
+  @@index([category])
+  @@index([qualityRating])
+  @@index([deletedAt])
+  @@map("message_templates")
+}
+
+model TemplateVersion {
+  id              String              @id @default(uuid()) @db.Uuid
+  templateId      String              @map("template_id") @db.Uuid
+  versionNumber   Int                 @map("version_number")
+  status          TemplateStatus      @default(DRAFT)
+  bodyText        String              @map("body_text") @db.VarChar(1024)
+  headerType      TemplateHeaderType? @map("header_type")
+  headerText      String?             @map("header_text") @db.VarChar(60)
+  headerMediaId   String?             @map("header_media_id") @db.Uuid
+  footerText      String?             @map("footer_text") @db.VarChar(255)
+  variableSchema  Json                @map("variable_schema")
+  buttons         Json?
+  submittedAt     DateTime?           @map("submitted_at") @db.Timestamptz
+  approvedAt      DateTime?           @map("approved_at") @db.Timestamptz
+  rejectedAt      DateTime?           @map("rejected_at") @db.Timestamptz
+  rejectionReason String?             @map("rejection_reason") @db.Text
+  metaVersionId   String?             @map("meta_version_id") @db.VarChar(255)
+  createdAt       DateTime            @default(now()) @map("created_at") @db.Timestamptz
+
+  template    MessageTemplate @relation(fields: [templateId], references: [id])
+  headerMedia MediaAsset?     @relation(fields: [headerMediaId], references: [id])
+
+  @@unique([templateId, versionNumber])
+  @@index([templateId, status])
+  @@map("template_versions")
+}
+
+// ─────────────────────────────────────────────
+// CAMPAIGNS
+// ─────────────────────────────────────────────
+
+model Campaign {
+  id                     String         @id @default(uuid()) @db.Uuid
+  name                   String         @unique @db.VarChar(200)
+  campaignType           CampaignType   @map("campaign_type")
+  status                 CampaignStatus @default(DRAFT)
+  templateId             String         @map("template_id") @db.Uuid
+  templateVersionId      String?        @map("template_version_id") @db.Uuid
+  segmentFilter          Json?          @map("segment_filter")
+  resolvedRecipientCount Int            @default(0) @map("resolved_recipient_count")
+  scheduledAt            DateTime?      @map("scheduled_at") @db.Timestamptz
+  dispatchedAt           DateTime?      @map("dispatched_at") @db.Timestamptz
+  completedAt            DateTime?      @map("completed_at") @db.Timestamptz
+  cancelledAt            DateTime?      @map("cancelled_at") @db.Timestamptz
+  description            String?        @db.Text
+  estimatedCostInr       Decimal?       @map("estimated_cost_inr") @db.Decimal(12, 4)
+  actualCostInr          Decimal?       @map("actual_cost_inr") @db.Decimal(12, 4)
+  approvedByUserId       String?        @map("approved_by_user_id") @db.Uuid
+  approvedAt             DateTime?      @map("approved_at") @db.Timestamptz
+  rejectedByUserId       String?        @map("rejected_by_user_id") @db.Uuid
+  rejectionReason        String?        @map("rejection_reason") @db.Text
+  createdByUserId        String         @map("created_by_user_id") @db.Uuid
+  cancelledByUserId      String?        @map("cancelled_by_user_id") @db.Uuid
+  createdAt              DateTime       @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt              DateTime       @updatedAt @map("updated_at") @db.Timestamptz
+
+  template         MessageTemplate          @relation(fields: [templateId], references: [id])
+  createdBy        User                     @relation("CampaignCreator", fields: [createdByUserId], references: [id])
+  approvedBy       User?                    @relation("CampaignApprover", fields: [approvedByUserId], references: [id])
+  recipients       CampaignRecipient[]
+  messageLogs      MessageLog[]
+  stateTransitions CampaignStateTransition[]
+
+  @@index([status])
+  @@index([campaignType])
+  @@index([scheduledAt])
+  @@index([createdByUserId])
+  @@map("campaigns")
+}
+
+model CampaignRecipient {
+  id              String   @id @default(uuid()) @db.Uuid
+  campaignId      String   @map("campaign_id") @db.Uuid
+  clientId        String   @map("client_id") @db.Uuid
+  consentVerified Boolean  @default(false) @map("consent_verified")
+  suppressed      Boolean  @default(false)
+  addedAt         DateTime @default(now()) @map("added_at") @db.Timestamptz
+
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+  client   Client   @relation(fields: [clientId], references: [id])
+
+  @@unique([campaignId, clientId])
+  @@index([campaignId])
+  @@index([clientId])
+  @@map("campaign_recipients")
+}
+
+model CampaignStateTransition {
+  id             String         @id @default(uuid()) @db.Uuid
+  campaignId     String         @map("campaign_id") @db.Uuid
+  fromStatus     CampaignStatus @map("from_status")
+  toStatus       CampaignStatus @map("to_status")
+  actorId        String?        @map("actor_id") @db.Uuid
+  note           String?        @db.Text
+  transitionedAt DateTime       @default(now()) @map("transitioned_at") @db.Timestamptz
+
+  campaign Campaign @relation(fields: [campaignId], references: [id])
+
+  @@index([campaignId])
+  @@map("campaign_state_transitions")
+}
+
+// ─────────────────────────────────────────────
+// MESSAGE LOGS
+// ─────────────────────────────────────────────
+
+model MessageLog {
+  id               String           @id @default(uuid()) @db.Uuid
+  campaignId       String?          @map("campaign_id") @db.Uuid
+  clientId         String           @map("client_id") @db.Uuid
+  templateId       String           @map("template_id") @db.Uuid
+  templateCategory TemplateCategory @map("template_category")
+  metaMessageId    String?          @unique @map("meta_message_id") @db.VarChar(255)
+  bullmqJobId      String?          @map("bullmq_job_id") @db.VarChar(255)
+  idempotencyKey   String           @unique @map("idempotency_key") @db.VarChar(255)
+  deliveryStatus   DeliveryStatus   @default(QUEUED) @map("delivery_status")
+  variableValues   Json             @map("variable_values")
+  pricingRateInr   Decimal?         @map("pricing_rate_inr") @db.Decimal(10, 6)
+  costInr          Decimal?         @map("cost_inr") @db.Decimal(10, 6)
+  errorCode        String?          @map("error_code") @db.VarChar(50)
+  errorMessage     String?          @map("error_message") @db.Text
+  retryCount       Int              @default(0) @map("retry_count")
+  dispatchedAt     DateTime         @default(now()) @map("dispatched_at") @db.Timestamptz
+  sentAt           DateTime?        @map("sent_at") @db.Timestamptz
+  deliveredAt      DateTime?        @map("delivered_at") @db.Timestamptz
+  readAt           DateTime?        @map("read_at") @db.Timestamptz
+  failedAt         DateTime?        @map("failed_at") @db.Timestamptz
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt        DateTime         @updatedAt @map("updated_at") @db.Timestamptz
+
+  campaign Campaign? @relation(fields: [campaignId], references: [id])
+  client   Client    @relation(fields: [clientId], references: [id])
+
+  @@index([campaignId, deliveryStatus, dispatchedAt])
+  @@index([clientId, dispatchedAt])
+  @@index([metaMessageId])
+  @@index([idempotencyKey])
+  @@index([deliveryStatus])
+  @@map("message_logs")
+}
+
+// ─────────────────────────────────────────────
+// WEBHOOKS
+// ─────────────────────────────────────────────
+
+model WebhookEvent {
+  id               String             @id @default(uuid()) @db.Uuid
+  metaMessageId    String?            @map("meta_message_id") @db.VarChar(255)
+  eventType        String             @map("event_type") @db.VarChar(50)
+  rawPayload       Json               @map("raw_payload")
+  processingStatus WebhookEventStatus @default(PENDING) @map("processing_status")
+  processingError  String?            @map("processing_error") @db.Text
+  retryCount       Int                @default(0) @map("retry_count")
+  receivedAt       DateTime           @default(now()) @map("received_at") @db.Timestamptz
+  processedAt      DateTime?          @map("processed_at") @db.Timestamptz
+  expiresAt        DateTime           @map("expires_at") @db.Timestamptz
+
+  @@index([metaMessageId])
+  @@index([processingStatus])
+  @@index([receivedAt])
+  @@index([expiresAt])
+  @@map("webhook_events")
+}
+
+// ─────────────────────────────────────────────
+// MEDIA ASSETS
+// ─────────────────────────────────────────────
+
+model MediaAsset {
+  id                String        @id @default(uuid()) @db.Uuid
+  r2ObjectKey       String        @unique @map("r2_object_key") @db.VarChar(1024)
+  fileName          String        @map("file_name") @db.VarChar(255)
+  mimeType          String        @map("mime_type") @db.VarChar(127)
+  fileType          MediaFileType @map("file_type")
+  fileSizeBytes     BigInt        @map("file_size_bytes")
+  metaMediaId       String?       @map("meta_media_id") @db.VarChar(255)
+  uploadedByUserId  String        @map("uploaded_by_user_id") @db.Uuid
+  virusScanStatus   String        @default("PENDING") @map("virus_scan_status") @db.VarChar(20)
+  uploadConfirmedAt DateTime?     @map("upload_confirmed_at") @db.Timestamptz
+  deletedAt         DateTime?     @map("deleted_at") @db.Timestamptz
+  r2PurgeAt         DateTime?     @map("r2_purge_at") @db.Timestamptz
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz
+
+  templateVersions TemplateVersion[]
+  templates        MessageTemplate[]
+
+  @@index([deletedAt])
+  @@index([r2PurgeAt])
+  @@index([virusScanStatus])
+  @@map("media_assets")
+}
+
+// ─────────────────────────────────────────────
+// AUTOMATION
+// ─────────────────────────────────────────────
+
+model AutomationRule {
+  id              String             @id @default(uuid()) @db.Uuid
+  name            String             @db.VarChar(200)
+  ruleType        AutomationRuleType @map("rule_type")
+  status          AutomationStatus   @default(ACTIVE)
+  n8nWorkflowId   String?            @map("n8n_workflow_id") @db.VarChar(255)
+  config          Json
+  lastExecutedAt  DateTime?          @map("last_executed_at") @db.Timestamptz
+  nextExecuteAt   DateTime?          @map("next_execute_at") @db.Timestamptz
+  createdByUserId String             @map("created_by_user_id") @db.Uuid
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz
+  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz
+
+  executions AutomationExecution[]
+
+  @@index([ruleType, status])
+  @@map("automation_rules")
+}
+
+model AutomationExecution {
+  id               String    @id @default(uuid()) @db.Uuid
+  ruleId           String    @map("rule_id") @db.Uuid
+  n8nExecutionId   String?   @map("n8n_execution_id") @db.VarChar(255)
+  status           String    @db.VarChar(20)
+  clientsProcessed Int       @default(0) @map("clients_processed")
+  messagesQueued   Int       @default(0) @map("messages_queued")
+  errorDetails     String?   @map("error_details") @db.Text
+  startedAt        DateTime  @map("started_at") @db.Timestamptz
+  completedAt      DateTime? @map("completed_at") @db.Timestamptz
+
+  rule AutomationRule @relation(fields: [ruleId], references: [id])
+
+  @@index([ruleId, startedAt])
+  @@map("automation_executions")
+}
+
+// ─────────────────────────────────────────────
+// AUDIT LOG
+// ─────────────────────────────────────────────
+
+model AuditLog {
+  id           String          @id @default(uuid()) @db.Uuid
+  actorId      String?         @map("actor_id") @db.Uuid
+  actorRole    UserRole?       @map("actor_role")
+  actionType   AuditActionType @map("action_type")
+  resourceType String          @map("resource_type") @db.VarChar(100)
+  resourceId   String?         @map("resource_id") @db.Uuid
+  ipAddress    String?         @map("ip_address") @db.VarChar(45)
+  beforeState  Json?           @map("before_state")
+  afterState   Json?           @map("after_state")
+  metadata     Json?
+  createdAt    DateTime        @default(now()) @map("created_at") @db.Timestamptz
+
+  actor User? @relation("AuditActor", fields: [actorId], references: [id])
+
+  @@index([actorId])
+  @@index([actionType])
+  @@index([resourceType, resourceId])
+  @@index([createdAt])
+  @@index([ipAddress])
+  @@map("audit_logs")
+}
+
+// ─────────────────────────────────────────────
+// SETTINGS & NOTIFICATIONS
+// ─────────────────────────────────────────────
+
+model ApplicationSetting {
+  key             String   @id @db.VarChar(100)
+  value           Json
+  updatedByUserId String?  @map("updated_by_user_id") @db.Uuid
+  updatedAt       DateTime @default(now()) @map("updated_at") @db.Timestamptz
+
+  @@map("application_settings")
+}
+
+model NotificationChannel {
+  id          String                  @id @default(uuid()) @db.Uuid
+  channelType NotificationChannelType @map("channel_type")
+  config      Json
+  isActive    Boolean                 @default(true) @map("is_active")
+  createdAt   DateTime                @default(now()) @map("created_at") @db.Timestamptz
+
+  @@map("notification_channels")
+}

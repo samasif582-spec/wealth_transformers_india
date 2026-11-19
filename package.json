@@ -1,0 +1,32 @@
+{
+  "name": "wt-whatsapp-platform",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "engines": { "node": ">=20.0.0" },
+  "scripts": {
+    "dev:backend": "npm run dev --workspace=apps/backend",
+    "dev:frontend": "npm run dev --workspace=apps/frontend",
+    "build:backend": "npm run build --workspace=apps/backend",
+    "build:frontend": "npm run build --workspace=apps/frontend",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "npm run test --workspaces --if-present",
+    "test:e2e": "jest --config tests/jest.config.ts --runInBand",
+    "test:e2e:tier1": "jest --config tests/jest.config.ts tests/e2e/tier1-feature-coverage/ --runInBand",
+    "test:e2e:tier2": "jest --config tests/jest.config.ts tests/e2e/tier2-boundary-corner-cases/ --runInBand",
+    "test:e2e:tier3": "jest --config tests/jest.config.ts tests/e2e/tier3-cross-feature-combinations/ --runInBand",
+    "test:e2e:tier4": "jest --config tests/jest.config.ts tests/e2e/tier4-real-world-workloads/ --runInBand",
+    "db:generate": "npm run db:generate --workspace=apps/backend",
+    "db:migrate": "npm run db:migrate --workspace=apps/backend",
+    "db:seed": "npm run db:seed --workspace=apps/backend"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.4.0"
+  }
+}
