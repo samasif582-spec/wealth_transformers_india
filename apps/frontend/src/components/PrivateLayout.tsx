@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth.store';
 import { SideNav } from './SideNav';
+import { ErrorBoundary } from './ui/ErrorBoundary';
 
 export const PrivateLayout: React.FC = () => {
   const { isAuthenticated } = useAuthStore();
@@ -17,7 +18,9 @@ export const PrivateLayout: React.FC = () => {
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       <SideNav />
       <main className="flex-1 p-8 overflow-y-auto bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
     </div>
   );

@@ -395,6 +395,9 @@ describe('WT-SIT-SERVICE-VIRTUALIZATION-001 — Staging Integration Testing Suit
       const data = (await res.json()) as any;
       expect(data.success).toBe(true);
       expect(data.dispatched).toBe(true);
+
+      // Allow async webhook processing in SUT
+      await new Promise((resolve) => setTimeout(resolve, 600));
     });
 
     test('SIT-017: Subsequent dispatch to opted-out client is recorded and suppressed', async () => {
@@ -422,8 +425,8 @@ describe('WT-SIT-SERVICE-VIRTUALIZATION-001 — Staging Integration Testing Suit
       const data = (await res.json()) as any;
       expect(data.dispatched).toBe(true);
 
-      // Allow async processing
-      await new Promise((resolve) => setTimeout(resolve, 300));
+      // Allow async processing in SUT
+      await new Promise((resolve) => setTimeout(resolve, 600));
 
       const client = await dbHelper.client.client.findFirst({
         where: { whatsappNumber: '+919876543210' },

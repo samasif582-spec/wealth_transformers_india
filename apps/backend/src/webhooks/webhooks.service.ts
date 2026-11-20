@@ -14,6 +14,7 @@ const STATUS_RANKS: Record<DeliveryStatus, number> = {
 };
 
 const OPT_OUT_KEYWORDS = ['STOP', 'UNSUBSCRIBE', 'OPT OUT', 'OPTOUT', 'CANCEL', 'ROKO', 'BAND KARO'];
+const OPT_IN_KEYWORDS = ['YES', 'START', 'UNSTOP', 'OPTIN', 'RESUME', 'HAAN', 'SHURU'];
 
 @Injectable()
 export class WebhooksService {
@@ -120,6 +121,22 @@ export class WebhooksService {
         keyword: text,
         messageText: text,
       });
+      return;
+    }
+
+    const isOptIn = OPT_IN_KEYWORDS.some((kw) => text === kw || text.startsWith(kw + ' '));
+    if (isOptIn) {
+      this.logger.log(`✅ Inbound opt-in keyword "${text}" received from ${fromPhone}`);
+      const client = await this.prisma.client.findFirst({
+        where: { whatsappNumber: fromPhone },
+      });
+      if (client) {
+        await this.consentService.optIn(
+          client.id,
+          `Inbound keyword trigger: ${text}`,
+          ConsentSource.WHATSAPP_REPLY,
+        );
+      }
       return;
     }
 

@@ -7,16 +7,18 @@ export type BadgeVariant =
   | 'info'
   | 'default'
   | 'purple'
-  | 'cyan';
+  | 'cyan'
+  | 'gray'
+  | 'blue';
 
 export interface BadgeProps {
   children: React.ReactNode;
-  variant?: BadgeVariant;
+  variant?: BadgeVariant | string;
   size?: 'sm' | 'md';
   dot?: boolean;
 }
 
-const variants: Record<BadgeVariant, { bg: string; text: string; dot: string }> = {
+const variants: Record<string, { bg: string; text: string; dot: string }> = {
   success: {
     bg: 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800',
     text: 'text-emerald-700 dark:text-emerald-400',
@@ -37,6 +39,11 @@ const variants: Record<BadgeVariant, { bg: string; text: string; dot: string }> 
     text: 'text-blue-700 dark:text-blue-400',
     dot: 'bg-blue-500',
   },
+  blue: {
+    bg: 'bg-blue-50 dark:bg-blue-950/40 border-blue-200 dark:border-blue-800',
+    text: 'text-blue-700 dark:text-blue-400',
+    dot: 'bg-blue-500',
+  },
   purple: {
     bg: 'bg-purple-50 dark:bg-purple-950/40 border-purple-200 dark:border-purple-800',
     text: 'text-purple-700 dark:text-purple-400',
@@ -46,6 +53,11 @@ const variants: Record<BadgeVariant, { bg: string; text: string; dot: string }> 
     bg: 'bg-cyan-50 dark:bg-cyan-950/40 border-cyan-200 dark:border-cyan-800',
     text: 'text-cyan-700 dark:text-cyan-400',
     dot: 'bg-cyan-500',
+  },
+  gray: {
+    bg: 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700',
+    text: 'text-slate-700 dark:text-slate-300',
+    dot: 'bg-slate-400',
   },
   default: {
     bg: 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700',
@@ -60,7 +72,7 @@ export const Badge: React.FC<BadgeProps> = ({
   size = 'sm',
   dot = true,
 }) => {
-  const v = variants[variant];
+  const v = (variant && variants[variant]) ? variants[variant] : variants.default;
   return (
     <span
       className={`inline-flex items-center gap-1.5 font-medium border rounded-full ${v.bg} ${v.text} ${

@@ -77,9 +77,9 @@ export const TemplatesPage: React.FC = () => {
 
       const list: TemplateRecord[] = rawList.map((t: any) => {
         const latestVersion = t.versions?.[0];
-        const bodyText = latestVersion?.bodyText || t.body || '';
+        const bodyText = (latestVersion?.bodyText || t.body || '') as string;
         const footerText = latestVersion?.footerText || t.footer || null;
-        const varMatches = [...bodyText.matchAll(/\{\{(\d+)\}\}/g)].map((m) => m[1]);
+        const varMatches = typeof bodyText === 'string' && bodyText ? [...bodyText.matchAll(/\{\{(\d+)\}\}/g)].map((m) => m[1]) : [];
 
         return {
           id: t.id,
@@ -93,7 +93,7 @@ export const TemplatesPage: React.FC = () => {
           headerType: latestVersion?.headerType || (t.headerImage ? 'IMAGE' : 'NONE'),
           variablesCount: new Set(varMatches).size,
           lastSyncedAt: t.updatedAt,
-          versions: t.versions,
+          versions: t.versions || [],
         };
       });
 
@@ -208,10 +208,10 @@ export const TemplatesPage: React.FC = () => {
       render: (t) => {
         const variants: Record<string, any> = {
           MARKETING: 'purple',
-          UTILITY: 'blue',
-          AUTHENTICATION: 'gray',
+          UTILITY: 'info',
+          AUTHENTICATION: 'default',
         };
-        return <Badge variant={variants[t.category] || 'gray'}>{t.category}</Badge>;
+        return <Badge variant={variants[t.category] || 'default'}>{t.category || 'UNKNOWN'}</Badge>;
       },
     },
     {
@@ -222,10 +222,10 @@ export const TemplatesPage: React.FC = () => {
           APPROVED: 'success',
           PENDING_APPROVAL: 'warning',
           REJECTED: 'danger',
-          DRAFT: 'gray',
+          DRAFT: 'default',
         };
         return (
-          <Badge variant={statusVariants[t.status] || 'gray'}>
+          <Badge variant={statusVariants[t.status] || 'default'}>
             {t.status === 'APPROVED' && <CheckCircle className="w-3 h-3 mr-1 inline" />}
             {t.status === 'PENDING_APPROVAL' && <Clock className="w-3 h-3 mr-1 inline" />}
             {t.status === 'REJECTED' && <XCircle className="w-3 h-3 mr-1 inline" />}
@@ -242,10 +242,10 @@ export const TemplatesPage: React.FC = () => {
           GREEN: 'success',
           YELLOW: 'warning',
           RED: 'danger',
-          UNKNOWN: 'gray',
+          UNKNOWN: 'default',
         };
         return (
-          <Badge variant={qualityVariants[t.qualityRating] || 'gray'}>
+          <Badge variant={qualityVariants[t.qualityRating] || 'default'}>
             ● {t.qualityRating}
           </Badge>
         );
