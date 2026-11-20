@@ -1,4 +1,4 @@
-﻿# Wealth Transformers India Pvt Ltd — Launch SIT Environment
+# Wealth Transformers India Pvt Ltd — Launch SIT Environment
 Write-Host "🚀 Starting Wealth Transformers WhatsApp SIT Environment..." -ForegroundColor Cyan
 
 # 1. Start Virtual Meta Server & Client Emulator
