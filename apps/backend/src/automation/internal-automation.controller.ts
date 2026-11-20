@@ -216,9 +216,9 @@ export class InternalAutomationController {
     },
   ) {
     const rawType = (body.type || '').toUpperCase();
-    if (rawType !== 'BIRTHDAY' && rawType !== 'ANNIVERSARY') {
+    if (rawType !== 'BIRTHDAY' && rawType !== 'ANNIVERSARY' && rawType !== 'FESTIVAL') {
       throw new BadRequestException(
-        `Invalid automation type: "${body.type}". Supported types: BIRTHDAY, ANNIVERSARY.`,
+        `Invalid automation type: "${body.type}". Supported types: BIRTHDAY, ANNIVERSARY, FESTIVAL.`,
       );
     }
 
@@ -269,30 +269,68 @@ export class InternalAutomationController {
     );
 
     // 2. Resolve System Approved Template
-    const templateName =
-      rawType === 'BIRTHDAY'
-        ? 'birthday_vip_wishes_v1'
-        : 'wedding_anniversary_wishes_v1';
-
-    let template = await this.prisma.messageTemplate.findFirst({
-      where: {
-        name: templateName,
-        status: TemplateStatus.APPROVED,
-      },
-      include: {
-        versions: {
-          where: { status: TemplateStatus.APPROVED },
-          orderBy: { versionNumber: 'desc' },
-          take: 1,
+    let template: any = null;
+    if (rawType === 'BIRTHDAY') {
+      template = await this.prisma.messageTemplate.findFirst({
+        where: {
+          OR: [
+            { name: 'daily_birthday_wishes_v1' },
+            { name: 'birthday_vip_wishes_v1' },
+            { name: { contains: 'birthday', mode: 'insensitive' } },
+          ],
+          status: TemplateStatus.APPROVED,
         },
-      },
-    });
+        include: {
+          versions: {
+            where: { status: TemplateStatus.APPROVED },
+            orderBy: { versionNumber: 'desc' },
+            take: 1,
+          },
+        },
+      });
+    } else if (rawType === 'ANNIVERSARY') {
+      template = await this.prisma.messageTemplate.findFirst({
+        where: {
+          OR: [
+            { name: 'wedding_anniversary_wishes_v1' },
+            { name: 'anniversary_vip_wishes_v1' },
+            { name: { contains: 'anniversary', mode: 'insensitive' } },
+          ],
+          status: TemplateStatus.APPROVED,
+        },
+        include: {
+          versions: {
+            where: { status: TemplateStatus.APPROVED },
+            orderBy: { versionNumber: 'desc' },
+            take: 1,
+          },
+        },
+      });
+    } else if (rawType === 'FESTIVAL') {
+      template = await this.prisma.messageTemplate.findFirst({
+        where: {
+          OR: [
+            { name: 'diwali_special_greeting_v1' },
+            { name: 'wealth_trade_diwali_2024' },
+            { name: { contains: 'festival', mode: 'insensitive' } },
+            { category: TemplateCategory.MARKETING },
+          ],
+          status: TemplateStatus.APPROVED,
+        },
+        include: {
+          versions: {
+            where: { status: TemplateStatus.APPROVED },
+            orderBy: { versionNumber: 'desc' },
+            take: 1,
+          },
+        },
+      });
+    }
 
     // Fallback if named template isn't seeded yet
     if (!template) {
       template = await this.prisma.messageTemplate.findFirst({
         where: {
-          category: TemplateCategory.UTILITY,
           status: TemplateStatus.APPROVED,
         },
         include: {
@@ -307,7 +345,7 @@ export class InternalAutomationController {
 
     if (!template) {
       throw new BadRequestException(
-        `No approved ${rawType} or UTILITY message template found in database.`,
+        `No approved ${rawType} message template found in database.`,
       );
     }
 
@@ -361,7 +399,7 @@ export class InternalAutomationController {
             idempotencyKey,
             deliveryStatus: DeliveryStatus.QUEUED,
             variableValues: { '1': dbClient.fullName },
-            pricingRateInr: 0.1258, // Utility pricing
+            pricingRateInr: rawType === 'FESTIVAL' ? 0.7854 : 0.1258,
           },
         });
 

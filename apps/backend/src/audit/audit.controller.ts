@@ -11,7 +11,7 @@ export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 
   @Get()
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Viewer)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findAll(
     @Query('page') page?: number,

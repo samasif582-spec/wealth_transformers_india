@@ -7,15 +7,6 @@ const SuperAdminDashboard = lazy(() =>
 const AdminDashboard = lazy(() =>
   import('./AdminDashboard').then((m) => ({ default: m.AdminDashboard })),
 );
-const MarketingDashboard = lazy(() =>
-  import('./MarketingDashboard').then((m) => ({ default: m.MarketingDashboard })),
-);
-const OperatorDashboard = lazy(() =>
-  import('./OperatorDashboard').then((m) => ({ default: m.OperatorDashboard })),
-);
-const ViewerDashboard = lazy(() =>
-  import('./ViewerDashboard').then((m) => ({ default: m.ViewerDashboard })),
-);
 
 const LoadingSkeleton = () => (
   <div className="space-y-6 animate-pulse">
@@ -38,14 +29,8 @@ export const DashboardPage: React.FC = () => {
       case 'Super_Admin':
         return <SuperAdminDashboard />;
       case 'Admin':
-        return <AdminDashboard />;
-      case 'Marketing_Employee':
-        return <MarketingDashboard />;
-      case 'Operator':
-        return <OperatorDashboard />;
-      case 'Viewer':
       default:
-        return <ViewerDashboard />;
+        return <AdminDashboard />;
     }
   };
 

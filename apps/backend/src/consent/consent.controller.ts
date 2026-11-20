@@ -26,7 +26,7 @@ export class ConsentController {
   constructor(private readonly consentService: ConsentService) {}
 
   @Post()
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   recordConsent(
     @Body() dto: RecordConsentDto,
@@ -36,7 +36,7 @@ export class ConsentController {
   }
 
   @Post('opt-in')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   optIn(
     @Body() dto: OptInDto,
@@ -52,7 +52,7 @@ export class ConsentController {
   }
 
   @Post('opt-out')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   optOut(
     @Body() dto: OptOutDto,
@@ -67,27 +67,21 @@ export class ConsentController {
   }
 
   @Post('inbound')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   handleInbound(@Body() dto: InboundOptOutDto) {
     return this.consentService.handleInboundOptOut(dto);
   }
 
   @Get(':clientId')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   getHistory(@Param('clientId', ParseUUIDPipe) clientId: string) {
     return this.consentService.getConsentHistory(clientId);
   }
 
   @Post('export')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   exportRegister(@Body() dto?: ExportConsentDto) {
     return this.consentService.exportRegister(dto as any);

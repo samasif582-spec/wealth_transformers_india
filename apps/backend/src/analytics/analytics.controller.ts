@@ -12,13 +12,7 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Get('dashboard')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   async getDashboard(@Query('days') days = '7') {
     const daysCount = parseInt(days, 10) || 7;
     const startDate = new Date(Date.now() - (daysCount - 1) * 24 * 60 * 60 * 1000);
@@ -31,12 +25,7 @@ export class AnalyticsController {
   }
 
   @Get('campaigns/:id/export')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   async exportCsv(@Param('id') campaignId: string, @Res() res: Response): Promise<void> {
     const csv = await this.analyticsService.exportCampaignCsv(campaignId);
     res.setHeader('Content-Type', 'text/csv');
@@ -45,25 +34,25 @@ export class AnalyticsController {
   }
 
   @Get('failed-logs')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   async getFailedLogs() {
     return this.analyticsService.getFailedLogs();
   }
 
   @Get('queue-stats')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   async getQueueStats() {
     return this.analyticsService.getQueueStats();
   }
 
   @Post('failed-logs/:id/retry')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   async retryFailedLog(@Param('id') id: string) {
     return this.analyticsService.retryFailedLog(id);
   }
 
   @Post('failed-logs/retry-all')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   async retryAllFailedLogs() {
     return this.analyticsService.retryAllFailedLogs();
   }

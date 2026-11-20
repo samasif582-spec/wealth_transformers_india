@@ -10,9 +10,6 @@ import { ThemeToggle } from '../../components/ui/ThemeToggle';
 const PRESET_ROLES = [
   { role: 'Super_Admin', email: 'superadmin@wealthtrade.in', password: 'SuperAdmin@2026!', label: 'Super Admin', badge: 'danger' as const },
   { role: 'Admin', email: 'admin@wealthtrade.in', password: 'Admin@2026!', label: 'Admin (Operations)', badge: 'purple' as const },
-  { role: 'Marketing_Employee', email: 'marketing@wealthtrade.in', password: 'Marketing@2026!', label: 'Marketing Growth', badge: 'info' as const },
-  { role: 'Operator', email: 'operator@wealthtrade.in', password: 'Operator@2026!', label: 'Ops & BullMQ', badge: 'warning' as const },
-  { role: 'Viewer', email: 'viewer@wealthtrade.in', password: 'Viewer@2026!', label: 'Viewer (Audit)', badge: 'default' as const },
 ];
 
 export const LoginPage: React.FC = () => {
@@ -31,10 +28,11 @@ export const LoginPage: React.FC = () => {
     try {
       const response = await apiClient.post<{
         accessToken: string;
+        refreshToken: string;
         user: { id: string; email: string; fullName: string; role: any };
       }>('/auth/login', { email, password });
 
-      setUser(response.data.user, response.data.accessToken);
+      setUser(response.data.user, response.data.accessToken, response.data.refreshToken);
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please check your credentials.');

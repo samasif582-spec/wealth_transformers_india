@@ -30,22 +30,19 @@ interface NavItem {
 }
 
 const ROLE_RANKS: Record<UserRole, number> = {
-  Viewer: 1,
-  Operator: 2,
-  Marketing_Employee: 3,
-  Admin: 4,
-  Super_Admin: 5,
+  Admin: 1,
+  Super_Admin: 2,
 };
 
-// Admin holds: Dashboard, Clients, Templates, Media Assets, Campaigns, Bills
+// Admin holds: Dashboard, Clients, Templates, Media Assets, Campaigns, Bills, Settings
 // Super Admin holds ALL plus exclusive: Analytics, Automation, Audit Log
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, minRole: 'Viewer' },
-  { label: 'Clients', path: '/clients', icon: Users, minRole: 'Operator' },
-  { label: 'Templates', path: '/templates', icon: FileText, minRole: 'Marketing_Employee' },
-  { label: 'Media Assets', path: '/media', icon: Image, minRole: 'Marketing_Employee' },
-  { label: 'Campaigns', path: '/campaigns', icon: Send, minRole: 'Viewer' },
-  { label: 'Bills', path: '/billing', icon: Receipt, allowedRoles: ['Admin', 'Super_Admin'] },
+  { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { label: 'Clients', path: '/clients', icon: Users },
+  { label: 'Templates', path: '/templates', icon: FileText },
+  { label: 'Media Assets', path: '/media', icon: Image },
+  { label: 'Campaigns', path: '/campaigns', icon: Send },
+  { label: 'Bills', path: '/billing', icon: Receipt },
   {
     label: 'Analytics',
     path: '/analytics',
@@ -62,7 +59,7 @@ const NAV_ITEMS: NavItem[] = [
     superAdminOnly: true,
     badge: 'Super Admin',
   },
-  { label: 'Settings', path: '/settings', icon: Settings, allowedRoles: ['Admin', 'Super_Admin'] },
+  { label: 'Settings', path: '/settings', icon: Settings },
   {
     label: 'Audit Log',
     path: '/audit',

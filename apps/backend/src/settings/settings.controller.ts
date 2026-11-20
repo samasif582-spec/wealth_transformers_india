@@ -22,7 +22,7 @@ export class SettingsController {
   constructor(private readonly settingsService: SettingsService) {}
 
   @Get()
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Viewer)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findAll() {
     return this.settingsService.getAll();

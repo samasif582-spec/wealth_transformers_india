@@ -4,11 +4,8 @@ import { UserRole } from '@prisma/client';
 import { ROLES_KEY } from '../../common/decorators/roles.decorator';
 
 const ROLE_HIERARCHY: Record<string, number> = {
-  Viewer: 1,
-  Operator: 2,
-  Marketing_Employee: 3,
-  Admin: 4,
-  Super_Admin: 5,
+  Admin: 1,
+  Super_Admin: 2,
 };
 
 @Injectable()

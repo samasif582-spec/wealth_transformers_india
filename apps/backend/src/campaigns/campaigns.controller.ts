@@ -25,13 +25,7 @@ export class CampaignsController {
   constructor(private readonly campaignsService: CampaignsService) {}
 
   @Get()
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findAll(
     @Query('page') page?: number,
@@ -44,20 +38,14 @@ export class CampaignsController {
   }
 
   @Get(':id')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.campaignsService.findOne(id);
   }
 
   @Post()
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   create(@Body() dto: CreateCampaignDto, @CurrentUser() actor: JwtPayload) {
     return this.campaignsService.create(dto, actor?.sub);
@@ -82,21 +70,21 @@ export class CampaignsController {
   }
 
   @Post(':id/send')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   dispatch(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() actor: JwtPayload) {
     return this.campaignsService.dispatch(id, actor?.sub);
   }
 
   @Post(':id/pause')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   pause(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() actor: JwtPayload) {
     return this.campaignsService.pause(id, actor?.sub);
   }
 
   @Post(':id/resume')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   resume(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() actor: JwtPayload) {
     return this.campaignsService.resume(id, actor?.sub);

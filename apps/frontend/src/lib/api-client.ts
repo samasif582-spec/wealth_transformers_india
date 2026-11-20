@@ -6,13 +6,13 @@ const API_BASE_URL =
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // Needed for httpOnly refresh token cookie
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Request interceptor — attach access token from Zustand memory store
+// Request interceptor — attach access token from Zustand persisted store
 apiClient.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const token = useAuthStore.getState().accessToken;
@@ -24,7 +24,7 @@ apiClient.interceptors.request.use(
   (error: AxiosError) => Promise.reject(error),
 );
 
-// Response interceptor — handle silent refresh on 401
+// Response interceptor — handle silent refresh on 401 using persisted refresh token
 let isRefreshing = false;
 let failedQueue: Array<{
   resolve: (value: unknown) => void;
@@ -50,6 +50,17 @@ apiClient.interceptors.response.use(
     };
 
     if (error.response?.status === 401 && !originalRequest._retry) {
+      const currentRefreshToken = useAuthStore.getState().refreshToken;
+
+      // If no refresh token is stored or path is login/refresh itself, clear and redirect
+      if (!currentRefreshToken || originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/refresh')) {
+        useAuthStore.getState().clearSession();
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -67,13 +78,13 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const { data } = await axios.post<{ accessToken: string }>(
+        const { data } = await axios.post<{ accessToken: string; refreshToken?: string }>(
           `${API_BASE_URL}/auth/refresh`,
-          {},
+          { refreshToken: currentRefreshToken },
           { withCredentials: true },
         );
 
-        useAuthStore.getState().setAccessToken(data.accessToken);
+        useAuthStore.getState().setTokens(data.accessToken, data.refreshToken);
         processQueue(null, data.accessToken);
 
         if (originalRequest.headers) {
@@ -83,7 +94,9 @@ apiClient.interceptors.response.use(
       } catch (refreshError) {
         processQueue(refreshError as AxiosError, null);
         useAuthStore.getState().clearSession();
-        window.location.href = '/login';
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login';
+        }
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;

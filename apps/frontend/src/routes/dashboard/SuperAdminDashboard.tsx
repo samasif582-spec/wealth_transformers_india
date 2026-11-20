@@ -36,7 +36,7 @@ export const SuperAdminDashboard: React.FC = () => {
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isHealthRefreshing, setIsHealthRefreshing] = useState(false);
   const [healthStatus, setHealthStatus] = useState<any>(null);
-  const [newUser, setNewUser] = useState({ fullName: '', email: '', role: 'Operator' });
+  const [newUser, setNewUser] = useState({ fullName: '', email: '', role: 'Admin' });
   const [unlockUserId, setUnlockUserId] = useState<string | null>(null);
 
   const fetchDashboardData = async () => {
@@ -103,7 +103,7 @@ export const SuperAdminDashboard: React.FC = () => {
 
       toast.success('User Provisioned in Database', `${newUser.fullName} can now sign in as ${newUser.role}`);
       setIsInviteModalOpen(false);
-      setNewUser({ fullName: '', email: '', role: 'Operator' });
+      setNewUser({ fullName: '', email: '', role: 'Admin' });
       fetchDashboardData();
     } catch (err: any) {
       toast.error('Provisioning Error', err.response?.data?.message || 'Could not create user');
@@ -141,9 +141,6 @@ export const SuperAdminDashboard: React.FC = () => {
         const variants: Record<string, any> = {
           Super_Admin: 'purple',
           Admin: 'info',
-          Marketing_Employee: 'success',
-          Operator: 'warning',
-          Viewer: 'default',
         };
         return <Badge variant={variants[u.role] ?? 'default'}>{u.role}</Badge>;
       },
@@ -384,10 +381,8 @@ export const SuperAdminDashboard: React.FC = () => {
               onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
               className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
             >
-              <option value="Admin">Admin (Campaign Approvals & Management)</option>
-              <option value="Marketing_Employee">Marketing Employee (Templates & Campaigns)</option>
-              <option value="Operator">Operator (Queue Dispatch & Retries)</option>
-              <option value="Viewer">Viewer (Read-only Compliance & Auditing)</option>
+              <option value="Admin">Admin (Campaign Approvals, Templates, Clients & Operations)</option>
+              <option value="Super_Admin">Super Admin (Full Governance, Billing & Security)</option>
             </select>
           </div>
           <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">

@@ -34,40 +34,28 @@ export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
   @Get()
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findAll(@Query() query: QueryClientsDto) {
     return this.clientsService.findAll(query);
   }
 
   @Get('stats')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   getStats() {
     return this.clientsService.getStats();
   }
 
   @Post()
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   create(@Body() dto: CreateClientDto, @CurrentUser() actor: JwtPayload) {
     return this.clientsService.create(dto, actor?.sub);
   }
 
   @Post('import')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @UseInterceptors(FileInterceptor('file'))
   @HttpCode(HttpStatus.OK)
   importClients(
@@ -81,27 +69,21 @@ export class ClientsController {
   }
 
   @Get('export')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   exportClients(@Query() query: QueryClientsDto) {
     return this.clientsService.export(query);
   }
 
   @Get(':id')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientsService.findOne(id);
   }
 
   @Patch(':id')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Operator)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   update(
     @Param('id', ParseUUIDPipe) id: string,

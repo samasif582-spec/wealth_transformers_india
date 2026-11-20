@@ -11,7 +11,7 @@ export class AutomationController {
   constructor(private readonly automationService: AutomationService) {}
 
   @Get('workflows')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee, UserRole.Viewer)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   listWorkflows() {
     return this.automationService.listWorkflows();

@@ -10,6 +10,7 @@ import { AuditModule } from '../audit/audit.module';
 import { RedisModule } from '../redis/redis.module';
 import { QueueModule } from '../queue/queue.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { TemplatesModule } from '../templates/templates.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { PrismaModule } from '../prisma/prisma.module';
     QueueModule,
     forwardRef(() => CampaignsModule),
     forwardRef(() => ConsentModule),
+    forwardRef(() => TemplatesModule),
     AuditModule,
   ],
   controllers: [AutomationController, InternalAutomationController],

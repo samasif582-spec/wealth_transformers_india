@@ -26,7 +26,7 @@ export class MediaController {
   constructor(private readonly mediaService: MediaService) {}
 
   @Post('presigned-upload')
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   createPresignedUpload(
     @Body() dto: PresignedUploadDto,
@@ -36,35 +36,35 @@ export class MediaController {
   }
 
   @Get('quota')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   getStorageQuota() {
     return this.mediaService.getStorageQuota();
   }
 
   @Get(':id/presigned-download')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   getPresignedDownload(@Param('id', ParseUUIDPipe) id: string) {
     return this.mediaService.getPresignedDownload(id);
   }
 
   @Post(':id/confirm')
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   confirmUpload(@Param('id', ParseUUIDPipe) id: string) {
     return this.mediaService.confirmUpload(id);
   }
 
   @Get()
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findAll(@Query() query: QueryMediaDto) {
     return this.mediaService.findAll(query);
   }
 
   @Get(':id')
-  @Roles(UserRole.Operator)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.mediaService.findOne(id);

@@ -28,7 +28,7 @@ export class TemplatesController {
   constructor(private readonly templatesService: TemplatesService) {}
 
   @Post()
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   create(
     @Body() dto: CreateTemplateDto,
@@ -38,7 +38,7 @@ export class TemplatesController {
   }
 
   @Post('preview')
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   preview(@Body() dto: TemplatePreviewDto) {
     return this.templatesService.preview(dto);
@@ -52,21 +52,21 @@ export class TemplatesController {
   }
 
   @Get()
-  @Roles(UserRole.Viewer)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findAll(@Query() filters: FilterTemplateDto) {
     return this.templatesService.findAll(filters);
   }
 
   @Get(':id')
-  @Roles(UserRole.Viewer)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.templatesService.findOne(id);
   }
 
   @Post(':id/versions')
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.CREATED)
   createVersion(
     @Param('id', ParseUUIDPipe) id: string,
@@ -76,14 +76,14 @@ export class TemplatesController {
   }
 
   @Post(':id/submit')
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   submitForApproval(@Param('id', ParseUUIDPipe) id: string) {
     return this.templatesService.submitForApproval(id);
   }
 
   @Post(':id/sync-quality')
-  @Roles(UserRole.Marketing_Employee)
+  @Roles(UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   syncQuality(@Param('id', ParseUUIDPipe) id: string) {
     return this.templatesService.syncQuality(id);

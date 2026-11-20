@@ -48,13 +48,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  @Roles(
-    UserRole.Super_Admin,
-    UserRole.Admin,
-    UserRole.Marketing_Employee,
-    UserRole.Operator,
-    UserRole.Viewer,
-  )
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', ParseUUIDPipe) id: string): Promise<SanitizedUser> {
     return this.usersService.findById(id);

@@ -12,7 +12,7 @@ export class BillingController {
   constructor(private readonly billingService: BillingService) {}
 
   @Get('usage')
-  @Roles(UserRole.Super_Admin, UserRole.Admin, UserRole.Marketing_Employee)
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
   async getUsage(@Query('cycle') cycle?: string) {
     return this.billingService.getUsageOverview(cycle);
   }

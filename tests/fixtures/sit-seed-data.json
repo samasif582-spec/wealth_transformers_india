@@ -25,9 +25,9 @@
   "clients": [
     {
       "id": "sit-client-001",
-      "fullName": "Rajesh Sharma",
-      "phoneNumber": "+919876543210",
-      "email": "rajesh.sharma@example.com",
+      "fullName": "Vikramaditya Singhania",
+      "phoneNumber": "+919820123456",
+      "email": "vikram.singhania@apexventures.in",
       "consentStatus": "OPTED_IN",
       "kycStatus": "VERIFIED",
       "portfolioTier": "HNI",
@@ -36,6 +36,72 @@
     },
     {
       "id": "sit-client-002",
+      "fullName": "Ananya Deshmukh",
+      "phoneNumber": "+919819876543",
+      "email": "ananya.d@fintechcap.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "CORPORATE",
+      "birthDate": "1990-11-20",
+      "anniversaryDate": "2018-02-14"
+    },
+    {
+      "id": "sit-client-003",
+      "fullName": "Rajesh Kumar Patel",
+      "phoneNumber": "+919723456789",
+      "email": "rkpatel@gmail.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "RETAIL",
+      "birthDate": "1988-11-20",
+      "anniversaryDate": "2016-12-10"
+    },
+    {
+      "id": "sit-client-004",
+      "fullName": "Siddharth Roy Kapoor",
+      "phoneNumber": "+919833445566",
+      "email": "siddharth.kapoor@rkgroup.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "HNI",
+      "birthDate": "1982-05-14",
+      "anniversaryDate": "2012-11-20"
+    },
+    {
+      "id": "sit-client-005",
+      "fullName": "Pooja Bhattacharya",
+      "phoneNumber": "+919822334455",
+      "email": "pooja.b@kolkatainvest.in",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "RETAIL",
+      "birthDate": "1991-09-08",
+      "anniversaryDate": "2017-11-20"
+    },
+    {
+      "id": "sit-client-006",
+      "fullName": "Meenakshi Sundaram",
+      "phoneNumber": "+919444123456",
+      "email": "meenakshi.s@chennaicapital.com",
+      "consentStatus": "OPTED_OUT",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "HNI",
+      "birthDate": "1988-12-05",
+      "anniversaryDate": "2014-06-20"
+    },
+    {
+      "id": "sit-client-007",
+      "fullName": "Rajesh Sharma",
+      "phoneNumber": "+919876543210",
+      "email": "rajesh.sharma@example.com",
+      "consentStatus": "OPTED_IN",
+      "kycStatus": "VERIFIED",
+      "portfolioTier": "HNI",
+      "birthDate": "1985-04-12",
+      "anniversaryDate": "2015-04-12"
+    },
+    {
+      "id": "sit-client-008",
       "fullName": "Priya Patel",
       "phoneNumber": "+919876543211",
       "email": "priya.patel@example.com",
@@ -43,32 +109,10 @@
       "kycStatus": "VERIFIED",
       "portfolioTier": "RETAIL",
       "birthDate": "1992-08-15",
-      "anniversaryDate": "2019-11-19"
+      "anniversaryDate": "2019-08-19"
     },
     {
-      "id": "sit-client-003",
-      "fullName": "Amit Verma",
-      "phoneNumber": "+919876543212",
-      "email": "amit.verma@example.com",
-      "consentStatus": "OPTED_IN",
-      "kycStatus": "VERIFIED",
-      "portfolioTier": "PRO",
-      "birthDate": "1988-11-19",
-      "anniversaryDate": "2016-02-14"
-    },
-    {
-      "id": "sit-client-004",
-      "fullName": "Sunita Rao",
-      "phoneNumber": "+919876543213",
-      "email": "sunita.rao@example.com",
-      "consentStatus": "OPTED_OUT",
-      "kycStatus": "VERIFIED",
-      "portfolioTier": "RETAIL",
-      "birthDate": "1990-05-10",
-      "anniversaryDate": "2018-09-22"
-    },
-    {
-      "id": "sit-client-005",
+      "id": "sit-client-009",
       "fullName": "Vikram Malhotra",
       "phoneNumber": "+919876543299",
       "email": "vikram.malhotra@example.com",
@@ -79,7 +123,7 @@
       "anniversaryDate": "2010-01-01"
     },
     {
-      "id": "sit-client-006",
+      "id": "sit-client-010",
       "fullName": "Neha Gupta",
       "phoneNumber": "+919876543288",
       "email": "neha.gupta@example.com",

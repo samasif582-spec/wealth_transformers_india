@@ -17,34 +17,29 @@ const prisma = new PrismaClient();
 
 const SEED_USERS = [
   {
-    email: 'superadmin@wealthtrade.in',
+    email: 'superadmin@wealthtransformers.in',
     password: 'SuperAdmin@2026!',
     fullName: 'System Super Admin',
     role: UserRole.Super_Admin,
   },
   {
-    email: 'admin@wealthtrade.in',
+    email: 'admin@wealthtransformers.in',
     password: 'Admin@2026!',
     fullName: 'Operations Admin',
     role: UserRole.Admin,
   },
+  // Legacy aliases for backward compatibility with older test harnesses
   {
-    email: 'marketing@wealthtrade.in',
-    password: 'Marketing@2026!',
-    fullName: 'Lead Marketing Specialist',
-    role: UserRole.Marketing_Employee,
+    email: 'superadmin@wealthtrade.in',
+    password: 'SuperAdmin@2026!',
+    fullName: 'System Super Admin (Legacy)',
+    role: UserRole.Super_Admin,
   },
   {
-    email: 'operator@wealthtrade.in',
-    password: 'Operator@2026!',
-    fullName: 'Support Operator',
-    role: UserRole.Operator,
-  },
-  {
-    email: 'viewer@wealthtrade.in',
-    password: 'Viewer@2026!',
-    fullName: 'Executive Viewer',
-    role: UserRole.Viewer,
+    email: 'admin@wealthtrade.in',
+    password: 'Admin@2026!',
+    fullName: 'Operations Admin (Legacy)',
+    role: UserRole.Admin,
   },
 ];
 
@@ -79,8 +74,8 @@ async function main(): Promise<void> {
   }
 
   const superAdminId = seededUserMap[UserRole.Super_Admin];
-  const marketingId = seededUserMap[UserRole.Marketing_Employee];
   const adminId = seededUserMap[UserRole.Admin];
+  const marketingId = adminId;
 
   // 2. Application Settings
   await prisma.applicationSetting.upsert({
@@ -357,6 +352,43 @@ async function main(): Promise<void> {
       categoryTier: CategoryTier.HNI,
       communicationConsent: ConsentStatus.OPTED_IN,
       preferredLanguage: 'ta',
+    },
+    // SIT Synchronized Personas
+    {
+      fullName: 'Rajesh Sharma',
+      whatsappNumber: '+919876543210',
+      email: 'rajesh.sharma@example.com',
+      dateOfBirth: new Date(Date.UTC(1985, 3, 12)),
+      categoryTier: CategoryTier.HNI,
+      communicationConsent: ConsentStatus.OPTED_IN,
+      preferredLanguage: 'en',
+    },
+    {
+      fullName: 'Priya Patel',
+      whatsappNumber: '+919876543211',
+      email: 'priya.patel@example.com',
+      dateOfBirth: new Date(Date.UTC(1992, 7, 15)),
+      categoryTier: CategoryTier.RETAIL,
+      communicationConsent: ConsentStatus.OPTED_IN,
+      preferredLanguage: 'en',
+    },
+    {
+      fullName: 'Vikram Malhotra',
+      whatsappNumber: '+919876543299',
+      email: 'vikram.malhotra@example.com',
+      dateOfBirth: new Date(Date.UTC(1980, 0, 1)),
+      categoryTier: CategoryTier.RETAIL,
+      communicationConsent: ConsentStatus.OPTED_IN,
+      preferredLanguage: 'en',
+    },
+    {
+      fullName: 'Neha Gupta',
+      whatsappNumber: '+919876543288',
+      email: 'neha.gupta@example.com',
+      dateOfBirth: new Date(Date.UTC(1994, 2, 21)),
+      categoryTier: CategoryTier.CORPORATE,
+      communicationConsent: ConsentStatus.OPTED_IN,
+      preferredLanguage: 'en',
     },
   ];
 
