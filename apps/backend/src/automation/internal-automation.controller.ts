@@ -136,23 +136,12 @@ export class InternalAutomationController {
   @Get('automation/anniversary-clients')
   async getAnniversaryClients(@Query('date') date?: string) {
     const targetDate = date || getISTDateMMDD();
-
-    const clients = await this.prisma.$queryRaw<
-      Array<{ id: string; full_name: string; whatsapp_number: string; preferred_language: string }>
-    >`
-      SELECT id, full_name, whatsapp_number, preferred_language
-      FROM clients
-      WHERE TO_CHAR(wedding_anniversary, 'MM-DD') = ${targetDate}
-        AND communication_consent = 'OPTED_IN'
-        AND deleted_at IS NULL
-        AND account_status = 'ACTIVE'
-    `;
-
     return {
       date: targetDate,
       timezone: 'Asia/Kolkata',
-      count: clients.length,
-      clients,
+      count: 0,
+      clients: [],
+      note: 'Anniversary automation decommissioned in favor of Birthday & Festival workflows.',
     };
   }
 
@@ -216,9 +205,9 @@ export class InternalAutomationController {
     },
   ) {
     const rawType = (body.type || '').toUpperCase();
-    if (rawType !== 'BIRTHDAY' && rawType !== 'ANNIVERSARY' && rawType !== 'FESTIVAL') {
+    if (rawType !== 'BIRTHDAY' && rawType !== 'FESTIVAL') {
       throw new BadRequestException(
-        `Invalid automation type: "${body.type}". Supported types: BIRTHDAY, ANNIVERSARY, FESTIVAL.`,
+        `Invalid automation type: "${body.type}". Supported types: BIRTHDAY, FESTIVAL.`,
       );
     }
 
@@ -277,24 +266,6 @@ export class InternalAutomationController {
             { name: 'daily_birthday_wishes_v1' },
             { name: 'birthday_vip_wishes_v1' },
             { name: { contains: 'birthday', mode: 'insensitive' } },
-          ],
-          status: TemplateStatus.APPROVED,
-        },
-        include: {
-          versions: {
-            where: { status: TemplateStatus.APPROVED },
-            orderBy: { versionNumber: 'desc' },
-            take: 1,
-          },
-        },
-      });
-    } else if (rawType === 'ANNIVERSARY') {
-      template = await this.prisma.messageTemplate.findFirst({
-        where: {
-          OR: [
-            { name: 'wedding_anniversary_wishes_v1' },
-            { name: 'anniversary_vip_wishes_v1' },
-            { name: { contains: 'anniversary', mode: 'insensitive' } },
           ],
           status: TemplateStatus.APPROVED,
         },

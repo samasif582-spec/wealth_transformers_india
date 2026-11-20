@@ -196,9 +196,6 @@ export class ClientsService {
           communicationConsent: dto.communicationConsent || ConsentStatus.PENDING,
           accountStatus: dto.accountStatus || AccountStatus.ACTIVE,
           dateOfBirth: dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined,
-          weddingAnniversary: dto.weddingAnniversary
-            ? new Date(dto.weddingAnniversary)
-            : undefined,
           tags: dto.tags && dto.tags.length > 0
             ? {
                 create: dto.tags.map((tag) => ({ tag })),
@@ -255,11 +252,6 @@ export class ClientsService {
     }
     if (dto.dateOfBirth !== undefined || dto.dob !== undefined) {
       updateData.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : undefined;
-    }
-    if (dto.weddingAnniversary !== undefined || dto.anniversary_date !== undefined) {
-      updateData.weddingAnniversary = dto.weddingAnniversary
-        ? new Date(dto.weddingAnniversary)
-        : undefined;
     }
 
     if (dto.whatsappNumber !== undefined || dto.phone !== undefined) {
@@ -389,7 +381,6 @@ export class ClientsService {
           email: erasedEmail,
           whatsappNumber: erasedPhone,
           dateOfBirth: null,
-          weddingAnniversary: null,
           accountStatus: AccountStatus.INACTIVE,
           communicationConsent: ConsentStatus.OPTED_OUT,
           deletedAt: now,

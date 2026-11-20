@@ -34,32 +34,26 @@ const ROLE_RANKS: Record<UserRole, number> = {
   Super_Admin: 2,
 };
 
-// Admin holds: Dashboard, Clients, Templates, Media Assets, Campaigns, Bills, Settings
-// Super Admin holds ALL plus exclusive: Analytics, Automation, Audit Log
+// Streamlined Navigation for Wealth Transformers Stock-Broking Platform
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
   { label: 'Clients', path: '/clients', icon: Users },
-  { label: 'Templates', path: '/templates', icon: FileText },
-  { label: 'Media Assets', path: '/media', icon: Image },
-  { label: 'Campaigns', path: '/campaigns', icon: Send },
-  { label: 'Bills', path: '/billing', icon: Receipt },
+  { label: 'Templates & Offers', path: '/templates', icon: FileText },
+  { label: 'Send Broadcast', path: '/campaigns', icon: Send },
+  { label: 'Automations', path: '/automation', icon: Bot },
   {
-    label: 'Analytics',
-    path: '/analytics',
-    icon: BarChart3,
-    allowedRoles: ['Super_Admin'],
-    superAdminOnly: true,
-    badge: 'Super Admin',
+    label: 'Bills',
+    path: '/billing',
+    icon: Receipt,
+    allowedRoles: ['Admin'],
   },
   {
-    label: 'Automation',
-    path: '/automation',
-    icon: Bot,
+    label: 'Settings',
+    path: '/settings',
+    icon: Settings,
     allowedRoles: ['Super_Admin'],
     superAdminOnly: true,
-    badge: 'Super Admin',
   },
-  { label: 'Settings', path: '/settings', icon: Settings },
   {
     label: 'Audit Log',
     path: '/audit',

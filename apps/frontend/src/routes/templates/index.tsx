@@ -12,6 +12,8 @@ import {
   Image as ImageIcon,
   Check,
   Layers,
+  Send,
+  Users,
 } from 'lucide-react';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
@@ -57,6 +59,8 @@ export const TemplatesPage: React.FC = () => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
+  const [broadcastTemplate, setBroadcastTemplate] = useState<TemplateRecord | null>(null);
+  const [isBroadcasting, setIsBroadcasting] = useState(false);
 
   // New Template form state
   const [newTemplate, setNewTemplate] = useState({
@@ -182,6 +186,34 @@ export const TemplatesPage: React.FC = () => {
     }
   };
 
+  const handleInstantBroadcast = async () => {
+    if (!broadcastTemplate) return;
+    try {
+      setIsBroadcasting(true);
+      const campaignName = `Broadcast: ${broadcastTemplate.name} (${new Date().toLocaleDateString('en-IN')})`;
+      const createRes = await apiClient.post('/campaigns', {
+        name: campaignName,
+        type: broadcastTemplate.category === 'MARKETING' ? 'PROMOTIONAL' : 'UTILITY',
+        templateId: broadcastTemplate.id,
+        targetAudience: 'ALL',
+        scheduleType: 'NOW',
+      });
+      const campaignId = createRes.data?.id || createRes.data?.data?.id;
+      if (campaignId) {
+        await apiClient.post(`/campaigns/${campaignId}/dispatch`);
+      }
+      toast.success(
+        'Broadcast Dispatched!',
+        `Template "${broadcastTemplate.name}" dispatched to all active opted-in clients on WhatsApp.`,
+      );
+      setBroadcastTemplate(null);
+    } catch (err: any) {
+      toast.error('Broadcast Error', err.response?.data?.message || err.message);
+    } finally {
+      setIsBroadcasting(false);
+    }
+  };
+
   const columns: Column<TemplateRecord>[] = [
     {
       key: 'name',
@@ -264,13 +296,23 @@ export const TemplatesPage: React.FC = () => {
       key: 'id',
       header: 'Actions',
       render: (t) => (
-        <button
-          onClick={() => setPreviewTemplate(t)}
-          className="flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:text-emerald-500 transition-colors"
-        >
-          <Eye className="w-3.5 h-3.5" />
-          Preview
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setPreviewTemplate(t)}
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <Eye className="w-3.5 h-3.5" />
+            Preview
+          </button>
+          <button
+            onClick={() => setBroadcastTemplate(t)}
+            className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all"
+            title="Instant 1-Click Broadcast to all clients"
+          >
+            <Send className="w-3.5 h-3.5" />
+            Send to All Clients
+          </button>
+        </div>
       ),
     },
   ];
@@ -534,6 +576,70 @@ export const TemplatesPage: React.FC = () => {
                   {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ✓✓
                 </span>
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+      {/* 1-Click Send to All Clients Modal */}
+      {broadcastTemplate && (
+        <Modal
+          isOpen={Boolean(broadcastTemplate)}
+          onClose={() => !isBroadcasting && setBroadcastTemplate(null)}
+          title={`1-Click Broadcast: ${broadcastTemplate.name}`}
+          description="Send this offer or update to all registered opted-in clients immediately on WhatsApp."
+          size="md"
+        >
+          <div className="space-y-4">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                  Target Audience
+                </span>
+                <Badge variant="success">All Opted-In Clients</Badge>
+              </div>
+              <p className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                <Users className="w-4 h-4 text-emerald-500" />
+                All active investors in Client Directory
+              </p>
+            </div>
+
+            <div className="p-3.5 bg-[#EFEAE2] dark:bg-[#121B22] rounded-xl border border-slate-200 dark:border-slate-800">
+              <div className="bg-white dark:bg-[#1F2C34] rounded-xl p-3 text-xs text-slate-900 dark:text-white shadow-xs space-y-1.5">
+                <p className="font-semibold text-emerald-600 dark:text-emerald-400">Template Preview:</p>
+                <p className="whitespace-pre-wrap">{broadcastTemplate.body}</p>
+                {broadcastTemplate.category === 'MARKETING' && (
+                  <p className="text-[10px] text-slate-400 border-t border-slate-100 dark:border-slate-700 pt-1">
+                    {SEBI_FOOTER}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/50 rounded-xl text-xs text-emerald-800 dark:text-emerald-300 flex items-start gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+              <span>
+                <strong>Instant Dispatch:</strong> Messages will be sent with SEBI compliance disclaimer. Clients can reply <strong>STOP</strong> at any time to opt out per DPDP regulations.
+              </span>
+            </div>
+
+            <div className="pt-2 flex justify-end gap-3">
+              <button
+                type="button"
+                disabled={isBroadcasting}
+                onClick={() => setBroadcastTemplate(null)}
+                className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isBroadcasting}
+                onClick={handleInstantBroadcast}
+                className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-semibold shadow-sm transition-all disabled:opacity-50"
+              >
+                <Send className="w-4 h-4" />
+                {isBroadcasting ? 'Broadcasting...' : 'Confirm & Send to All Clients'}
+              </button>
             </div>
           </div>
         </Modal>

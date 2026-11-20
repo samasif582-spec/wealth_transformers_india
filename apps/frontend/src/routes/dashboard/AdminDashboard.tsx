@@ -303,16 +303,12 @@ export const AdminDashboard: React.FC = () => {
             </p>
             <div className="space-y-2 text-xs">
               <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="font-medium text-slate-700 dark:text-slate-300">01 - Birthday Automation</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">03:30 UTC Daily</span>
-              </div>
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
-                <span className="font-medium text-slate-700 dark:text-slate-300">02 - Anniversary Automation</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">03:45 UTC Daily</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300">01 - Daily Birthday Wishes</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">09:00 IST Daily</span>
               </div>
               <div className="flex items-center justify-between py-1.5">
-                <span className="font-medium text-slate-700 dark:text-slate-300">03 - Festival Campaign Dispatch</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">04:00 UTC Daily</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300">02 - Festival Calendar Wishes</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">National Calendar</span>
               </div>
             </div>
           </div>

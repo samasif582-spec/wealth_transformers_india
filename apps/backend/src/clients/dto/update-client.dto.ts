@@ -72,14 +72,6 @@ export class UpdateClientDto {
   dob?: string;
 
   @IsOptional()
-  @IsDateString()
-  weddingAnniversary?: string;
-
-  @IsOptional()
-  @IsDateString()
-  anniversary_date?: string;
-
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tags?: string[];

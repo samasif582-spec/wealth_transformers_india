@@ -215,9 +215,9 @@ export const CampaignsPage: React.FC = () => {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Broadcast Campaigns</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Send Broadcast</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Orchestrate WhatsApp outreach with idempotency protection and live monotonic status updates
+            Dispatch WhatsApp offers, advisory alerts, and market updates to all clients with SEBI compliance and live status
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -230,10 +230,10 @@ export const CampaignsPage: React.FC = () => {
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <Link
-            to="/campaigns/new"
-            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all"
+            to="/templates"
+            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-semibold shadow-sm transition-all"
           >
-            <Plus className="w-4 h-4" /> New Campaign Wizard
+            <Send className="w-4 h-4" /> 1-Click Broadcast from Templates
           </Link>
         </div>
       </div>
@@ -289,10 +289,9 @@ export const CampaignsPage: React.FC = () => {
           className="px-3 py-2 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="ALL">All Types</option>
-          <option value="PROMOTIONAL">Promotional</option>
-          <option value="FESTIVAL">Festival</option>
-          <option value="BIRTHDAY">Birthday</option>
-          <option value="ANNIVERSARY">Anniversary</option>
+          <option value="PROMOTIONAL">Promotional / Special Offers</option>
+          <option value="FESTIVAL">Festival Wishes</option>
+          <option value="BIRTHDAY">Birthday Wishes</option>
         </select>
       </div>
 

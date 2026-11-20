@@ -6,7 +6,6 @@ export interface ClientFixture {
   communicationConsent: 'OPTED_IN' | 'OPTED_OUT' | 'PENDING';
   preferredLanguage: string;
   dateOfBirth?: string;
-  weddingAnniversary?: string;
 }
 
 export const VALID_PHONE_NUMBERS = [
@@ -38,7 +37,6 @@ export const SAMPLE_CLIENTS: ClientFixture[] = [
     communicationConsent: 'OPTED_IN',
     preferredLanguage: 'en',
     dateOfBirth: '1985-05-15',
-    weddingAnniversary: '2012-11-20',
   },
   {
     fullName: 'Priya Patel',
@@ -48,7 +46,6 @@ export const SAMPLE_CLIENTS: ClientFixture[] = [
     communicationConsent: 'OPTED_IN',
     preferredLanguage: 'gu',
     dateOfBirth: '1990-08-22',
-    weddingAnniversary: '2018-02-14',
   },
   {
     fullName: 'Amitabh Verma',

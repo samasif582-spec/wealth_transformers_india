@@ -27,7 +27,6 @@ describe('Tier 1 — 09: n8n Automation Engine & Workflow Suite', () => {
         whatsappNumber: `+9199999880${Math.floor(100 + Math.random() * 899)}`,
         email: 'auto_client@test.wealthtrade.in',
         dateOfBirth: new Date('1990-11-19'), // Matches MM-DD 11-19
-        weddingAnniversary: new Date('2018-11-19'),
         categoryTier: 'HNI',
         communicationConsent: 'OPTED_IN',
         preferredLanguage: 'en',
@@ -215,7 +214,7 @@ describe('Tier 1 — 09: n8n Automation Engine & Workflow Suite', () => {
         data: {
           fullName: 'SoftDeleted Anniversary Client',
           whatsappNumber: `+9199999881${Math.floor(100 + Math.random() * 899)}`,
-          weddingAnniversary: new Date('2015-11-19'),
+          dateOfBirth: new Date('1992-11-19'),
           categoryTier: 'RETAIL',
           communicationConsent: 'OPTED_IN',
           preferredLanguage: 'en',

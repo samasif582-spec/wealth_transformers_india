@@ -152,14 +152,6 @@
       "components": [
         { "type": "BODY", "text": "Happy birthday {{1}} from Wealth Transformers India Pvt Ltd!" }
       ]
-    },
-    {
-      "name": "wealth_transformers_anniversary_v1",
-      "category": "UTILITY",
-      "language": "en",
-      "components": [
-        { "type": "BODY", "text": "Happy anniversary {{1}}! Celebrating {{2}} years with Wealth Transformers India Pvt Ltd." }
-      ]
     }
   ]
 }

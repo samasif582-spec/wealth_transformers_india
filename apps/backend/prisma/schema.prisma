@@ -200,7 +200,6 @@ model Client {
   whatsappNumber       String        @unique @map("whatsapp_number") @db.VarChar(20)
   email                String?       @unique @db.VarChar(320)
   dateOfBirth          DateTime?     @map("date_of_birth") @db.Date
-  weddingAnniversary   DateTime?     @map("wedding_anniversary") @db.Date
   categoryTier         CategoryTier  @map("category_tier")
   communicationConsent ConsentStatus @default(PENDING) @map("communication_consent")
   preferredLanguage    String        @map("preferred_language") @db.VarChar(5)

@@ -30,7 +30,6 @@ export interface ClientRecord {
   communicationConsent: 'OPTED_IN' | 'OPTED_OUT' | 'PENDING';
   preferredLanguage: string;
   dateOfBirth?: string | null;
-  weddingAnniversary?: string | null;
   createdAt: string;
 }
 
@@ -53,7 +52,6 @@ export const ClientsPage: React.FC = () => {
     categoryTier: 'RETAIL' as const,
     preferredLanguage: 'hi',
     dateOfBirth: '',
-    weddingAnniversary: '',
   });
 
   const fetchClients = async () => {
@@ -104,7 +102,6 @@ export const ClientsPage: React.FC = () => {
         preferredLanguage: newClient.preferredLanguage,
         communicationConsent: 'OPTED_IN',
         dateOfBirth: newClient.dateOfBirth ? new Date(newClient.dateOfBirth).toISOString() : undefined,
-        weddingAnniversary: newClient.weddingAnniversary ? new Date(newClient.weddingAnniversary).toISOString() : undefined,
       });
 
       toast.success('Client Registered', `${newClient.fullName} registered with verified OPTED_IN consent`);
@@ -116,7 +113,6 @@ export const ClientsPage: React.FC = () => {
         categoryTier: 'RETAIL',
         preferredLanguage: 'hi',
         dateOfBirth: '',
-        weddingAnniversary: '',
       });
       fetchClients();
     } catch (err: any) {

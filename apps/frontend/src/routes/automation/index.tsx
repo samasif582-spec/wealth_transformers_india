@@ -74,11 +74,13 @@ export const AutomationPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">n8n Automation Control Hub</h1>
-            <Badge variant="purple">8 Workflows Active</Badge>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Automated Client Greetings (Birthday & Festivals)
+            </h1>
+            <Badge variant="purple">{workflows.length} Workflows Active</Badge>
           </div>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Autonomous workflows executing event-driven and scheduled WhatsApp campaigns from real database triggers
+            Automated WhatsApp outreach matching client Date of Birth (DOB) and statutory Indian stock market festival calendar
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -108,9 +110,9 @@ export const AutomationPage: React.FC = () => {
             <Bot className="w-7 h-7" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 dark:text-white text-base">n8n Workflow Daemon Online</h3>
+            <h3 className="font-bold text-slate-900 dark:text-white text-base">WhatsApp Automation Engine</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Listening on port 5678 • Authenticated with backend internal security key (X-Internal-Api-Key)
+              Autonomous background workers checking client DOBs daily & Indian festival dates for instant dispatch
             </p>
           </div>
         </div>
@@ -119,8 +121,8 @@ export const AutomationPage: React.FC = () => {
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             {workflows.length} Active Workflows
           </span>
-          <span>Cron Schedules: 4</span>
-          <span>Webhooks: 3</span>
+          <span>Cron: Daily 09:00 IST</span>
+          <span>DPDP Consent Enforced</span>
         </div>
       </div>
 

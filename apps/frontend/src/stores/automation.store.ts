@@ -10,14 +10,8 @@ export interface WorkflowCard {
 }
 
 export const INITIAL_WORKFLOWS: WorkflowCard[] = [
-  { id: '01-birthday-automation', name: 'Birthday Automation', cron: '0 9 * * *', status: 'ACTIVE' },
-  { id: '02-anniversary-automation', name: 'Anniversary Automation', cron: '0 9 * * *', status: 'ACTIVE' },
-  { id: '03-festival-dispatch', name: 'Festival Dispatch', cron: 'manual/calendar', status: 'ACTIVE' },
-  { id: '04-campaign-execution', name: 'Campaign Execution', cron: 'event-driven', status: 'ACTIVE' },
-  { id: '05-delivery-status', name: 'Delivery Status Processor', cron: 'webhook-driven', status: 'ACTIVE' },
-  { id: '06-opt-out', name: 'Opt-Out Worker', cron: 'sub-60s webhook', status: 'ACTIVE' },
-  { id: '07-template-quality', name: 'Template Quality Monitor', cron: '30 7 * * *', status: 'ACTIVE' },
-  { id: '08-error-handler', name: 'Central Error Router', cron: 'catch-all', status: 'ACTIVE' },
+  { id: '01-birthday-automation', name: 'Daily Birthday Wishes', cron: '0 9 * * *', status: 'ACTIVE' },
+  { id: '03-festival-dispatch', name: 'Festival Calendar Wishes', cron: 'calendar-driven', status: 'ACTIVE' },
 ];
 
 interface AutomationState {

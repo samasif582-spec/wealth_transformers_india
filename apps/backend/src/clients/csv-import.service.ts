@@ -26,7 +26,6 @@ export interface ValidatedClientRow {
   categoryTier: CategoryTier;
   preferredLanguage: string;
   dateOfBirth?: Date;
-  weddingAnniversary?: Date;
   consentStatus: ConsentStatus;
 }
 
@@ -216,17 +215,6 @@ export class CsvImportService {
         if (!isNaN(d.getTime())) dob = d;
       }
 
-      const rawAnniversary = (
-        row['wedding_anniversary'] ??
-        row['anniversary_date'] ??
-        ''
-      ).trim();
-      let anniversary: Date | undefined;
-      if (rawAnniversary) {
-        const d = new Date(rawAnniversary);
-        if (!isNaN(d.getTime())) anniversary = d;
-      }
-
       const preferredLanguage = (
         row['preferred_language'] ??
         row['language'] ??
@@ -241,7 +229,6 @@ export class CsvImportService {
           categoryTier: rawTier as CategoryTier,
           preferredLanguage,
           dateOfBirth: dob,
-          weddingAnniversary: anniversary,
           consentStatus,
         });
       }
@@ -269,7 +256,6 @@ export class CsvImportService {
               categoryTier: item.categoryTier,
               preferredLanguage: item.preferredLanguage,
               dateOfBirth: item.dateOfBirth,
-              weddingAnniversary: item.weddingAnniversary,
               communicationConsent: item.consentStatus,
               accountStatus: AccountStatus.ACTIVE,
             },
@@ -279,7 +265,6 @@ export class CsvImportService {
               categoryTier: item.categoryTier,
               preferredLanguage: item.preferredLanguage,
               dateOfBirth: item.dateOfBirth,
-              weddingAnniversary: item.weddingAnniversary,
             },
           });
 

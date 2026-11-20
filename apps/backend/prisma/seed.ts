@@ -150,29 +150,6 @@ async function main(): Promise<void> {
     },
   });
 
-  const tplAnniversary = await prisma.messageTemplate.upsert({
-    where: { name: 'wedding_anniversary_wishes_v1' },
-    update: {},
-    create: {
-      name: 'wedding_anniversary_wishes_v1',
-      language: 'en',
-      category: TemplateCategory.UTILITY,
-      status: TemplateStatus.APPROVED,
-      qualityRating: QualityRating.GREEN,
-      metaTemplateId: 'meta_tpl_anniversary_102',
-      createdByUserId: marketingId,
-      versions: {
-        create: {
-          versionNumber: 1,
-          status: TemplateStatus.APPROVED,
-          bodyText:
-            'Dear {{1}}, congratulations on your wedding anniversary! Wishing you both joyful compounding, health and lifelong prosperity.',
-          footerText: 'Wealth Transformers Advisory Desk',
-          variableSchema: { '1': 'client.full_name' },
-        },
-      },
-    },
-  });
 
   const tplMarketOutlook = await prisma.messageTemplate.upsert({
     where: { name: 'wealth_market_alpha_v1' },
@@ -235,7 +212,6 @@ async function main(): Promise<void> {
 
   // Create date helper keeping month and day of today
   const birthdayToday = new Date(Date.UTC(1985, currentMonth, currentDay));
-  const anniversaryToday = new Date(Date.UTC(2012, currentMonth, currentDay));
 
   const CLIENTS_DATA = [
     // 🎂 TODAY'S BIRTHDAYS (Will match n8n Birthday Automation)
@@ -267,12 +243,12 @@ async function main(): Promise<void> {
       preferredLanguage: 'gu',
     },
 
-    // 💍 TODAY'S ANNIVERSARIES (Will match n8n Anniversary Automation)
+    // ADDITIONAL CLIENTS
     {
       fullName: 'Siddharth Roy Kapoor',
       whatsappNumber: '+919833445566',
       email: 'siddharth.kapoor@rkgroup.com',
-      weddingAnniversary: anniversaryToday,
+      dateOfBirth: new Date(Date.UTC(1982, 3, 12)),
       categoryTier: CategoryTier.HNI,
       communicationConsent: ConsentStatus.OPTED_IN,
       preferredLanguage: 'en',
@@ -281,7 +257,7 @@ async function main(): Promise<void> {
       fullName: 'Pooja Bhattacharya',
       whatsappNumber: '+919822334455',
       email: 'pooja.b@kolkatainvest.in',
-      weddingAnniversary: anniversaryToday,
+      dateOfBirth: new Date(Date.UTC(1991, 7, 24)),
       categoryTier: CategoryTier.RETAIL,
       communicationConsent: ConsentStatus.OPTED_IN,
       preferredLanguage: 'hi',
@@ -399,7 +375,6 @@ async function main(): Promise<void> {
         fullName: c.fullName,
         email: c.email,
         dateOfBirth: c.dateOfBirth,
-        weddingAnniversary: c.weddingAnniversary,
         categoryTier: c.categoryTier,
         communicationConsent: c.communicationConsent,
         preferredLanguage: c.preferredLanguage,
@@ -411,7 +386,6 @@ async function main(): Promise<void> {
         whatsappNumber: c.whatsappNumber,
         email: c.email,
         dateOfBirth: c.dateOfBirth,
-        weddingAnniversary: c.weddingAnniversary,
         categoryTier: c.categoryTier,
         communicationConsent: c.communicationConsent,
         preferredLanguage: c.preferredLanguage,

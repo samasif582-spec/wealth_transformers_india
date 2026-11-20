@@ -85,17 +85,6 @@ export class CreateClientDto {
   dob?: string;
 
   @IsOptional()
-  @IsDateString()
-  @Transform(({ obj }: { obj: Record<string, unknown> }) => {
-    return (obj['weddingAnniversary'] as string) || (obj['anniversary_date'] as string);
-  })
-  weddingAnniversary?: string;
-
-  @IsOptional()
-  @IsDateString()
-  anniversary_date?: string;
-
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   tags?: string[];
