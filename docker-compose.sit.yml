@@ -52,10 +52,13 @@ services:
   client-emulator:
     build:
       context: .
-      dockerfile: apps/client-emulator/Dockerfile
+      dockerfile: whatsapp/Dockerfile
     restart: unless-stopped
     environment:
-      CLIENT_EMULATOR_PORT: 4020
+      PORT: 4020
+      EMULATOR_VARIANT: business
+      EMULATOR_WEBHOOK_URL: http://sut-backend:3000/api/v1/webhooks/meta
+      EMULATOR_WEBHOOK_SECRET: dev_meta_app_secret
       MOCK_SERVER_URL: http://mock-whatsapp-server:4010
       SUT_BACKEND_URL: http://sut-backend:3000
     ports:

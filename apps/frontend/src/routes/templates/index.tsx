@@ -116,7 +116,7 @@ export const TemplatesPage: React.FC = () => {
 
   // Extract variables with regex: /\{\{(\d+)\}\}/g
   const extractedVars = Array.from(
-    new Set(Array.from(newTemplate.body.matchAll(/\{\{(\d+)\}\}/g), (m) => m[1])),
+    new Set(Array.from((newTemplate.body || '').matchAll(/\{\{(\d+)\}\}/g), (m) => m[1])),
   );
 
   const handleCreate = async (e: React.FormEvent) => {

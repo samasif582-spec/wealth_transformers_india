@@ -148,6 +148,21 @@ const handleSendMessage = async (req: Request, res: Response) => {
   };
   store.messages.push(virtualMsg);
 
+  // Auto-relay outbound message to cloned WhatsApp Web emulator on Port 4020
+  try {
+    fetch(`http://localhost:4020/v20.0/${phoneNumberId}/messages`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer wa-sim-local-dev-token',
+        'X-WA-Sim-UI': '1',
+      },
+      body: JSON.stringify(req.body),
+    }).catch(() => {});
+  } catch {
+    // Non-blocking relay
+  }
+
   // Auto-schedule delivered and read webhooks if enabled
   if (store.config.autoDeliverMs > 0) {
     setTimeout(() => {
