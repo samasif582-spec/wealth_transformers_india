@@ -5,6 +5,7 @@
   "workspaces": ["apps/*", "whatsapp"],
   "engines": { "node": ">=20.0.0" },
   "scripts": {
+    "build": "npm run build:frontend",
     "dev:backend": "npm run dev --workspace=apps/backend",
     "dev:frontend": "npm run dev --workspace=apps/frontend",
     "dev:mock": "npm run dev --workspace=apps/mock-whatsapp-server",

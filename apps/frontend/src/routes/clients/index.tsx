@@ -347,7 +347,7 @@ export const ClientsPage: React.FC = () => {
       >
         <form onSubmit={handleAddClient} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               Full Legal Name *
             </label>
             <input
@@ -355,12 +355,12 @@ export const ClientsPage: React.FC = () => {
               required
               value={newClient.fullName}
               onChange={(e) => setNewClient({ ...newClient, fullName: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="e.g. Anand Mahindra"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
               WhatsApp Mobile (E.164 Standard) *
             </label>
             <input
@@ -368,20 +368,20 @@ export const ClientsPage: React.FC = () => {
               required
               value={newClient.phone}
               onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
-              className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm font-mono focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
+              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
               placeholder="+9198XXXXXXXX"
             />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">Must start with country code e.g. +91 for India</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Must start with country code e.g. +91 for India</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Category Tier
               </label>
               <select
                 value={newClient.categoryTier}
                 onChange={(e) => setNewClient({ ...newClient, categoryTier: e.target.value as any })}
-                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
               >
                 <option value="RETAIL">Retail Investor</option>
                 <option value="HNI">HNI Client</option>
@@ -390,13 +390,13 @@ export const ClientsPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Language Preference
               </label>
               <select
                 value={newClient.preferredLanguage}
                 onChange={(e) => setNewClient({ ...newClient, preferredLanguage: e.target.value })}
-                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
               >
                 <option value="hi">Hindi (hi)</option>
                 <option value="en">English (en)</option>
@@ -408,25 +408,25 @@ export const ClientsPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Date of Birth (For Greetings)
               </label>
               <input
                 type="date"
                 value={newClient.dateOfBirth}
                 onChange={(e) => setNewClient({ ...newClient, dateOfBirth: e.target.value })}
-                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
                 Corporate Email
               </label>
               <input
                 type="email"
                 value={newClient.email}
                 onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
                 placeholder="client@domain.com"
               />
             </div>
