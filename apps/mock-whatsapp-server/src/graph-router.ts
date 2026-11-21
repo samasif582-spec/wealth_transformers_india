@@ -158,7 +158,16 @@ const handleSendMessage = async (req: Request, res: Response) => {
         'X-WA-Sim-UI': '1',
       },
       body: JSON.stringify(req.body),
-    }).catch(() => {});
+    })
+      .then(async (r) => {
+        if (!r.ok) {
+          const text = await r.text();
+          console.warn(`[MockWhatsAppServer] Relay to WA-Sim (4020) returned HTTP ${r.status}: ${text}`);
+        }
+      })
+      .catch((err) => {
+        console.warn(`[MockWhatsAppServer] Relay to WA-Sim failed: ${err.message}`);
+      });
   } catch {
     // Non-blocking relay
   }

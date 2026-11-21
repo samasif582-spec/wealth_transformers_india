@@ -544,6 +544,9 @@ describe('WT-SIT-SERVICE-VIRTUALIZATION-001 — Staging Integration Testing Suit
     });
 
     test('SIT-024: State reset restores clean deterministic baseline', async () => {
+      // Allow any in-flight async queue responses to settle before resetting
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
       const res = await fetch(`${MOCK_URL}/admin/scenarios/reset`, { method: 'POST' });
       expect(res.status).toBe(200);
       const data = (await res.json()) as any;

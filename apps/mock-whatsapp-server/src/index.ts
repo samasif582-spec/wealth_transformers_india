@@ -23,16 +23,17 @@ app.use((req, res, next) => {
   next();
 });
 
-// JSON Body Parser with raw body retention
+// JSON Body Parser with raw body retention and 50mb limit for base64 template banners
 app.use(
   express.json({
+    limit: '50mb',
     verify: (req: any, _res, buf) => {
       req.rawBody = buf;
     },
   })
 );
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Health Check
 app.get('/health', (_req, res) => {

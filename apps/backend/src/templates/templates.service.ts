@@ -4,6 +4,7 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  OnModuleInit,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { QualityRating, TemplateCategory, TemplateStatus } from '@prisma/client';
@@ -95,13 +96,73 @@ export function validateSebiFooter(
 }
 
 @Injectable()
-export class TemplatesService {
+export class TemplatesService implements OnModuleInit {
   private readonly logger = new Logger(TemplatesService.name);
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly metaAdapter: MetaTemplatesAdapter,
   ) {}
+
+  async syncTemplateToEmulator(
+    name: string,
+    category: string,
+    bodyText: string,
+    headerText?: string,
+    headerImageUrl?: string,
+    footerText?: string,
+    buttons?: any[],
+  ) {
+    try {
+      await fetch('http://localhost:4020/api/templates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer wa-sim-local-dev-token',
+        },
+        body: JSON.stringify({
+          name,
+          category,
+          language: 'en',
+          status: 'APPROVED',
+          bodyText,
+          headerText: headerText || undefined,
+          headerImageUrl: headerImageUrl || undefined,
+          footerText: footerText || undefined,
+          buttons: buttons || [],
+        }),
+      }).catch(() => {});
+    } catch {
+      // Non-blocking
+    }
+  }
+
+  async onModuleInit() {
+    try {
+      const templates = await this.prisma.messageTemplate.findMany({
+        where: { status: TemplateStatus.APPROVED },
+        include: { versions: { orderBy: { versionNumber: 'desc' }, take: 1 } },
+      });
+      for (const t of templates) {
+        const v = t.versions[0];
+        if (v) {
+          const vSchema = v.variableSchema as any;
+          await this.syncTemplateToEmulator(
+            t.name,
+            t.category,
+            v.bodyText,
+            v.headerText || undefined,
+            vSchema?.headerMediaUrl || undefined,
+            v.footerText || undefined,
+            (v.buttons as any) || [],
+          );
+        }
+      }
+      this.logger.log(`[WA-Sim Sync] Synced ${templates.length} templates to WA-Sim on port 4020`);
+    } catch (err: any) {
+      this.logger.warn(`Could not sync templates to WA-Sim: ${err.message}`);
+    }
+  }
 
   validateTemplatePlaceholders(bodyText: string): {
     valid: boolean;
@@ -269,6 +330,18 @@ export class TemplatesService {
     });
 
     this.logger.log(`Created template ${template.name} (ID: ${template.id}) in DRAFT status`);
+    const createdVersion = template.versions[0];
+    if (createdVersion) {
+      this.syncTemplateToEmulator(
+        template.name,
+        template.category,
+        createdVersion.bodyText,
+        createdVersion.headerText || undefined,
+        dto.header_media_url || undefined,
+        footerText || undefined,
+        dto.buttons as any,
+      );
+    }
     return template;
   }
 
@@ -425,6 +498,16 @@ export class TemplatesService {
 
     this.logger.log(
       `Submitted template ${template.name} to Meta (Status: ${targetStatus}). Assigned Meta ID: ${metaResult.metaTemplateId}`,
+    );
+
+    this.syncTemplateToEmulator(
+      template.name,
+      template.category,
+      latestVersion.bodyText,
+      latestVersion.headerText || undefined,
+      (latestVersion.variableSchema as any)?.headerMediaUrl || undefined,
+      latestVersion.footerText || undefined,
+      latestVersion.buttons as any,
     );
 
     return {
