@@ -41,7 +41,11 @@ export class MetaTemplatesAdapter {
     return this.config.get<string>('META_WABA_ID') || process.env['META_WABA_ID'] || '';
   }
 
-  private get isMockMode(): boolean {
+  public get isMockOrVirtualized(): boolean {
+    return this.isMockMode || this.dispatchMode === 'virtualized';
+  }
+
+  public get isMockMode(): boolean {
     if (this.dispatchMode === 'mock') {
       return true;
     }

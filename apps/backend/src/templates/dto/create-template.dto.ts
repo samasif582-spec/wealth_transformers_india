@@ -39,6 +39,10 @@ export class CreateTemplateDto {
   header_media_id?: string;
 
   @IsString()
+  @IsOptional()
+  header_media_url?: string;
+
+  @IsString()
   @MinLength(1)
   @MaxLength(1024)
   body_text!: string;

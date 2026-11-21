@@ -279,6 +279,10 @@ const handleCreateTemplate = (req: Request, res: Response) => {
     const footerComp = compList.find((c: any) => (c.type || '').toUpperCase() === 'FOOTER');
     const buttonsComp = compList.find((c: any) => (c.type || '').toUpperCase() === 'BUTTONS');
 
+    const headerImageUrl =
+      headerComp?.header_media_url ||
+      headerComp?.example?.header_handle?.[0];
+
     fetch('http://localhost:4020/api/templates', {
       method: 'POST',
       headers: {
@@ -292,6 +296,7 @@ const handleCreateTemplate = (req: Request, res: Response) => {
         status: 'APPROVED',
         bodyText: bodyComp?.text || `Dear {{1}}, update regarding ${name}.`,
         headerText: headerComp?.text,
+        headerImageUrl: headerImageUrl || undefined,
         footerText: footerComp?.text,
         buttons: buttonsComp?.buttons || [],
       }),

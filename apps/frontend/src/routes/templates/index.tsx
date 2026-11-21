@@ -156,6 +156,10 @@ export const TemplatesPage: React.FC = () => {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (file.size > 15 * 1024 * 1024) {
+        toast.error('File Exceeds Limit', 'Banner image must be under 15MB');
+        return;
+      }
       const reader = new FileReader();
       reader.onload = () => {
         if (typeof reader.result === 'string') {
@@ -163,7 +167,7 @@ export const TemplatesPage: React.FC = () => {
             ...prev,
             bannerDataUrl: reader.result as string,
             headerAsset: {
-              id: `upload_${Date.now()}`,
+              id: '',
               filename: file.name,
               mimeType: file.type,
               url: reader.result as string,
@@ -260,13 +264,16 @@ export const TemplatesPage: React.FC = () => {
 
     try {
       setIsSubmitting(true);
-      await apiClient.post('/templates', {
+      const isUuid = (val?: string) =>
+        Boolean(val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val));
+
+      const createRes = await apiClient.post('/templates', {
         name: normalizedName,
         category: metaCat,
         language: newTemplate.language,
         header_type: 'IMAGE',
         header_text: newTemplate.headline,
-        header_media_id: newTemplate.headerAsset?.id,
+        header_media_id: isUuid(newTemplate.headerAsset?.id) ? newTemplate.headerAsset!.id : undefined,
         header_media_url: newTemplate.bannerDataUrl,
         body_text: newTemplate.body,
         footer_text: SEBI_FOOTER,
@@ -282,9 +289,18 @@ export const TemplatesPage: React.FC = () => {
           : undefined,
       });
 
+      const createdTemplate = createRes.data;
+      if (createdTemplate?.id) {
+        try {
+          await apiClient.post(`/templates/${createdTemplate.id}/submit`);
+        } catch (subErr) {
+          console.warn('Auto-submit non-critical notice:', subErr);
+        }
+      }
+
       toast.success(
-        'Template Created & Submitted',
-        `${normalizedName} registered with SEBI verification and queued for Meta approval`,
+        'Template Created & Approved',
+        `${normalizedName} registered with SEBI verification and active for WhatsApp broadcasting`,
       );
       setIsCreateModalOpen(false);
       fetchTemplates();
@@ -314,10 +330,17 @@ export const TemplatesPage: React.FC = () => {
     if (!broadcastTemplate) return;
     try {
       setIsBroadcasting(true);
-      const campaignName = `Broadcast: ${broadcastTemplate.name} (${new Date().toLocaleDateString('en-IN')})`;
+      const campaignName = `Broadcast: ${broadcastTemplate.name} (${new Date().toLocaleDateString('en-IN')})_${Date.now().toString().slice(-4)}`;
+      
+      let campaignType: 'PROMOTIONAL' | 'FESTIVAL' | 'BIRTHDAY' | 'ANNOUNCEMENT' = 'PROMOTIONAL';
+      const lowerName = broadcastTemplate.name.toLowerCase();
+      if (lowerName.includes('birthday')) campaignType = 'BIRTHDAY';
+      else if (lowerName.includes('festival') || lowerName.includes('diwali')) campaignType = 'FESTIVAL';
+      else if (broadcastTemplate.category === 'UTILITY' || lowerName.includes('broadcast') || lowerName.includes('alert')) campaignType = 'ANNOUNCEMENT';
+
       const createRes = await apiClient.post('/campaigns', {
         name: campaignName,
-        type: broadcastTemplate.category === 'MARKETING' ? 'PROMOTIONAL' : 'UTILITY',
+        type: campaignType,
         template_id: broadcastTemplate.id,
       });
       const campaignId = createRes.data?.id || createRes.data?.data?.id;

@@ -231,6 +231,17 @@ export class TemplatesService {
     }
 
     // 3. Persist MessageTemplate and Version 1
+    const validHeaderMediaId =
+      dto.header_media_id &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(dto.header_media_id)
+        ? dto.header_media_id
+        : null;
+
+    const enrichedSchema: Record<string, any> = {
+      ...((schema as any) || {}),
+      ...(dto.header_media_url ? { headerMediaUrl: dto.header_media_url } : {}),
+    };
+
     const template = await this.prisma.messageTemplate.create({
       data: {
         name: dto.name,
@@ -245,9 +256,9 @@ export class TemplatesService {
             bodyText: dto.body_text,
             headerType: dto.header_type ?? null,
             headerText: dto.header_text ?? null,
-            headerMediaId: dto.header_media_id ?? null,
+            headerMediaId: validHeaderMediaId,
             footerText: footerText ?? null,
-            variableSchema: (schema as any) ?? {},
+            variableSchema: enrichedSchema,
             buttons: (dto.buttons as any) ?? undefined,
           },
         },
@@ -289,6 +300,17 @@ export class TemplatesService {
     const nextVersionNumber = (latestVersion?.versionNumber ?? 0) + 1;
 
     // Create immutable new version
+    const validHeaderMediaId =
+      dto.header_media_id &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(dto.header_media_id)
+        ? dto.header_media_id
+        : latestVersion?.headerMediaId ?? null;
+
+    const enrichedSchema: Record<string, any> = {
+      ...((schema as any) || (latestVersion?.variableSchema as any) || {}),
+      ...(dto.header_media_url ? { headerMediaUrl: dto.header_media_url } : {}),
+    };
+
     const version = await this.prisma.templateVersion.create({
       data: {
         templateId,
@@ -297,9 +319,9 @@ export class TemplatesService {
         bodyText: dto.body_text,
         headerType: dto.header_type ?? latestVersion?.headerType ?? null,
         headerText: dto.header_text ?? latestVersion?.headerText ?? null,
-        headerMediaId: dto.header_media_id ?? latestVersion?.headerMediaId ?? null,
+        headerMediaId: validHeaderMediaId,
         footerText: footerText ?? latestVersion?.footerText ?? null,
-        variableSchema: (schema as any) ?? (latestVersion?.variableSchema as any) ?? {},
+        variableSchema: enrichedSchema,
         buttons: (dto.buttons as any) ?? (latestVersion?.buttons as any) ?? undefined,
       },
     });
@@ -335,12 +357,20 @@ export class TemplatesService {
     // Format components for Meta Graph API v20.0
     const components: unknown[] = [];
 
-    if (latestVersion.headerType && latestVersion.headerText) {
-      components.push({
+    if (latestVersion.headerType) {
+      const headerComp: any = {
         type: 'HEADER',
         format: latestVersion.headerType,
-        text: latestVersion.headerText,
-      });
+      };
+      if (latestVersion.headerText) {
+        headerComp.text = latestVersion.headerText;
+      }
+      const vSchema = latestVersion.variableSchema as any;
+      if (vSchema?.headerMediaUrl) {
+        headerComp.header_media_url = vSchema.headerMediaUrl;
+        headerComp.example = { header_handle: [vSchema.headerMediaUrl] };
+      }
+      components.push(headerComp);
     }
 
     components.push({
@@ -371,12 +401,14 @@ export class TemplatesService {
     });
 
     const now = new Date();
+    const isMock = this.metaAdapter.isMockOrVirtualized;
+    const targetStatus = isMock ? TemplateStatus.APPROVED : TemplateStatus.PENDING_APPROVAL;
 
     // Update template status and metaTemplateId
     await this.prisma.messageTemplate.update({
       where: { id },
       data: {
-        status: TemplateStatus.PENDING_APPROVAL,
+        status: targetStatus,
         metaTemplateId: metaResult.metaTemplateId,
       },
     });
@@ -385,17 +417,18 @@ export class TemplatesService {
     await this.prisma.templateVersion.update({
       where: { id: latestVersion.id },
       data: {
-        status: TemplateStatus.PENDING_APPROVAL,
+        status: targetStatus,
         submittedAt: now,
+        approvedAt: isMock ? now : null,
       },
     });
 
     this.logger.log(
-      `Submitted template ${template.name} to Meta. Assigned Meta ID: ${metaResult.metaTemplateId}`,
+      `Submitted template ${template.name} to Meta (Status: ${targetStatus}). Assigned Meta ID: ${metaResult.metaTemplateId}`,
     );
 
     return {
-      status: TemplateStatus.PENDING_APPROVAL,
+      status: targetStatus,
       metaTemplateId: metaResult.metaTemplateId,
     };
   }
@@ -550,7 +583,20 @@ export class TemplatesService {
       this.prisma.messageTemplate.count({ where }),
     ]);
 
-    return { data, total, page, limit };
+    const formattedData = data.map((t: any) => {
+      const v = t.versions?.[0];
+      const headerMediaUrl = (v?.variableSchema as any)?.headerMediaUrl || null;
+      return {
+        ...t,
+        headerMediaUrl,
+        versions: t.versions?.map((ver: any) => ({
+          ...ver,
+          headerMediaUrl: (ver.variableSchema as any)?.headerMediaUrl || null,
+        })),
+      };
+    });
+
+    return { data: formattedData, total, page, limit };
   }
 
   /**
@@ -566,7 +612,17 @@ export class TemplatesService {
       throw new NotFoundException(`Template ${id} not found`);
     }
 
-    return template;
+    const v = template.versions?.[0];
+    const headerMediaUrl = (v?.variableSchema as any)?.headerMediaUrl || null;
+
+    return {
+      ...template,
+      headerMediaUrl,
+      versions: template.versions?.map((ver: any) => ({
+        ...ver,
+        headerMediaUrl: (ver.variableSchema as any)?.headerMediaUrl || null,
+      })),
+    };
   }
 
   /**

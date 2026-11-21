@@ -30,6 +30,10 @@ export class CreateTemplateVersionDto {
 
   @IsOptional()
   @IsString()
+  header_media_url?: string;
+
+  @IsOptional()
+  @IsString()
   @MaxLength(255)
   footer_text?: string;
 

@@ -3,6 +3,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import helmet from 'helmet';
 import * as Sentry from '@sentry/node';
+import { json, urlencoded } from 'express';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
@@ -35,6 +36,10 @@ async function bootstrap(): Promise<void> {
       },
     });
   }
+
+  // ── Body limits ────────────────────────────────────────────────────────────
+  app.use(json({ limit: '50mb' }));
+  app.use(urlencoded({ limit: '50mb', extended: true }));
 
   // ── Security headers (Helmet) ──────────────────────────────────────────────
   app.use(
