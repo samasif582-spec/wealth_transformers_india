@@ -58,31 +58,31 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/45 dark:bg-black/60 backdrop-blur-md"
             onClick={onClose}
           />
 
-          {/* Modal Panel with Spring Physics */}
+          {/* Modal Panel with Spring Physics - Apple macOS Sheet */}
           <motion.div
             ref={modalRef}
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.94, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 15 }}
+            exit={{ opacity: 0, scale: 0.94, y: 12 }}
             transition={{
               type: 'spring',
-              stiffness: 350,
-              damping: 25,
+              stiffness: 400,
+              damping: 30,
             }}
-            className={`relative w-full ${sizeClasses[size]} bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden z-10`}
+            className={`relative w-full ${sizeClasses[size]} bg-white/95 dark:bg-[#1C1E24]/95 backdrop-blur-3xl rounded-[28px] shadow-[0_24px_70px_rgba(0,0,0,0.35)] border border-black/[0.08] dark:border-white/[0.12] overflow-hidden z-10`}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-black/[0.06] dark:border-white/[0.08]">
               <div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-white tracking-tight">
                   {title}
                 </h3>
                 {description && (
-                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                     {description}
                   </p>
                 )}
@@ -91,15 +91,16 @@ export const Modal: React.FC<ModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  aria-label="Close modal"
+                  className="w-7 h-7 rounded-full bg-black/[0.05] dark:bg-white/10 hover:bg-black/[0.1] dark:hover:bg-white/20 flex items-center justify-center text-slate-500 dark:text-white/80 transition-colors cursor-pointer"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               )}
             </div>
 
             {/* Content */}
-            <div className="px-6 py-4 max-h-[80vh] overflow-y-auto">
+            <div className="px-6 py-5 max-h-[82vh] overflow-y-auto">
               {children}
             </div>
           </motion.div>

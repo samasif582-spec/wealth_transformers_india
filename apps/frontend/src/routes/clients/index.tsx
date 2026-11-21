@@ -17,6 +17,7 @@ import { DataTable, Column } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
+import { SegmentedControl } from '../../components/ui/SegmentedControl';
 import { toast } from '../../components/ui/useToast';
 import { useAuthStore } from '../../stores/auth.store';
 import { apiClient } from '../../lib/api-client';
@@ -230,10 +231,10 @@ export const ClientsPage: React.FC = () => {
               <>
                 <button
                   onClick={() => handleToggleConsent(c)}
-                  className={`px-2.5 py-1 rounded text-xs font-semibold transition-colors ${
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all active:scale-[0.98] cursor-pointer ${
                     c.communicationConsent === 'OPTED_IN'
-                      ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50'
-                      : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-100 dark:hover:bg-emerald-900/50'
+                      ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 border border-rose-500/20'
+                      : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20'
                   }`}
                 >
                   {c.communicationConsent === 'OPTED_IN' ? 'Opt-Out' : 'Opt-In'}
@@ -241,10 +242,10 @@ export const ClientsPage: React.FC = () => {
                 {(user?.role === 'Super_Admin' || user?.role === 'Admin') && (
                   <button
                     onClick={() => setEraseTarget(c)}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-rose-500 rounded-full hover:bg-rose-500/10 transition-colors cursor-pointer"
                     title="DPDP Right-to-Erasure (Anonymize PII)"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 )}
               </>
@@ -260,8 +261,8 @@ export const ClientsPage: React.FC = () => {
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Client Directory & DPDP Consent</h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white -tracking-[0.025em]">Client Directory & DPDP Consent</h1>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Maintain verified customer registry, communication consent history and automated greeting metadata
           </p>
         </div>
@@ -269,60 +270,62 @@ export const ClientsPage: React.FC = () => {
           <button
             onClick={fetchClients}
             disabled={loading}
-            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="p-2 text-slate-500 hover:text-slate-900 dark:hover:text-white rounded-full hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
             title="Refresh Directory"
           >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <Link
             to="/clients/import"
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium shadow-xs transition-colors"
+            className="apple-btn-secondary flex items-center gap-2"
           >
-            <Upload className="w-4 h-4" /> Import CSV
+            <Upload className="w-3.5 h-3.5" /> Import CSV
           </Link>
           <button
             onClick={() => setIsAddModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium shadow-sm transition-colors"
+            className="apple-btn-primary flex items-center gap-1.5"
           >
-            <Plus className="w-4 h-4" /> Add Client
+            <Plus className="w-3.5 h-3.5" /> Add Client
           </button>
         </div>
       </div>
 
-      {/* Filter / Search Bar */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
+      {/* Filter / Search Bar - Apple Glass Bar */}
+      <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-3.5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex flex-col lg:flex-row gap-3 items-center justify-between">
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-2.5" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by client name, mobile (+91...) or email..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+            className="w-full pl-10 pr-4 py-2 text-xs border border-black/[0.08] dark:border-white/[0.1] rounded-xl focus:outline-none focus:ring-4 focus:ring-apple-blue/20 bg-black/[0.03] dark:bg-white/[0.06] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 transition-all"
           />
         </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <select
+        <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+          <SegmentedControl
+            id="client-category-filter"
+            size="sm"
             value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="ALL">All Categories</option>
-            <option value="HNI">HNI Clients</option>
-            <option value="RETAIL">Retail Investors</option>
-            <option value="CORPORATE">Corporate Accounts</option>
-            <option value="PROSPECT">Prospects</option>
-          </select>
-          <select
+            onChange={(val) => setCategoryFilter(val)}
+            options={[
+              { value: 'ALL', label: 'All' },
+              { value: 'HNI', label: 'HNI' },
+              { value: 'RETAIL', label: 'Retail' },
+              { value: 'CORPORATE', label: 'Corporate' },
+            ]}
+          />
+          <SegmentedControl
+            id="client-consent-filter"
+            size="sm"
             value={consentFilter}
-            onChange={(e) => setConsentFilter(e.target.value)}
-            className="px-3 py-2 text-xs font-medium border border-slate-200 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="ALL">All Consents</option>
-            <option value="OPTED_IN">Opted-In (Audience Eligible)</option>
-            <option value="OPTED_OUT">Opted-Out (Excluded P1)</option>
-            <option value="PENDING">Pending Consent</option>
-          </select>
+            onChange={(val) => setConsentFilter(val)}
+            options={[
+              { value: 'ALL', label: 'All Consents' },
+              { value: 'OPTED_IN', label: 'Opted-In' },
+              { value: 'OPTED_OUT', label: 'Opted-Out' },
+            ]}
+          />
         </div>
       </div>
 
@@ -344,7 +347,7 @@ export const ClientsPage: React.FC = () => {
       >
         <form onSubmit={handleAddClient} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
               Full Legal Name *
             </label>
             <input
@@ -352,12 +355,12 @@ export const ClientsPage: React.FC = () => {
               required
               value={newClient.fullName}
               onChange={(e) => setNewClient({ ...newClient, fullName: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
               placeholder="e.g. Anand Mahindra"
             />
           </div>
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
               WhatsApp Mobile (E.164 Standard) *
             </label>
             <input
@@ -365,20 +368,20 @@ export const ClientsPage: React.FC = () => {
               required
               value={newClient.phone}
               onChange={(e) => setNewClient({ ...newClient, phone: e.target.value })}
-              className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm font-mono focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm font-mono focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition-all"
               placeholder="+9198XXXXXXXX"
             />
-            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Must start with country code e.g. +91 for India</p>
+            <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1.5">Must start with country code e.g. +91 for India</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                 Category Tier
               </label>
               <select
                 value={newClient.categoryTier}
                 onChange={(e) => setNewClient({ ...newClient, categoryTier: e.target.value as any })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
+                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
               >
                 <option value="RETAIL">Retail Investor</option>
                 <option value="HNI">HNI Client</option>
@@ -387,13 +390,13 @@ export const ClientsPage: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                 Language Preference
               </label>
               <select
                 value={newClient.preferredLanguage}
                 onChange={(e) => setNewClient({ ...newClient, preferredLanguage: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
+                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
               >
                 <option value="hi">Hindi (hi)</option>
                 <option value="en">English (en)</option>
@@ -405,41 +408,41 @@ export const ClientsPage: React.FC = () => {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                 Date of Birth (For Greetings)
               </label>
               <input
                 type="date"
                 value={newClient.dateOfBirth}
                 onChange={(e) => setNewClient({ ...newClient, dateOfBirth: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
+                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
                 Corporate Email
               </label>
               <input
                 type="email"
                 value={newClient.email}
                 onChange={(e) => setNewClient({ ...newClient, email: e.target.value })}
-                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white rounded-lg text-sm outline-none"
+                className="w-full px-3.5 py-2.5 border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white rounded-[12px] text-sm outline-none transition-all"
                 placeholder="client@domain.com"
               />
             </div>
           </div>
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="pt-4 border-t border-black/5 dark:border-white/5 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setIsAddModalOpen(false)}
-              className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="apple-btn-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold disabled:opacity-50 transition-colors"
+              className="apple-btn-primary"
             >
               {isSubmitting ? 'Enrolling...' : 'Enroll Client'}
             </button>

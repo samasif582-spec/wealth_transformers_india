@@ -87,7 +87,7 @@ export const AutomationPage: React.FC = () => {
           <button
             onClick={fetchWorkflows}
             disabled={loading}
-            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="apple-btn-secondary"
             title="Refresh Workflows"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -96,7 +96,7 @@ export const AutomationPage: React.FC = () => {
             href="http://localhost:5678"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+            className="apple-btn-primary"
           >
             <ExternalLink className="w-4 h-4" /> Open n8n Studio (5678)
           </a>
@@ -104,13 +104,13 @@ export const AutomationPage: React.FC = () => {
       </div>
 
       {/* Engine Status Banner */}
-      <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-5 bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl rounded-[22px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400 rounded-xl">
-            <Bot className="w-7 h-7" />
+          <div className="w-12 h-12 rounded-[16px] bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+            <Bot className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 dark:text-white text-base">WhatsApp Automation Engine</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-white text-base">WhatsApp Automation Engine</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Autonomous background workers checking client DOBs daily & Indian festival dates for instant dispatch
             </p>
@@ -131,17 +131,17 @@ export const AutomationPage: React.FC = () => {
         {workflows.map((wf) => (
           <div
             key={wf.id}
-            className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs hover:border-slate-300 dark:hover:border-slate-700 transition-all flex flex-col justify-between"
+            className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-6 rounded-[26px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark hover:border-black/10 dark:hover:border-white/20 transition-all flex flex-col justify-between"
           >
             <div>
               <div className="flex items-start justify-between gap-3 mb-2">
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">{wf.name}</h3>
+                <h3 className="font-semibold text-slate-900 dark:text-white text-base">{wf.name}</h3>
                 <Badge variant={wf.status === 'ACTIVE' ? 'success' : 'default'}>
                   {wf.status}
                 </Badge>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mb-4">{wf.description}</p>
-              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1.5 text-xs">
+              <div className="p-3.5 bg-black/[0.02] dark:bg-white/[0.03] rounded-[18px] border border-black/5 dark:border-white/10 space-y-2 text-xs">
                 <div className="flex justify-between">
                   <span className="text-slate-400 dark:text-slate-500 font-medium">Trigger Mechanism:</span>
                   <span className="font-mono text-slate-700 dark:text-slate-300 font-semibold">{wf.trigger}</span>
@@ -159,14 +159,14 @@ export const AutomationPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div className="mt-5 pt-4 border-t border-black/5 dark:border-white/5 flex items-center justify-between">
               <span className="text-[11px] font-mono text-slate-400 dark:text-slate-500 truncate max-w-[200px]">
                 {wf.filename}
               </span>
               <button
                 onClick={() => handleManualTrigger(wf)}
                 disabled={triggeringId === wf.id}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-xs font-semibold transition-colors disabled:opacity-50"
+                className="apple-btn-primary"
               >
                 <Play className={`w-3.5 h-3.5 ${triggeringId === wf.id ? 'animate-spin' : ''}`} />
                 {triggeringId === wf.id ? 'Executing...' : 'Trigger Now'}

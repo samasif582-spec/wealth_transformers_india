@@ -187,10 +187,10 @@ export const SuperAdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Platform Command Center</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white -tracking-[0.025em]">Platform Command Center</h1>
             <Badge variant="purple">Super_Admin</Badge>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Global system governance, tenant quotas, SEBI compliance & microservice infrastructure
           </p>
         </div>
@@ -198,66 +198,66 @@ export const SuperAdminDashboard: React.FC = () => {
           <button
             onClick={handleRefreshHealth}
             disabled={isHealthRefreshing}
-            className="flex items-center gap-2 px-3.5 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs"
+            className="apple-btn-secondary flex items-center gap-2 cursor-pointer"
           >
-            <RefreshCw className={`w-4 h-4 ${isHealthRefreshing ? 'animate-spin text-blue-600' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${isHealthRefreshing ? 'animate-spin text-apple-blue' : ''}`} />
             Check Health
           </button>
           <button
             onClick={() => setIsInviteModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-colors shadow-sm"
+            className="apple-btn-primary flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> Add System User
+            <Plus className="w-3.5 h-3.5" /> Add System User
           </button>
         </div>
       </div>
 
-      {/* Infrastructure Node Health Cards (Real Database Probes) */}
+      {/* Infrastructure Node Health Cards (Real Database Probes - Activity Monitor) */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-4 rounded-[20px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase">PostgreSQL Cluster</p>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">PostgreSQL Cluster</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.7)]"></span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
                 Port 5435 {healthStatus?.database?.status === 'ok' ? 'ONLINE' : 'ACTIVE'}
               </span>
             </div>
           </div>
-          <Database className="w-6 h-6 text-emerald-600 dark:text-emerald-400 opacity-80" />
+          <Database className="w-5 h-5 text-emerald-600 dark:text-emerald-400 opacity-80" />
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-4 rounded-[20px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase">Redis BullMQ Cache</p>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Redis BullMQ Cache</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Port 6379 ONLINE</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.7)]"></span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Port 6379 ONLINE</span>
             </div>
           </div>
-          <Activity className="w-6 h-6 text-emerald-600 dark:text-emerald-400 opacity-80" />
+          <Activity className="w-5 h-5 text-emerald-600 dark:text-emerald-400 opacity-80" />
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-4 rounded-[20px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase">n8n Automation Engine</p>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">n8n Automation Engine</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Port 5678 SYNCED</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_6px_rgba(16,185,129,0.7)]"></span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Port 5678 SYNCED</span>
             </div>
           </div>
-          <Sliders className="w-6 h-6 text-purple-600 dark:text-purple-400 opacity-80" />
+          <Sliders className="w-5 h-5 text-purple-600 dark:text-purple-400 opacity-80" />
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex items-center justify-between">
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-4 rounded-[20px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase">Meta Cloud WABA</p>
+            <p className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Meta Cloud WABA</p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
-              <span className="text-sm font-bold text-slate-800 dark:text-slate-100">Tier 1 Connected</span>
+              <span className="w-2 h-2 rounded-full bg-apple-blue animate-pulse shadow-[0_0_6px_rgba(0,113,227,0.7)]"></span>
+              <span className="text-xs font-bold text-slate-800 dark:text-slate-100">Tier 1 Connected</span>
             </div>
           </div>
-          <ShieldCheck className="w-6 h-6 text-blue-600 dark:text-blue-400 opacity-80" />
+          <ShieldCheck className="w-5 h-5 text-apple-blue dark:text-apple-blue-dark opacity-80" />
         </div>
       </div>
 
@@ -295,28 +295,28 @@ export const SuperAdminDashboard: React.FC = () => {
         />
       </div>
 
-      {/* Meta Cost Estimator with 18% GST */}
-      <div className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-6 shadow-md border border-slate-800">
+      {/* Meta Cost Estimator with 18% GST - Apple Card Aesthetic */}
+      <div className="bg-gradient-to-br from-slate-900/90 via-indigo-950/80 to-slate-900/90 backdrop-blur-2xl text-white rounded-[24px] p-6 shadow-md border border-white/10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <span className="text-xs uppercase font-semibold text-indigo-400 tracking-wider">
+            <span className="text-[10.5px] uppercase font-semibold text-indigo-400 tracking-wider">
               SEBI Statutory & Meta Pricing Engine
             </span>
-            <h3 className="text-lg font-bold mt-1">Conversation Rate Cards (With Mandatory 18% GST)</h3>
+            <h3 className="text-base font-bold mt-1 -tracking-[0.02em]">Conversation Rate Cards (With Mandatory 18% GST)</h3>
             <p className="text-xs text-slate-300 mt-1 max-w-xl">
               Per-message tariffs calibrated according to Meta Cloud API India rates with automatic GST calculations for financial compliance.
             </p>
           </div>
-          <div className="flex items-center gap-6 text-sm">
-            <div className="bg-white/10 px-4 py-3 rounded-xl border border-white/10 backdrop-blur-xs">
-              <span className="text-xs text-slate-400 block">Marketing Rate</span>
+          <div className="flex items-center gap-4 text-sm">
+            <div className="bg-white/10 px-4 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Marketing Rate</span>
               <span className="text-lg font-bold text-white">₹0.7854</span>
-              <span className="text-[11px] text-emerald-400 block">+ ₹0.1414 GST (18%)</span>
+              <span className="text-[10.5px] text-emerald-400 block font-medium">+ ₹0.1414 GST (18%)</span>
             </div>
-            <div className="bg-white/10 px-4 py-3 rounded-xl border border-white/10 backdrop-blur-xs">
-              <span className="text-xs text-slate-400 block">Utility / OTP Rate</span>
+            <div className="bg-white/10 px-4 py-3 rounded-2xl border border-white/10 backdrop-blur-md">
+              <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-semibold">Utility / OTP Rate</span>
               <span className="text-lg font-bold text-white">₹0.1258</span>
-              <span className="text-[11px] text-emerald-400 block">+ ₹0.0226 GST (18%)</span>
+              <span className="text-[10.5px] text-emerald-400 block font-medium">+ ₹0.0226 GST (18%)</span>
             </div>
           </div>
         </div>
@@ -385,17 +385,17 @@ export const SuperAdminDashboard: React.FC = () => {
               <option value="Super_Admin">Super Admin (Full Governance, Billing & Security)</option>
             </select>
           </div>
-          <div className="pt-4 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3">
+          <div className="pt-4 border-t border-black/[0.06] dark:border-white/[0.08] flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setIsInviteModalOpen(false)}
-              className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-sm font-medium hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              className="apple-btn-secondary"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+              className="apple-btn-primary"
             >
               Issue Access Credentials
             </button>

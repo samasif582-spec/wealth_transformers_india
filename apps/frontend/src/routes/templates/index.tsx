@@ -23,6 +23,7 @@ import {
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
+import { SegmentedControl } from '../../components/ui/SegmentedControl';
 import { toast } from '../../components/ui/useToast';
 import { apiClient } from '../../lib/api-client';
 import {
@@ -417,14 +418,14 @@ export const TemplatesPage: React.FC = () => {
         <div className="flex items-center justify-end gap-2.5 py-1">
           <button
             onClick={() => setPreviewTemplate(t)}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
+            className="apple-btn-secondary"
           >
             <Eye className="w-3.5 h-3.5" />
             Preview Card
           </button>
           <button
             onClick={() => setBroadcastTemplate(t)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
+            className="apple-btn-primary"
             title="Instant 1-Click Broadcast to all clients"
           >
             <Send className="w-3.5 h-3.5" />
@@ -451,14 +452,14 @@ export const TemplatesPage: React.FC = () => {
           <button
             onClick={handleSyncQuality}
             disabled={isSyncing}
-            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 shadow-xs transition-colors"
+            className="apple-btn-secondary"
           >
             <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             Sync Meta Quality
           </button>
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl shadow-sm transition-colors"
+            className="apple-btn-primary"
           >
             <Plus className="w-4 h-4" />
             Create Template
@@ -572,36 +573,18 @@ export const TemplatesPage: React.FC = () => {
             </div>
 
             {/* Template Message Attachment: Image Attachment vs Text Only */}
-            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
+            <div className="pt-2 border-t border-black/5 dark:border-white/5 space-y-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Template Message Attachment *
               </label>
-              <div className="grid grid-cols-2 gap-2.5">
-                <button
-                  type="button"
-                  onClick={() => setNewTemplate((prev) => ({ ...prev, headerType: 'IMAGE' }))}
-                  className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    newTemplate.headerType === 'IMAGE'
-                      ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 shadow-xs ring-1 ring-emerald-500/30'
-                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                  }`}
-                >
-                  <Paperclip className="w-4 h-4 text-emerald-500" />
-                  <span>Attach Image to Template</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setNewTemplate((prev) => ({ ...prev, headerType: 'NONE' }))}
-                  className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                    newTemplate.headerType === 'NONE'
-                      ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 shadow-xs ring-1 ring-blue-500/30'
-                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                  }`}
-                >
-                  <FileText className="w-4 h-4 text-blue-500" />
-                  <span>Text Only (No Attachment)</span>
-                </button>
-              </div>
+              <SegmentedControl
+                value={newTemplate.headerType}
+                onChange={(val) => setNewTemplate((prev) => ({ ...prev, headerType: val as 'IMAGE' | 'NONE' }))}
+                options={[
+                  { value: 'IMAGE', label: '📎 Attach Image' },
+                  { value: 'NONE', label: '📝 Text Only' },
+                ]}
+              />
             </div>
 
             {/* Attached Image File (Only when Image Attachment is selected) */}
@@ -727,18 +710,18 @@ export const TemplatesPage: React.FC = () => {
             </div>
 
             {/* Actions */}
-            <div className="pt-3 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="pt-3 flex justify-end gap-3 border-t border-black/5 dark:border-white/5">
               <button
                 type="button"
                 onClick={() => setIsCreateModalOpen(false)}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
+                className="apple-btn-secondary"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-sm transition-all disabled:opacity-50"
+                className="apple-btn-primary"
               >
                 {isSubmitting ? 'Registering...' : 'Submit to Meta for Approval'}
               </button>
@@ -979,12 +962,12 @@ export const TemplatesPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="pt-2 flex justify-end gap-3">
+            <div className="pt-2 flex justify-end gap-3 border-t border-black/5 dark:border-white/5">
               <button
                 type="button"
                 disabled={isBroadcasting}
                 onClick={() => setBroadcastTemplate(null)}
-                className="px-4 py-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-semibold hover:bg-slate-50 dark:hover:bg-slate-800"
+                className="apple-btn-secondary"
               >
                 Cancel
               </button>
@@ -992,7 +975,7 @@ export const TemplatesPage: React.FC = () => {
                 type="button"
                 disabled={isBroadcasting}
                 onClick={handleInstantBroadcast}
-                className="flex items-center gap-2 px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-sm transition-all disabled:opacity-50"
+                className="apple-btn-primary"
               >
                 <Send className="w-3.5 h-3.5" />
                 {isBroadcasting ? 'Broadcasting...' : 'Confirm & Send to All Clients'}

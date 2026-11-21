@@ -167,14 +167,14 @@ export const AuditPage: React.FC = () => {
           <button
             onClick={fetchAuditLogs}
             disabled={loading}
-            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="apple-btn-secondary"
             title="Refresh Audit Trail"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
           <button
             onClick={handleExport}
-            className="flex items-center gap-2 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-semibold shadow-xs transition-colors"
+            className="apple-btn-primary"
           >
             <Download className="w-4 h-4" /> Export CSV Register
           </button>
@@ -182,17 +182,19 @@ export const AuditPage: React.FC = () => {
       </div>
 
       {/* Security Guarantee Box */}
-      <div className="p-4 bg-slate-900 dark:bg-slate-900/90 text-white rounded-xl border border-slate-800 flex items-center justify-between shadow-xs">
+      <div className="p-4 bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl rounded-[22px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Lock className="w-5 h-5 text-emerald-400" />
-          <span className="text-xs text-slate-200">
-            <strong>SEBI & DPDP Guarantee (Property P4):</strong> Every mutation to clients, consent records, templates and campaigns is recorded with IP and actor role. Audit logs cannot be modified or deleted.
+          <div className="w-9 h-9 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+            <Lock className="w-4 h-4" />
+          </div>
+          <span className="text-xs text-slate-700 dark:text-slate-300">
+            <strong className="text-slate-900 dark:text-white">SEBI & DPDP Guarantee (Property P4):</strong> Every mutation to clients, consent records, templates and campaigns is recorded with IP and actor role. Audit logs cannot be modified or deleted.
           </span>
         </div>
       </div>
 
       {/* Search */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
+      <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-4 rounded-[22px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark">
         <div className="relative">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
           <input
@@ -200,7 +202,7 @@ export const AuditPage: React.FC = () => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search audit trail by actor email, action, endpoint, or resource..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50/50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
+            className="w-full pl-10 pr-4 py-2 text-sm border border-black/10 dark:border-white/10 rounded-[14px] focus:outline-none focus:ring-2 focus:ring-blue-500/20 bg-black/[0.02] dark:bg-white/[0.04] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
           />
         </div>
       </div>

@@ -14,11 +14,11 @@ export interface StatsCardProps {
 }
 
 const colorMap = {
-  blue: 'bg-blue-50 text-blue-600 dark:bg-blue-950/50 dark:text-blue-400',
-  emerald: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400',
-  amber: 'bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400',
-  purple: 'bg-purple-50 text-purple-600 dark:bg-purple-950/50 dark:text-purple-400',
-  rose: 'bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400',
+  blue: 'bg-blue-500/10 text-blue-600 dark:text-apple-blue-dark border border-blue-500/20',
+  emerald: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+  amber: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20',
+  purple: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20',
+  rose: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20',
 };
 
 export const StatsCard: React.FC<StatsCardProps> = ({
@@ -33,44 +33,46 @@ export const StatsCard: React.FC<StatsCardProps> = ({
 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay }}
-      whileHover={{ y: -3, transition: { duration: 0.15 } }}
-      className="bg-white dark:bg-slate-900 rounded-xl p-5 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between"
+      transition={{ duration: 0.35, delay }}
+      whileHover={{ y: -2, transition: { duration: 0.15 } }}
+      className="bg-white/80 dark:bg-[#181A20]/80 backdrop-blur-2xl rounded-[22px] p-5 border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between"
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <span className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          <span className="text-[10.5px] font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
             {title}
           </span>
-          <h4 className="text-2xl font-bold text-slate-900 dark:text-white mt-1">
+          <h4 className="text-3xl font-bold text-slate-900 dark:text-white mt-1 -tracking-[0.03em]">
             {value}
           </h4>
         </div>
         {icon && (
-          <div className={`p-2.5 rounded-lg ${colorMap[color]}`}>{icon}</div>
+          <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xs ${colorMap[color]}`}>
+            {icon}
+          </div>
         )}
       </div>
 
       {(change || subtitle) && (
-        <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
+        <div className="mt-3.5 pt-3 border-t border-black/[0.04] dark:border-white/[0.06] flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
           {change && (
             <span
-              className={`font-semibold inline-flex items-center gap-0.5 ${
+              className={`font-semibold px-2 py-0.5 rounded-full text-[11px] inline-flex items-center gap-1 ${
                 changeType === 'positive'
-                  ? 'text-emerald-600 dark:text-emerald-400'
+                  ? 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20'
                   : changeType === 'negative'
-                  ? 'text-rose-600 dark:text-rose-400'
-                  : 'text-slate-500'
+                  ? 'bg-rose-500/12 text-rose-600 dark:text-rose-400 border border-rose-500/20'
+                  : 'bg-black/[0.04] dark:bg-white/[0.06] text-slate-500'
               }`}
             >
-              {changeType === 'positive' && <TrendingUp className="w-3.5 h-3.5" />}
-              {changeType === 'negative' && <TrendingDown className="w-3.5 h-3.5" />}
+              {changeType === 'positive' && <TrendingUp className="w-3 h-3" />}
+              {changeType === 'negative' && <TrendingDown className="w-3 h-3" />}
               {change}
             </span>
           )}
-          {subtitle && <span>{subtitle}</span>}
+          {subtitle && <span className="truncate">{subtitle}</span>}
         </div>
       )}
     </motion.div>

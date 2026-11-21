@@ -147,13 +147,13 @@ export const AdminDashboard: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSelectedCampaign({ id: c.id, action: 'approve' })}
-            className="flex items-center gap-1 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white rounded-full text-xs font-semibold shadow-xs transition-all active:scale-[0.98] cursor-pointer"
           >
             <CheckCircle className="w-3.5 h-3.5" /> Approve
           </button>
           <button
             onClick={() => setSelectedCampaign({ id: c.id, action: 'reject' })}
-            className="flex items-center gap-1 px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-semibold transition-colors"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 rounded-full text-xs font-semibold transition-all active:scale-[0.98] cursor-pointer"
           >
             <XCircle className="w-3.5 h-3.5" /> Reject
           </button>
@@ -168,29 +168,29 @@ export const AdminDashboard: React.FC = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Operations Control</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white -tracking-[0.025em]">Operations Control</h1>
             <Badge variant="info">Admin</Badge>
           </div>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
             Supervise campaign dispatches, compliance approvals, audience segments & delivery health
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={toggleQueue}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-xs ${
+            className={`flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold transition-all shadow-xs active:scale-[0.98] cursor-pointer border ${
               isQueuePaused
-                ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                : 'bg-amber-100 dark:bg-amber-950/60 hover:bg-amber-200 dark:hover:bg-amber-900/60 text-amber-900 dark:text-amber-200 border border-amber-300 dark:border-amber-700'
+                ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400/30'
+                : 'bg-black/[0.04] dark:bg-white/[0.08] hover:bg-black/[0.08] dark:hover:bg-white/[0.12] text-slate-700 dark:text-slate-200 border-black/[0.06] dark:border-white/[0.1]'
             }`}
           >
             {isQueuePaused ? (
               <>
-                <Play className="w-4 h-4" /> Resume Message Queue
+                <Play className="w-3.5 h-3.5 text-white" /> Resume Message Queue
               </>
             ) : (
               <>
-                <Pause className="w-4 h-4" /> Pause Message Queue
+                <Pause className="w-3.5 h-3.5 text-amber-500" /> Pause Message Queue
               </>
             )}
           </button>
@@ -254,55 +254,55 @@ export const AdminDashboard: React.FC = () => {
         />
       </div>
 
-      {/* DPDP Consent Compliance Card */}
+      {/* DPDP Consent & Workflow Status Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Client Category Distribution</h3>
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)]">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-3">Client Category Distribution</h3>
           <div className="space-y-3">
             {[
               { label: 'HNI (High Net Worth)', count: 5, pct: '38%', color: 'bg-purple-500' },
-              { label: 'Retail Investors', count: 4, pct: '31%', color: 'bg-blue-500' },
-              { label: 'Corporate Accounts', count: 2, pct: '15%', color: 'bg-emerald-500' },
-              { label: 'Prospects', count: 1, pct: '8%', color: 'bg-slate-300' },
+              { label: 'Retail Investors', count: 4, pct: '31%', color: 'bg-apple-blue' },
+              { label: 'Corporate Accounts', count: 2, pct: '15%', color: 'bg-apple-emerald' },
+              { label: 'Prospects', count: 1, pct: '8%', color: 'bg-slate-300 dark:bg-slate-700' },
             ].map((item, idx) => (
               <div key={idx} className="space-y-1">
                 <div className="flex justify-between text-xs">
                   <span className="font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
                   <span className="text-slate-500 dark:text-slate-400 font-semibold">{item.count} ({item.pct})</span>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2">
-                  <div className={`${item.color} h-2 rounded-full`} style={{ width: item.pct }}></div>
+                <div className="w-full bg-black/[0.04] dark:bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
+                  <div className={`${item.color} h-1.5 rounded-full`} style={{ width: item.pct }}></div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs">
-          <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">DPDP Consent Compliance</h3>
-          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl space-y-2">
-            <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold text-sm">
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)]">
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-3">DPDP Consent Compliance</h3>
+          <div className="p-4 bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 rounded-2xl space-y-2">
+            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-xs">
               <ShieldCheck className="w-4 h-4" /> Real Opt-In Ratio Enforced
             </div>
-            <p className="text-xs text-emerald-700 dark:text-emerald-400 leading-relaxed">
+            <p className="text-[11.5px] text-emerald-700 dark:text-emerald-400 leading-relaxed">
               All marketing dispatches strictly enforce Property P1 (excluding non-OPTED_IN clients).
               Automated STOP keyword opt-out workflow (06-opt-out) is active.
             </p>
           </div>
-          <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 flex justify-between">
+          <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 flex justify-between font-medium">
             <span>Opted-In: {clientStats.optedIn}</span>
             <span>Opted-Out: {clientStats.optedOut}</span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-2">Automated Schedule Status</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-2">Automated Schedule Status</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
               Daily cron jobs active via n8n automation engine:
             </p>
             <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between py-1.5 border-b border-black/[0.04] dark:border-white/[0.06]">
                 <span className="font-medium text-slate-700 dark:text-slate-300">01 - Daily Birthday Wishes</span>
                 <span className="text-emerald-600 dark:text-emerald-400 font-semibold">09:00 IST Daily</span>
               </div>

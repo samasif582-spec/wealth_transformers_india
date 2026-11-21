@@ -47,29 +47,29 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-4 relative overflow-hidden transition-colors duration-200">
+    <div className="min-h-screen flex items-center justify-center bg-[#F5F5F7] dark:bg-[#0D0E12] p-4 relative overflow-hidden transition-colors duration-200">
       {/* Theme Toggle Top-Right */}
       <div className="absolute top-6 right-6 z-20">
         <ThemeToggle />
       </div>
 
-      {/* Background Ambient Glow */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 left-1/3 -translate-x-1/2 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none" />
+      {/* Apple Iridescent Ambient Glow */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-apple-blue/10 dark:bg-apple-blue/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 left-1/3 -translate-x-1/2 w-[500px] h-[500px] bg-apple-emerald/10 dark:bg-apple-emerald/15 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 border border-slate-200 dark:border-slate-800 relative z-10 space-y-6 transition-colors">
+      <div className="w-full max-w-md bg-white/85 dark:bg-[#1C1E24]/85 backdrop-blur-3xl rounded-[32px] shadow-[0_32px_80px_-16px_rgba(0,0,0,0.35)] p-8 border border-black/[0.08] dark:border-white/[0.12] relative z-10 space-y-6 transition-all">
         {/* Logo / Header */}
         <WealthTransformersLogo variant="hero" />
 
         {error && (
-          <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 text-xs rounded-xl border border-rose-200 dark:border-rose-900 font-medium">
+          <div className="p-3.5 bg-rose-500/12 text-rose-700 dark:text-rose-300 text-xs rounded-2xl border border-rose-500/20 font-medium">
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">
+            <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
               Corporate Email Address
             </label>
             <input
@@ -77,24 +77,24 @@ export const LoginPage: React.FC = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-slate-900 dark:text-white"
+              className="w-full px-4 py-2.5 bg-black/[0.03] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.1] rounded-xl focus:outline-none focus:ring-4 focus:ring-apple-blue/20 focus:border-apple-blue text-xs font-medium text-slate-900 dark:text-white transition-all placeholder:text-slate-400"
               placeholder="user@wealthtransformers.in"
             />
           </div>
 
           <div>
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">
+            <div className="flex justify-between items-center mb-1.5">
+              <label className="block text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                 Master Security Password
               </label>
-              <span className="text-[11px] text-slate-400 dark:text-slate-500 font-mono">Bcrypt-12</span>
+              <span className="text-[10px] text-slate-400 dark:text-slate-500 font-mono">Bcrypt-12</span>
             </div>
             <input
               type="password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2.5 bg-white dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm font-medium text-slate-900 dark:text-white"
+              className="w-full px-4 py-2.5 bg-black/[0.03] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.1] rounded-xl focus:outline-none focus:ring-4 focus:ring-apple-blue/20 focus:border-apple-blue text-xs font-medium text-slate-900 dark:text-white transition-all placeholder:text-slate-400"
               placeholder="••••••••"
             />
           </div>
@@ -102,16 +102,16 @@ export const LoginPage: React.FC = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm transition-all shadow-md hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3 px-4 bg-gradient-to-b from-[#0077ED] to-[#0071E3] hover:from-[#0A84FF] hover:to-[#0077ED] text-white font-semibold rounded-full text-xs transition-all shadow-md shadow-blue-500/25 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer border border-white/20"
           >
-            {isLoading ? 'Verifying RS256 Tokens...' : 'Access Dedicated Role Dashboard'}
+            {isLoading ? 'Verifying Tokens...' : 'Access Dedicated Role Dashboard'}
             <ArrowRight className="w-4 h-4" />
           </button>
         </form>
 
         {/* 1-Click Role Switcher Presets */}
-        <div className="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-2.5">
-          <span className="text-[11px] font-bold uppercase text-slate-400 dark:text-slate-500 block tracking-wider">
+        <div className="pt-4 border-t border-black/[0.06] dark:border-white/[0.08] space-y-2.5">
+          <span className="text-[10.5px] font-semibold uppercase text-slate-400 dark:text-slate-400 block tracking-wider">
             One-Click Role Demonstration Presets:
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -120,14 +120,14 @@ export const LoginPage: React.FC = () => {
                 key={preset.role}
                 type="button"
                 onClick={() => selectPreset(preset)}
-                className={`p-2.5 rounded-xl border text-left transition-all flex items-center justify-between text-xs cursor-pointer ${
+                className={`p-3 rounded-2xl border text-left transition-all flex items-center justify-between text-xs cursor-pointer ${
                   email === preset.email
-                    ? 'border-emerald-500 bg-emerald-50/60 dark:bg-emerald-950/40 ring-2 ring-emerald-500/20'
-                    : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-slate-50/50 dark:bg-slate-800/40'
+                    ? 'border-apple-blue bg-apple-blue/10 dark:bg-apple-blue/15 shadow-xs'
+                    : 'border-black/[0.06] dark:border-white/[0.08] hover:border-black/[0.12] dark:hover:border-white/[0.16] bg-black/[0.02] dark:bg-white/[0.04]'
                 }`}
               >
-                <div>
-                  <p className="font-bold text-slate-900 dark:text-slate-100">{preset.label}</p>
+                <div className="truncate mr-1">
+                  <p className="font-semibold text-slate-900 dark:text-slate-100 truncate">{preset.label}</p>
                   <p className="text-[10px] text-slate-400 dark:text-slate-500 font-mono truncate">{preset.email}</p>
                 </div>
                 <Badge variant={preset.badge}>{preset.role}</Badge>
@@ -137,7 +137,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Footer info */}
-        <div className="text-center text-[11px] text-slate-400 dark:text-slate-500">
+        <div className="text-center text-[10.5px] text-slate-400 dark:text-slate-400 font-medium">
           Wealth Transformers India Pvt Ltd • SEBI & DPDP Regulated
         </div>
       </div>

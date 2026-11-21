@@ -197,7 +197,7 @@ export const CampaignCreatePage: React.FC = () => {
       </div>
 
       {/* Wizard Progress Stepper */}
-      <div className="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+      <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-3.5 rounded-[22px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark">
         <div className="grid grid-cols-5 gap-2">
           {steps.map((s) => {
             const isCompleted = currentStep > s.number;
@@ -205,12 +205,12 @@ export const CampaignCreatePage: React.FC = () => {
             return (
               <div
                 key={s.number}
-                className={`p-3 rounded-xl border text-center transition-all ${
+                className={`p-3 rounded-[16px] border text-center transition-all ${
                   isCurrent
-                    ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/40 shadow-xs'
+                    ? 'border-blue-500/50 bg-blue-500/10 dark:bg-blue-500/15 shadow-sm'
                     : isCompleted
-                    ? 'border-emerald-300 dark:border-emerald-800 bg-emerald-50/30 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-300'
-                    : 'border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 text-slate-400'
+                    ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300'
+                    : 'border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02] text-slate-400'
                 }`}
               >
                 <div className="flex items-center justify-center gap-1.5 mb-1">
@@ -219,18 +219,18 @@ export const CampaignCreatePage: React.FC = () => {
                   ) : (
                     <span
                       className={`w-5 h-5 rounded-full text-xs font-bold flex items-center justify-center ${
-                        isCurrent ? 'bg-blue-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+                        isCurrent ? 'bg-blue-600 text-white shadow-xs' : 'bg-black/5 dark:bg-white/10 text-slate-600 dark:text-slate-300'
                       }`}
                     >
                       {s.number}
                     </span>
                   )}
                   <span
-                    className={`text-xs font-bold ${
+                    className={`text-xs font-semibold ${
                       isCurrent
-                        ? 'text-blue-700 dark:text-blue-400'
+                        ? 'text-blue-600 dark:text-blue-400'
                         : isCompleted
-                        ? 'text-emerald-800 dark:text-emerald-300'
+                        ? 'text-emerald-700 dark:text-emerald-300'
                         : 'text-slate-500 dark:text-slate-400'
                     }`}
                   >
@@ -245,7 +245,7 @@ export const CampaignCreatePage: React.FC = () => {
       </div>
 
       {/* Step Content Card */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 min-h-[420px]">
+      <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl rounded-[28px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark p-8 min-h-[420px]">
         {/* STEP 1: Essentials */}
         {currentStep === 1 && (
           <div className="space-y-6">
@@ -546,7 +546,7 @@ export const CampaignCreatePage: React.FC = () => {
           type="button"
           onClick={handleBack}
           disabled={currentStep === 1}
-          className="flex items-center gap-2 px-5 py-2.5 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-sm font-medium transition-colors disabled:opacity-30 disabled:cursor-not-allowed shadow-xs"
+          className="apple-btn-secondary"
         >
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
@@ -555,7 +555,7 @@ export const CampaignCreatePage: React.FC = () => {
           <button
             type="button"
             onClick={handleNext}
-            className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-sm"
+            className="apple-btn-primary"
           >
             Continue <ChevronRight className="w-4 h-4" />
           </button>
@@ -564,7 +564,7 @@ export const CampaignCreatePage: React.FC = () => {
             type="button"
             onClick={handleFinalSubmit}
             disabled={isSubmitting}
-            className="flex items-center gap-2 px-8 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all active:scale-98"
+            className="apple-btn-primary"
           >
             <Sparkles className="w-4 h-4" />
             {isSubmitting ? 'Enqueuing...' : 'Authorize & Launch Campaign'}

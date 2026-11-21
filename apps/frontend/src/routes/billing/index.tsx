@@ -185,14 +185,14 @@ export const BillingPage: React.FC = () => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => fetchBillingData()}
-            className="flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors shadow-xs"
+            className="apple-btn-secondary"
           >
             <RefreshCw className="w-4 h-4" />
             Refresh
           </button>
           <button
             onClick={() => setIsShareModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-colors shadow-sm"
+            className="apple-btn-primary"
           >
             <Share2 className="w-4 h-4" />
             Send Report to Internal Team
@@ -202,22 +202,22 @@ export const BillingPage: React.FC = () => {
 
       {/* Over-Limit / Within Quota Banner */}
       {isOver ? (
-        <div className="p-5 rounded-2xl bg-rose-500/10 border-2 border-rose-500/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="p-5 rounded-[24px] bg-rose-500/10 border border-rose-500/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="p-3 rounded-xl bg-rose-500 text-white flex-shrink-0 mt-0.5">
+            <div className="w-11 h-11 rounded-[14px] bg-rose-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
               <ShieldAlert className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-rose-800 dark:text-rose-200">
+              <h3 className="text-base font-semibold text-rose-800 dark:text-rose-200">
                 Monthly Conversation Limit Exceeded!
               </h3>
-              <p className="text-sm text-rose-700 dark:text-rose-300 mt-1">
+              <p className="text-sm text-rose-700/90 dark:text-rose-300/90 mt-1">
                 Your account exceeded the allocated plan quota of{' '}
-                <span className="font-bold">
+                <span className="font-semibold">
                   {usage?.monthlyQuota.toLocaleString()} messages
                 </span>{' '}
                 by{' '}
-                <span className="font-bold underline">
+                <span className="font-semibold underline">
                   {usage?.overageMessagesCount.toLocaleString()} extra messages
                 </span>
                 . Surcharges are being calculated at WhatsApp Tier rates.
@@ -233,34 +233,34 @@ export const BillingPage: React.FC = () => {
           </div>
           <button
             onClick={() => setIsShareModalOpen(true)}
-            className="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-rose-600 hover:bg-rose-500 text-white rounded-xl shadow-xs self-start md:self-center flex-shrink-0"
+            className="apple-btn-primary shrink-0 self-start md:self-center"
           >
             Notify Internal Team Now
           </button>
         </div>
       ) : (
-        <div className="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
+        <div className="p-5 rounded-[24px] bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-emerald-500 text-white">
+            <div className="w-10 h-10 rounded-[14px] bg-emerald-500 text-white flex items-center justify-center shadow-sm">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-emerald-900 dark:text-emerald-200">
+              <h3 className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
                 WhatsApp Traffic Within Monthly Quota ({quotaUsedPct}% Consumed)
               </h3>
-              <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">
+              <p className="text-xs text-emerald-700/90 dark:text-emerald-400 mt-0.5">
                 {(usage?.monthlyQuota || 10000) - (usage?.totalMessagesSent || 0)} messages remaining in your base plan package before any extra cost is incurred.
               </p>
             </div>
           </div>
-          <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
+          <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">
             Cycle: {usage?.billingCycle}
           </span>
         </div>
       )}
 
       {/* Quota Progress Bar */}
-      <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-3">
+      <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-6 rounded-[26px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark space-y-3">
         <div className="flex items-center justify-between text-sm">
           <span className="font-semibold text-slate-700 dark:text-slate-300">
             Monthly Quota Utilization
@@ -269,14 +269,14 @@ export const BillingPage: React.FC = () => {
             {usage?.totalMessagesSent.toLocaleString()} / {usage?.monthlyQuota.toLocaleString()} messages ({quotaUsedPct}%)
           </span>
         </div>
-        <div className="w-full h-3 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+        <div className="w-full h-3 rounded-full bg-black/5 dark:bg-white/10 overflow-hidden">
           <div
             className={`h-full transition-all duration-500 rounded-full ${
               isOver
-                ? 'bg-rose-500'
+                ? 'bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.5)]'
                 : quotaUsedPct >= 80
-                ? 'bg-amber-500'
-                : 'bg-emerald-500'
+                ? 'bg-amber-500 shadow-[0_0_12px_rgba(245,158,11,0.5)]'
+                : 'bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.5)]'
             }`}
             style={{ width: `${Math.min(100, quotaUsedPct)}%` }}
           />
@@ -317,64 +317,64 @@ export const BillingPage: React.FC = () => {
 
       {/* Conversation Tier Breakdown */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+        <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-6 rounded-[24px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-600 dark:text-blue-400">
               Utility Tier
             </span>
             <Badge variant="info">₹{usage?.rates.utilityInr}/msg</Badge>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
+            <p className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               {usage?.breakdown.utilityCount.toLocaleString() || 0}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Birthdays, Anniversaries, OTPs, Status</p>
           </div>
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+          <div className="pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs">
             <span className="text-slate-500 dark:text-slate-400">Category Cost</span>
-            <span className="font-bold text-slate-800 dark:text-slate-200">
+            <span className="font-semibold text-slate-800 dark:text-slate-200">
               ₹{usage?.breakdown.utilityCostInr.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+        <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-6 rounded-[24px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-purple-600 dark:text-purple-400">
               Marketing Tier
             </span>
             <Badge variant="purple">₹{usage?.rates.marketingInr}/msg</Badge>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
+            <p className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               {usage?.breakdown.marketingCount.toLocaleString() || 0}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Offers, Festivals, Broadcasts</p>
           </div>
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+          <div className="pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs">
             <span className="text-slate-500 dark:text-slate-400">Category Cost</span>
-            <span className="font-bold text-slate-800 dark:text-slate-200">
+            <span className="font-semibold text-slate-800 dark:text-slate-200">
               ₹{usage?.breakdown.marketingCostInr.toLocaleString('en-IN')}
             </span>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
+        <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-6 rounded-[24px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+            <span className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
               Service Tier
             </span>
             <Badge variant="success">₹{usage?.rates.serviceInr}/msg</Badge>
           </div>
           <div>
-            <p className="text-3xl font-extrabold text-slate-900 dark:text-white">
+            <p className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
               {usage?.breakdown.serviceCount.toLocaleString() || 0}
             </p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Inbound replies & support inquiries</p>
           </div>
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+          <div className="pt-3 border-t border-black/5 dark:border-white/5 flex items-center justify-between text-xs">
             <span className="text-slate-500 dark:text-slate-400">Category Cost</span>
-            <span className="font-bold text-slate-800 dark:text-slate-200">
+            <span className="font-semibold text-slate-800 dark:text-slate-200">
               ₹{usage?.breakdown.serviceCostInr.toLocaleString('en-IN')}
             </span>
           </div>
@@ -382,17 +382,17 @@ export const BillingPage: React.FC = () => {
       </div>
 
       {/* Campaign Attributions Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
-        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <div className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl rounded-[28px] border border-black/5 dark:border-white/10 overflow-hidden shadow-apple-card dark:shadow-apple-card-dark">
+        <div className="p-5 border-b border-black/5 dark:border-white/5 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+            <h3 className="text-base font-semibold text-slate-900 dark:text-white">
               Campaign Cost Attribution
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
               Breakdown of message volume and WhatsApp cost per initiative.
             </p>
           </div>
-          <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+          <span className="text-xs font-semibold px-2.5 py-1 bg-black/5 dark:bg-white/5 rounded-full text-slate-600 dark:text-slate-300 border border-black/5 dark:border-white/10">
             SAC Code 998413
           </span>
         </div>
@@ -529,17 +529,17 @@ export const BillingPage: React.FC = () => {
               )}
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-black/5 dark:border-white/5">
               <button
                 onClick={() => setIsShareModalOpen(false)}
-                className="px-4 py-2 text-sm font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                className="apple-btn-secondary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleShareReport}
                 disabled={sendingShare || recipients.length === 0}
-                className="flex items-center gap-2 px-5 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-colors shadow-sm disabled:opacity-50"
+                className="apple-btn-primary"
               >
                 {sendingShare ? (
                   <RefreshCw className="w-4 h-4 animate-spin" />

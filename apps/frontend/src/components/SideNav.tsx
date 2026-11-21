@@ -85,22 +85,22 @@ export const SideNav: React.FC = () => {
   });
 
   return (
-    <aside className="w-64 bg-slate-900 text-white min-h-screen flex flex-col border-r border-slate-800 flex-shrink-0 select-none">
+    <aside className="w-64 bg-[#FBFBFD]/85 dark:bg-[#121418]/85 backdrop-blur-2xl text-slate-800 dark:text-slate-100 min-h-screen flex flex-col border-r border-black/[0.06] dark:border-white/[0.08] flex-shrink-0 select-none transition-colors duration-200">
       {/* Brand Header */}
-      <div className="p-4 border-b border-slate-800">
+      <div className="p-4 border-b border-black/[0.05] dark:border-white/[0.06]">
         <WealthTransformersLogo variant="horizontal" showSubtitle={true} />
       </div>
 
       {/* Role Pill Banner */}
-      <div className="px-4 pt-3 pb-1 flex items-center justify-between">
-        <span className="text-[10px] font-bold tracking-wider uppercase text-slate-400">
+      <div className="px-4 pt-3.5 pb-1 flex items-center justify-between">
+        <span className="text-[10px] font-bold tracking-wider uppercase text-slate-400 dark:text-slate-400">
           Navigation
         </span>
         <span
-          className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+          className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full backdrop-blur-xs ${
             currentRole === 'Super_Admin'
-              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-              : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+              ? 'bg-amber-500/12 text-amber-700 dark:text-amber-300 border border-amber-500/25'
+              : 'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25'
           }`}
         >
           {currentRole === 'Super_Admin' ? 'Super Admin' : 'Admin View'}
@@ -116,21 +116,28 @@ export const SideNav: React.FC = () => {
               key={item.path}
               to={item.path}
               className={({ isActive }) =>
-                `flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold transition-all group ${
+                `flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all group cursor-pointer ${
                   isActive
-                    ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/40'
-                    : 'text-slate-300 hover:bg-slate-800/80 hover:text-white'
+                    ? 'bg-black/[0.06] dark:bg-white/[0.12] text-slate-900 dark:text-white font-semibold shadow-xs border border-black/[0.04] dark:border-white/[0.08]'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-black/[0.03] dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-white border border-transparent'
                 }`
               }
             >
-              <div className="flex items-center gap-3 truncate">
-                <Icon className="w-4 h-4 flex-shrink-0 transition-transform group-hover:scale-110" />
-                <span className="truncate">{item.label}</span>
-              </div>
-              {item.badge && (
-                <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300 border border-amber-400/30">
-                  {item.badge}
-                </span>
+              {({ isActive }) => (
+                <>
+                  <div className="flex items-center gap-2.5 truncate">
+                    <Icon className={`w-4 h-4 flex-shrink-0 transition-colors ${isActive ? 'text-apple-blue dark:text-apple-blue-dark' : 'text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'}`} />
+                    <span className="truncate">{item.label}</span>
+                  </div>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-apple-blue dark:bg-apple-blue-dark shadow-[0_0_6px_rgba(0,113,227,0.7)]" />
+                  )}
+                  {item.badge && !isActive && (
+                    <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-300 border border-amber-400/30">
+                      {item.badge}
+                    </span>
+                  )}
+                </>
               )}
             </NavLink>
           );
@@ -138,26 +145,31 @@ export const SideNav: React.FC = () => {
       </nav>
 
       {/* Footer User Info & Theme Toggle */}
-      <div className="p-3 border-t border-slate-800 bg-slate-900/90 flex flex-col gap-2">
+      <div className="p-3 border-t border-black/[0.05] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02] flex flex-col gap-2">
         <div className="flex items-center justify-between px-1">
-          <span className="text-xs text-slate-400 flex items-center gap-1.5 font-medium">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-medium">
+            <Sparkles className="w-3.5 h-3.5 text-apple-emerald" />
             Appearance
           </span>
           <ThemeToggle />
         </div>
 
         {user && (
-          <div className="flex items-center justify-between pt-2 border-t border-slate-800/70">
-            <div className="truncate mr-2">
-              <p className="text-xs font-bold text-white truncate">{user.fullName || user.email}</p>
-              <p className="text-[11px] text-emerald-400 font-semibold truncate">
-                {user.role === 'Super_Admin' ? 'Super Administrator' : 'Operations Admin'}
-              </p>
+          <div className="flex items-center justify-between pt-2 border-t border-black/[0.05] dark:border-white/[0.06]">
+            <div className="flex items-center gap-2.5 truncate mr-2">
+              <div className="w-7 h-7 rounded-full bg-apple-blue/15 text-apple-blue dark:text-apple-blue-dark flex items-center justify-center font-bold text-xs flex-shrink-0 border border-apple-blue/20">
+                {(user.fullName || user.email || 'U').charAt(0).toUpperCase()}
+              </div>
+              <div className="truncate">
+                <p className="text-xs font-semibold text-slate-800 dark:text-white truncate">{user.fullName || user.email}</p>
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium truncate">
+                  {user.role === 'Super_Admin' ? 'Super Administrator' : 'Operations Admin'}
+                </p>
+              </div>
             </div>
             <button
               onClick={() => clearSession()}
-              className="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg hover:bg-slate-800 transition-colors flex-shrink-0"
+              className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg hover:bg-black/[0.04] dark:hover:bg-white/[0.08] transition-colors flex-shrink-0 cursor-pointer"
               title="Logout from system"
             >
               <LogOut className="w-4 h-4" />

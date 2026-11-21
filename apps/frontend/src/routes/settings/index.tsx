@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { toast } from '../../components/ui/useToast';
 import { Badge } from '../../components/ui/Badge';
+import { SegmentedControl } from '../../components/ui/SegmentedControl';
 import { apiClient } from '../../lib/api-client';
 
 export const SettingsPage: React.FC = () => {
@@ -130,7 +131,7 @@ export const SettingsPage: React.FC = () => {
           <button
             onClick={fetchSettings}
             disabled={loading}
-            className="p-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="apple-btn-secondary"
             title="Refresh Settings"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
@@ -138,7 +139,7 @@ export const SettingsPage: React.FC = () => {
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold shadow-sm transition-all"
+            className="apple-btn-primary"
           >
             <Save className="w-4 h-4" />
             {isSaving ? 'Hot-Reloading...' : 'Save & Hot-Reload'}
@@ -146,35 +147,22 @@ export const SettingsPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Tabs Header */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 gap-6 text-sm font-medium">
-        {[
-          { id: 'pricing', label: 'Meta Pricing & GST', icon: DollarSign },
-          { id: 'waba', label: 'WABA & Meta Cloud', icon: Key },
-          { id: 'workers', label: 'BullMQ & Workers', icon: Zap },
-          { id: 'optout', label: 'DPDP Opt-Out Keywords', icon: ShieldCheck },
-        ].map((tab) => {
-          const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 pb-3 border-b-2 transition-colors ${
-                isActive
-                  ? 'border-blue-600 text-blue-600 dark:text-blue-400 font-bold'
-                  : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-            >
-              <Icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          );
-        })}
+      {/* Tabs Header with Apple Sliding SegmentedControl */}
+      <div className="w-full">
+        <SegmentedControl
+          value={activeTab}
+          onChange={(val) => setActiveTab(val as any)}
+          options={[
+            { value: 'pricing', label: 'Meta Pricing & GST' },
+            { value: 'waba', label: 'WABA & Meta Cloud' },
+            { value: 'workers', label: 'BullMQ & Workers' },
+            { value: 'optout', label: 'DPDP Opt-Out Keywords' },
+          ]}
+        />
       </div>
 
       {/* Tab Panels */}
-      <form onSubmit={handleSave} className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-6">
+      <form onSubmit={handleSave} className="bg-white/80 dark:bg-[#15171C]/80 backdrop-blur-2xl p-8 rounded-[28px] border border-black/5 dark:border-white/10 shadow-apple-card dark:shadow-apple-card-dark space-y-6">
         {/* TAB 1: Pricing */}
         {activeTab === 'pricing' && (
           <div className="space-y-6">
