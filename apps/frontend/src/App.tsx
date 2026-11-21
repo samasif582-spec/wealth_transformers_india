@@ -6,13 +6,9 @@ import { BrandSplashScreen } from './components/brand/BrandSplashScreen';
 import { ErrorBoundary } from './components/ui/ErrorBoundary';
 
 export default function App(): React.ReactElement {
-  const [showSplash, setShowSplash] = useState<boolean>(() => {
-    if (typeof window === 'undefined') return false;
-    return !sessionStorage.getItem('wt_splash_seen');
-  });
+  const [showSplash, setShowSplash] = useState<boolean>(true);
 
   const handleSplashComplete = () => {
-    sessionStorage.setItem('wt_splash_seen', 'true');
     setShowSplash(false);
   };
 
