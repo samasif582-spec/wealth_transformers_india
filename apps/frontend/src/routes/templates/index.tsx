@@ -129,6 +129,7 @@ export const TemplatesPage: React.FC = () => {
     name: 'festive_wealth_offer_v1',
     category: 'SPECIAL_OFFERS' as BusinessCategory,
     language: 'en',
+    headerType: 'IMAGE' as 'IMAGE' | 'NONE',
     headline: CATEGORY_PRESETS.SPECIAL_OFFERS.headline,
     body: CATEGORY_PRESETS.SPECIAL_OFFERS.body,
     ctaText: CATEGORY_PRESETS.SPECIAL_OFFERS.ctaText,
@@ -200,9 +201,18 @@ export const TemplatesPage: React.FC = () => {
             ? [...bodyText.matchAll(/\{\{(\d+)\}\}/g)].map((m) => m[1])
             : [];
 
-        // Match category banner fallback
-        let bannerUrl = t.headerMediaUrl || latestVersion?.headerMediaUrl;
-        if (!bannerUrl) {
+        // Match header type and banner URL
+        const resolvedHeaderType: 'IMAGE' | 'NONE' =
+          latestVersion?.headerType === 'TEXT' ||
+          latestVersion?.headerType === 'NONE' ||
+          (!t.headerMediaUrl && !latestVersion?.headerMediaUrl && !(latestVersion?.variableSchema as any)?.headerMediaUrl)
+            ? 'NONE'
+            : 'IMAGE';
+
+        let bannerUrl = t.headerMediaUrl || latestVersion?.headerMediaUrl || (latestVersion?.variableSchema as any)?.headerMediaUrl;
+        if (resolvedHeaderType === 'NONE') {
+          bannerUrl = null;
+        } else if (!bannerUrl) {
           const lowerName = (t.name || '').toLowerCase();
           if (lowerName.includes('birthday')) bannerUrl = TEMPLATE_BANNER_PRESETS.BIRTHDAY_WISHES.dataUrl;
           else if (lowerName.includes('festival') || lowerName.includes('diwali')) bannerUrl = TEMPLATE_BANNER_PRESETS.FESTIVAL_WISHES.dataUrl;
@@ -220,7 +230,7 @@ export const TemplatesPage: React.FC = () => {
           body: bodyText,
           headline: headlineText,
           footer: footerText,
-          headerType: latestVersion?.headerType || 'IMAGE',
+          headerType: resolvedHeaderType,
           headerMediaUrl: bannerUrl,
           ctaText: firstBtn?.text || 'View Details',
           ctaUrl: firstBtn?.url || 'https://wealthtrade.in',
@@ -267,14 +277,15 @@ export const TemplatesPage: React.FC = () => {
       const isUuid = (val?: string) =>
         Boolean(val && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(val));
 
+      const isImage = newTemplate.headerType === 'IMAGE';
       const createRes = await apiClient.post('/templates', {
         name: normalizedName,
         category: metaCat,
         language: newTemplate.language,
-        header_type: 'IMAGE',
-        header_text: newTemplate.headline,
-        header_media_id: isUuid(newTemplate.headerAsset?.id) ? newTemplate.headerAsset!.id : undefined,
-        header_media_url: newTemplate.bannerDataUrl,
+        header_type: isImage ? 'IMAGE' : (newTemplate.headline ? 'TEXT' : undefined),
+        header_text: newTemplate.headline || undefined,
+        header_media_id: isImage && isUuid(newTemplate.headerAsset?.id) ? newTemplate.headerAsset!.id : undefined,
+        header_media_url: isImage ? newTemplate.bannerDataUrl : undefined,
         body_text: newTemplate.body,
         footer_text: SEBI_FOOTER,
         variable_samples: extractedVars.length > 0 ? variableSamples : undefined,
@@ -359,104 +370,58 @@ export const TemplatesPage: React.FC = () => {
     }
   };
 
-  const resolveBadgeCategory = (t: TemplateRecord) => {
-    const lowerName = (t.name || '').toLowerCase();
-    if (lowerName.includes('birthday')) {
-      return <Badge variant="success">Birthday Wishes</Badge>;
-    }
-    if (lowerName.includes('festival') || lowerName.includes('diwali') || lowerName.includes('muhurat')) {
-      return <Badge variant="purple">Festival Wishes</Badge>;
-    }
-    if (lowerName.includes('offer') || lowerName.includes('promo') || t.category === 'MARKETING') {
-      return <Badge variant="warning">Special Offers</Badge>;
-    }
-    return <Badge variant="info">Broadcast</Badge>;
-  };
-
   const columns: Column<TemplateRecord>[] = [
     {
       key: 'name',
       header: 'Template Name',
-      render: (t) => (
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-sm font-semibold text-slate-900 dark:text-white">
-              {t.name}
-            </span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center gap-1">
-              <ImageIcon className="w-3 h-3" /> Image Banner
-            </span>
+      className: 'w-2/3',
+      render: (t) => {
+        const isTextOnly = t.headerType === 'NONE' || t.headerType === 'TEXT' || !t.headerMediaUrl;
+        return (
+          <div className="py-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-sm font-bold text-slate-900 dark:text-white">
+                {t.name}
+              </span>
+              {isTextOnly ? (
+                <span className="text-[10.5px] font-semibold px-2 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 flex items-center gap-1 border border-blue-200 dark:border-blue-800/50">
+                  <FileText className="w-3 h-3" /> Text Only
+                </span>
+              ) : (
+                <span className="text-[10.5px] font-semibold px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center gap-1 border border-purple-200 dark:border-purple-800/50">
+                  <ImageIcon className="w-3 h-3" /> Image Banner
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-2.5 text-xs text-slate-400 font-sans mt-0.5">
+              <span>Lang: <strong className="text-slate-600 dark:text-slate-300 font-medium">{t.language}</strong></span>
+              {t.headline && (
+                <>
+                  <span>•</span>
+                  <span className="truncate max-w-lg text-slate-600 dark:text-slate-300 font-medium">{t.headline}</span>
+                </>
+              )}
+            </div>
           </div>
-          <span className="text-xs text-slate-400 font-sans">Lang: {t.language}</span>
-        </div>
-      ),
-    },
-    {
-      key: 'category',
-      header: 'Category',
-      render: (t) => resolveBadgeCategory(t),
-    },
-    {
-      key: 'status',
-      header: 'Meta Status',
-      render: (t) => {
-        const statusVariants: Record<string, any> = {
-          APPROVED: 'success',
-          PENDING_APPROVAL: 'warning',
-          REJECTED: 'danger',
-          DRAFT: 'default',
-        };
-        return (
-          <Badge variant={statusVariants[t.status] || 'default'}>
-            {t.status === 'APPROVED' && <CheckCircle className="w-3 h-3 mr-1 inline" />}
-            {t.status === 'PENDING_APPROVAL' && <Clock className="w-3 h-3 mr-1 inline" />}
-            {t.status === 'REJECTED' && <XCircle className="w-3 h-3 mr-1 inline" />}
-            {t.status}
-          </Badge>
         );
       },
-    },
-    {
-      key: 'qualityRating',
-      header: 'Quality Rating',
-      render: (t) => {
-        const qualityVariants: Record<string, any> = {
-          GREEN: 'success',
-          YELLOW: 'warning',
-          RED: 'danger',
-          UNKNOWN: 'default',
-        };
-        return (
-          <Badge variant={qualityVariants[t.qualityRating] || 'default'}>
-            ● {t.qualityRating}
-          </Badge>
-        );
-      },
-    },
-    {
-      key: 'variablesCount',
-      header: 'Placeholders',
-      render: (t) => (
-        <span className="text-xs font-mono text-slate-600 dark:text-slate-400">
-          {t.variablesCount > 0 ? `${t.variablesCount} dynamic vars ({{1}} parsed)` : 'None'}
-        </span>
-      ),
     },
     {
       key: 'id',
       header: 'Actions',
+      className: 'w-1/3 text-right',
       render: (t) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2.5 py-1">
           <button
             onClick={() => setPreviewTemplate(t)}
-            className="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer"
           >
             <Eye className="w-3.5 h-3.5" />
             Preview Card
           </button>
           <button
             onClick={() => setBroadcastTemplate(t)}
-            className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs transition-all cursor-pointer"
             title="Instant 1-Click Broadcast to all clients"
           >
             <Send className="w-3.5 h-3.5" />
@@ -603,52 +568,87 @@ export const TemplatesPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Header Banner Image Selection */}
-            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center justify-between">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                  Header Banner Image *
-                </label>
-                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  {newTemplate.headerAsset ? newTemplate.headerAsset.filename : 'Curated Preset Banner Active'}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-2">
+            {/* Header Format: Image Banner vs Text Only */}
+            <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
+                Template Format *
+              </label>
+              <div className="grid grid-cols-2 gap-2.5">
                 <button
                   type="button"
-                  onClick={() => setIsImagePickerOpen(true)}
-                  className="flex-1 py-2 px-3 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 flex items-center justify-center gap-1.5 transition-colors"
+                  onClick={() => setNewTemplate((prev) => ({ ...prev, headerType: 'IMAGE' }))}
+                  className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                    newTemplate.headerType === 'IMAGE'
+                      ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 shadow-xs ring-1 ring-emerald-500/30'
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                  }`}
                 >
-                  <ImageIcon className="w-3.5 h-3.5 text-emerald-500" />
-                  Media Assets Library
+                  <ImageIcon className="w-4 h-4 text-emerald-500" />
+                  <span>Image Banner Card</span>
                 </button>
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex-1 py-2 px-3 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 flex items-center justify-center gap-1.5 transition-colors"
+                  onClick={() => setNewTemplate((prev) => ({ ...prev, headerType: 'NONE' }))}
+                  className={`flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                    newTemplate.headerType === 'NONE'
+                      ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 shadow-xs ring-1 ring-blue-500/30'
+                      : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
+                  }`}
                 >
-                  <UploadCloud className="w-3.5 h-3.5 text-blue-500" />
-                  Upload Custom Banner
+                  <FileText className="w-4 h-4 text-blue-500" />
+                  <span>Text Only (No Banner)</span>
                 </button>
-                {newTemplate.headerAsset && (
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setNewTemplate((prev) => ({
-                        ...prev,
-                        headerAsset: null,
-                        bannerDataUrl: TEMPLATE_BANNER_PRESETS[prev.category].dataUrl,
-                      }))
-                    }
-                    className="p-2 border border-slate-300 dark:border-slate-700 text-slate-400 hover:text-slate-600 rounded-xl"
-                    title="Reset to category preset"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
               </div>
             </div>
+
+            {/* Header Banner Image Selection (Only when Image Banner format is selected) */}
+            {newTemplate.headerType === 'IMAGE' && (
+              <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                    Header Banner Image *
+                  </label>
+                  <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    {newTemplate.headerAsset ? newTemplate.headerAsset.filename : 'Curated Preset Banner Active'}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsImagePickerOpen(true)}
+                    className="flex-1 py-2 px-3 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <ImageIcon className="w-3.5 h-3.5 text-emerald-500" />
+                    Media Assets Library
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 py-2 px-3 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <UploadCloud className="w-3.5 h-3.5 text-blue-500" />
+                    Upload Custom Banner
+                  </button>
+                  {newTemplate.headerAsset && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setNewTemplate((prev) => ({
+                          ...prev,
+                          headerAsset: null,
+                          bannerDataUrl: TEMPLATE_BANNER_PRESETS[prev.category].dataUrl,
+                        }))
+                      }
+                      className="p-2 border border-slate-300 dark:border-slate-700 text-slate-400 hover:text-slate-600 rounded-xl cursor-pointer"
+                      title="Reset to category preset"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Bold Headline Text */}
             <div>
@@ -747,17 +747,19 @@ export const TemplatesPage: React.FC = () => {
 
               {/* Exact WhatsApp Message Card matching reference */}
               <div className="w-full max-w-[320px] bg-[#1F2C34] text-white rounded-2xl overflow-hidden shadow-xl border border-slate-700/60 flex flex-col">
-                {/* 1. Top Banner Image */}
-                <div className="relative aspect-[16/9] w-full bg-slate-900 overflow-hidden">
-                  <img
-                    src={newTemplate.bannerDataUrl}
-                    alt="Template Banner"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9.5px] font-mono text-emerald-400">
-                    Banner
+                {/* 1. Top Banner Image (Only when Image Banner format is selected) */}
+                {newTemplate.headerType === 'IMAGE' && newTemplate.bannerDataUrl && (
+                  <div className="relative w-full bg-slate-900 overflow-hidden">
+                    <img
+                      src={newTemplate.bannerDataUrl}
+                      alt="Template Banner"
+                      className="w-full max-h-[320px] object-contain"
+                    />
+                    <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9.5px] font-mono text-emerald-400">
+                      Banner
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* 2. Message Body Container */}
                 <div className="p-3.5 space-y-2">
@@ -821,13 +823,17 @@ export const TemplatesPage: React.FC = () => {
           <div className="flex flex-col items-center p-2">
             <div className="w-full max-w-[340px] bg-[#1F2C34] text-white rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60 flex flex-col">
               {/* Banner Image */}
-              <div className="relative aspect-[16/9] w-full bg-slate-900 overflow-hidden">
-                <img
-                  src={previewTemplate.headerMediaUrl || TEMPLATE_BANNER_PRESETS.SPECIAL_OFFERS.dataUrl}
-                  alt="Template Banner"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              {previewTemplate.headerType !== 'NONE' &&
+                previewTemplate.headerType !== 'TEXT' &&
+                Boolean(previewTemplate.headerMediaUrl) && (
+                  <div className="relative w-full bg-slate-900 overflow-hidden">
+                    <img
+                      src={previewTemplate.headerMediaUrl!}
+                      alt="Template Banner"
+                      className="w-full max-h-[360px] object-contain"
+                    />
+                  </div>
+                )}
 
               {/* Message Body */}
               <div className="p-3.5 space-y-2">
