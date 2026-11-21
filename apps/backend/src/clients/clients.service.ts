@@ -1,5 +1,6 @@
 import {
   Injectable,
+  OnModuleInit,
   NotFoundException,
   ConflictException,
   BadRequestException,
@@ -41,7 +42,7 @@ export interface PaginatedClientsResponse {
 }
 
 @Injectable()
-export class ClientsService {
+export class ClientsService implements OnModuleInit {
   private readonly logger = new Logger(ClientsService.name);
   private exportQueue?: Queue;
   private campaignQueue?: Queue;
@@ -60,6 +61,60 @@ export class ClientsService {
       this.campaignQueue = new Queue(QUEUE_NAMES.CAMPAIGN_MESSAGES, { connection: conn });
     } catch (err: any) {
       this.logger.warn(`Could not initialize BullMQ queues in ClientsService: ${err.message}`);
+    }
+  }
+
+  async onModuleInit(): Promise<void> {
+    try {
+      const count = await this.prisma.client.count();
+      if (count === 0) {
+        this.logger.log('👥 Initializing verified client directory baseline...');
+        const baseline = [
+          {
+            fullName: 'Vikramaditya Singhania',
+            whatsappNumber: '+919820123456',
+            email: 'vikram.singhania@apexventures.in',
+            dateOfBirth: new Date(Date.UTC(1985, 10, 21)),
+            categoryTier: CategoryTier.RETAIL,
+            communicationConsent: ConsentStatus.OPTED_IN,
+            preferredLanguage: 'en',
+          },
+          {
+            fullName: 'Deepak Mehta',
+            whatsappNumber: '+919825099887',
+            email: 'deepak.mehta@example.com',
+            dateOfBirth: new Date(Date.UTC(1992, 0, 30)),
+            categoryTier: CategoryTier.RETAIL,
+            communicationConsent: ConsentStatus.OPTED_IN,
+            preferredLanguage: 'en',
+          },
+          {
+            fullName: 'Kavita Reddy',
+            whatsappNumber: '+919848011223',
+            email: 'kavita.reddy@example.com',
+            dateOfBirth: new Date(Date.UTC(1984, 5, 14)),
+            categoryTier: CategoryTier.RETAIL,
+            communicationConsent: ConsentStatus.OPTED_IN,
+            preferredLanguage: 'en',
+          },
+          {
+            fullName: 'Sunil Mittal',
+            whatsappNumber: '+919811122233',
+            email: 'sunil.mittal@example.com',
+            dateOfBirth: new Date(Date.UTC(1968, 9, 23)),
+            categoryTier: CategoryTier.RETAIL,
+            communicationConsent: ConsentStatus.OPTED_IN,
+            preferredLanguage: 'en',
+          },
+        ];
+
+        for (const c of baseline) {
+          await this.prisma.client.create({ data: c });
+        }
+        this.logger.log(`✅ Seeded ${baseline.length} baseline verified clients.`);
+      }
+    } catch (err: any) {
+      this.logger.warn(`Could not seed default clients: ${err.message}`);
     }
   }
 

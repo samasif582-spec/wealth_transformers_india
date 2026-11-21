@@ -68,14 +68,22 @@ async function bootstrap(): Promise<void> {
   );
 
   // ── CORS ──────────────────────────────────────────────────────────────────
-  const allowedOrigins = [
-    apiBaseUrl,
-    'http://localhost:5173',
-    'http://localhost:3000',
-  ].filter(Boolean);
+  const frontendUrl = config.get<string>('FRONTEND_URL', 'https://wealthtransformersindia.vercel.app');
 
   app.enableCors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      if (
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost') ||
+        origin.includes('127.0.0.1') ||
+        origin === frontendUrl ||
+        origin === apiBaseUrl
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Internal-Api-Key'],

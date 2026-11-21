@@ -1,5 +1,6 @@
 import {
   Injectable,
+  OnModuleInit,
   NotFoundException,
   ConflictException,
   ForbiddenException,
@@ -44,13 +45,64 @@ export interface PaginatedUsersResponse {
 }
 
 @Injectable()
-export class UsersService {
+export class UsersService implements OnModuleInit {
   private readonly logger = new Logger(UsersService.name);
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly redis: RedisService,
   ) {}
+
+  async onModuleInit(): Promise<void> {
+    try {
+      const userCount = await this.prisma.user.count();
+      if (userCount === 0) {
+        this.logger.log('🌱 No users found in database. Initializing default administrative accounts...');
+        const SEED_USERS = [
+          {
+            email: 'superadmin@wealthtransformers.in',
+            password: 'SuperAdmin@2026!',
+            fullName: 'System Super Admin',
+            role: UserRole.Super_Admin,
+          },
+          {
+            email: 'admin@wealthtransformers.in',
+            password: 'Admin@2026!',
+            fullName: 'Operations Admin',
+            role: UserRole.Admin,
+          },
+          {
+            email: 'superadmin@wealthtrade.in',
+            password: 'SuperAdmin@2026!',
+            fullName: 'System Super Admin (Legacy)',
+            role: UserRole.Super_Admin,
+          },
+          {
+            email: 'admin@wealthtrade.in',
+            password: 'Admin@2026!',
+            fullName: 'Operations Admin (Legacy)',
+            role: UserRole.Admin,
+          },
+        ];
+
+        for (const u of SEED_USERS) {
+          const passwordHash = await bcrypt.hash(u.password, BCRYPT_SALT_ROUNDS);
+          await this.prisma.user.create({
+            data: {
+              email: u.email,
+              fullName: u.fullName,
+              passwordHash,
+              role: u.role,
+              accountStatus: AccountStatus.ACTIVE,
+            },
+          });
+        }
+        this.logger.log('✅ Default administrative accounts initialized successfully.');
+      }
+    } catch (err: any) {
+      this.logger.warn(`Could not seed default users: ${err.message}`);
+    }
+  }
 
   async create(
     dto: CreateUserDto,

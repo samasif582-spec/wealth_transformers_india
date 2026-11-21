@@ -114,7 +114,8 @@ export class TemplatesService implements OnModuleInit {
     buttons?: any[],
   ) {
     try {
-      await fetch('http://localhost:4020/api/templates', {
+      const simUrl = (process.env.WA_SIM_URL || process.env.META_BASE_GRAPH_URL || 'http://localhost:4020').replace(/\/+$/, '');
+      await fetch(`${simUrl}/api/templates`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
