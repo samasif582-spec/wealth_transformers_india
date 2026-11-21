@@ -271,6 +271,35 @@ const handleCreateTemplate = (req: Request, res: Response) => {
     template: newTemplate,
   });
 
+  // Auto-relay template definition to cloned WhatsApp Web emulator on Port 4020
+  try {
+    const compList = Array.isArray(components) ? components : [];
+    const bodyComp = compList.find((c: any) => (c.type || '').toUpperCase() === 'BODY');
+    const headerComp = compList.find((c: any) => (c.type || '').toUpperCase() === 'HEADER');
+    const footerComp = compList.find((c: any) => (c.type || '').toUpperCase() === 'FOOTER');
+    const buttonsComp = compList.find((c: any) => (c.type || '').toUpperCase() === 'BUTTONS');
+
+    fetch('http://localhost:4020/api/templates', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer wa-sim-local-dev-token',
+      },
+      body: JSON.stringify({
+        name,
+        category: category.toUpperCase(),
+        language: language || 'en',
+        status: 'APPROVED',
+        bodyText: bodyComp?.text || `Dear {{1}}, update regarding ${name}.`,
+        headerText: headerComp?.text,
+        footerText: footerComp?.text,
+        buttons: buttonsComp?.buttons || [],
+      }),
+    }).catch(() => {});
+  } catch {
+    // Non-blocking relay
+  }
+
   return res.status(200).json({
     id: newId,
     status: 'APPROVED',

@@ -223,6 +223,7 @@ export class AutomationService {
       '10-20': 'Diwali Festival of Lights',
       '11-12': 'Diwali Mahurat Trading Greeting',
       '11-20': 'Special Festive Celebration Greeting',
+      '11-21': 'Kartik Purnima & Festive Wealth Greeting',
       '12-25': 'Christmas & Season Greetings',
     };
     const festivalTitle = FESTIVAL_CALENDAR[todayMMDD] || 'Festive Season Special Greeting';

@@ -69,7 +69,7 @@ export class CampaignsController {
     return this.campaignsService.reject(id, reason || 'Rejected by administrator', actor?.sub);
   }
 
-  @Post(':id/send')
+  @Post([':id/send', ':id/dispatch'])
   @Roles(UserRole.Super_Admin, UserRole.Admin)
   @HttpCode(HttpStatus.OK)
   dispatch(@Param('id', ParseUUIDPipe) id: string, @CurrentUser() actor: JwtPayload) {
