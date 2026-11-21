@@ -95,7 +95,7 @@ async function bootstrap(): Promise<void> {
   // ── Graceful shutdown ─────────────────────────────────────────────────────
   app.enableShutdownHooks();
 
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
   console.warn(`🚀 Backend running on http://localhost:${port}/api/v1`);
   console.warn(`📋 Environment: ${nodeEnv}`);
 }
