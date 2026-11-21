@@ -4,9 +4,9 @@ import { ConfigService } from '@nestjs/config';
 export interface TemplateComponentParameter {
   type: 'text' | 'image' | 'video' | 'document';
   text?: string;
-  image?: { link: string };
-  video?: { link: string };
-  document?: { link: string; filename?: string };
+  image?: { link?: string; id?: string };
+  video?: { link?: string; id?: string };
+  document?: { link?: string; filename?: string };
 }
 
 export interface TemplateComponent {

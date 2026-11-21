@@ -17,6 +17,8 @@ import {
   ChevronRight,
   Smile,
   X,
+  Paperclip,
+  ZoomIn,
 } from 'lucide-react';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
@@ -121,6 +123,7 @@ export const TemplatesPage: React.FC = () => {
   const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
   const [broadcastTemplate, setBroadcastTemplate] = useState<TemplateRecord | null>(null);
   const [isBroadcasting, setIsBroadcasting] = useState(false);
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -389,7 +392,7 @@ export const TemplatesPage: React.FC = () => {
                 </span>
               ) : (
                 <span className="text-[10.5px] font-semibold px-2 py-0.5 rounded-md bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 flex items-center gap-1 border border-purple-200 dark:border-purple-800/50">
-                  <ImageIcon className="w-3 h-3" /> Image Banner
+                  <Paperclip className="w-3 h-3" /> Image Attachment
                 </span>
               )}
             </div>
@@ -568,10 +571,10 @@ export const TemplatesPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Header Format: Image Banner vs Text Only */}
+            {/* Template Message Attachment: Image Attachment vs Text Only */}
             <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
               <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1.5">
-                Template Format *
+                Template Message Attachment *
               </label>
               <div className="grid grid-cols-2 gap-2.5">
                 <button
@@ -583,8 +586,8 @@ export const TemplatesPage: React.FC = () => {
                       : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700/50'
                   }`}
                 >
-                  <ImageIcon className="w-4 h-4 text-emerald-500" />
-                  <span>Image Banner Card</span>
+                  <Paperclip className="w-4 h-4 text-emerald-500" />
+                  <span>Attach Image to Template</span>
                 </button>
                 <button
                   type="button"
@@ -596,20 +599,25 @@ export const TemplatesPage: React.FC = () => {
                   }`}
                 >
                   <FileText className="w-4 h-4 text-blue-500" />
-                  <span>Text Only (No Banner)</span>
+                  <span>Text Only (No Attachment)</span>
                 </button>
               </div>
             </div>
 
-            {/* Header Banner Image Selection (Only when Image Banner format is selected) */}
+            {/* Attached Image File (Only when Image Attachment is selected) */}
             {newTemplate.headerType === 'IMAGE' && (
               <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-                    Header Banner Image *
-                  </label>
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                      Attached Image File *
+                    </label>
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500">
+                      Recipients can tap the attached image on WhatsApp to open and view in full size.
+                    </p>
+                  </div>
                   <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                    {newTemplate.headerAsset ? newTemplate.headerAsset.filename : 'Curated Preset Banner Active'}
+                    {newTemplate.headerAsset ? newTemplate.headerAsset.filename : 'Image Attached'}
                   </span>
                 </div>
 
@@ -628,7 +636,7 @@ export const TemplatesPage: React.FC = () => {
                     className="flex-1 py-2 px-3 border border-slate-300 dark:border-slate-700 hover:border-emerald-500 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                   >
                     <UploadCloud className="w-3.5 h-3.5 text-blue-500" />
-                    Upload Custom Banner
+                    Upload & Attach Image
                   </button>
                   {newTemplate.headerAsset && (
                     <button
@@ -746,19 +754,29 @@ export const TemplatesPage: React.FC = () => {
               </div>
 
               {/* Exact WhatsApp Message Card matching reference */}
-              <div className="w-full max-w-[320px] bg-[#1F2C34] text-white rounded-2xl overflow-hidden shadow-xl border border-slate-700/60 flex flex-col">
-                {/* 1. Top Banner Image (Only when Image Banner format is selected) */}
+              <div className="w-full max-w-[420px] bg-[#1F2C34] text-white rounded-2xl overflow-hidden shadow-xl border border-slate-700/60 flex flex-col">
+                {/* 1. Top Attached Image (Only when Image Attachment is selected) */}
                 {newTemplate.headerType === 'IMAGE' && newTemplate.bannerDataUrl && (
-                  <div className="relative w-full bg-slate-900 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setLightboxUrl(newTemplate.bannerDataUrl)}
+                    aria-label="Click to view full size attached image"
+                    className="group relative w-full bg-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-700/50 cursor-pointer text-left focus:outline-none"
+                  >
                     <img
                       src={newTemplate.bannerDataUrl}
-                      alt="Template Banner"
-                      className="w-full max-h-[320px] object-contain"
+                      alt="Attached Template Media"
+                      className="w-full max-h-[500px] object-contain transition-transform duration-200 group-hover:scale-[1.01]"
                     />
-                    <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded bg-black/60 backdrop-blur-xs text-[9.5px] font-mono text-emerald-400">
-                      Banner
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/75 backdrop-blur-xs text-[10px] font-semibold text-emerald-400 flex items-center gap-1 border border-emerald-500/30">
+                      <Paperclip className="w-3 h-3" /> Attached Image
                     </div>
-                  </div>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="px-2.5 py-1 rounded-full bg-black/80 text-white text-[11px] font-medium backdrop-blur-xs flex items-center gap-1.5 border border-white/10 shadow-lg">
+                        <ZoomIn className="w-3.5 h-3.5 text-white" /> Click to view full image
+                      </span>
+                    </div>
+                  </button>
                 )}
 
                 {/* 2. Message Body Container */}
@@ -818,21 +836,34 @@ export const TemplatesPage: React.FC = () => {
           onClose={() => setPreviewTemplate(null)}
           title={`Template Card: ${previewTemplate.name}`}
           description={`Language: ${previewTemplate.language} · Category: ${previewTemplate.category}`}
-          size="md"
+          size="lg"
         >
           <div className="flex flex-col items-center p-2">
-            <div className="w-full max-w-[340px] bg-[#1F2C34] text-white rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60 flex flex-col">
-              {/* Banner Image */}
+            <div className="w-full max-w-[420px] bg-[#1F2C34] text-white rounded-2xl overflow-hidden shadow-2xl border border-slate-700/60 flex flex-col">
+              {/* Attached Image */}
               {previewTemplate.headerType !== 'NONE' &&
                 previewTemplate.headerType !== 'TEXT' &&
                 Boolean(previewTemplate.headerMediaUrl) && (
-                  <div className="relative w-full bg-slate-900 overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setLightboxUrl(previewTemplate.headerMediaUrl!)}
+                    aria-label="Click to view full size attached image"
+                    className="group relative w-full bg-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-700/50 cursor-pointer text-left focus:outline-none"
+                  >
                     <img
                       src={previewTemplate.headerMediaUrl!}
-                      alt="Template Banner"
-                      className="w-full max-h-[360px] object-contain"
+                      alt="Attached Template Media"
+                      className="w-full max-h-[500px] object-contain transition-transform duration-200 group-hover:scale-[1.01]"
                     />
-                  </div>
+                    <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/75 backdrop-blur-xs text-[10px] font-semibold text-emerald-400 flex items-center gap-1 border border-emerald-500/30">
+                      <Paperclip className="w-3 h-3" /> Attached Image
+                    </div>
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <span className="px-2.5 py-1 rounded-full bg-black/80 text-white text-[11px] font-medium backdrop-blur-xs flex items-center gap-1.5 border border-white/10 shadow-lg">
+                        <ZoomIn className="w-3.5 h-3.5 text-white" /> Click to view full image
+                      </span>
+                    </div>
+                  </button>
                 )}
 
               {/* Message Body */}
@@ -881,7 +912,7 @@ export const TemplatesPage: React.FC = () => {
           onClose={() => setBroadcastTemplate(null)}
           title="Dispatch 1-Click WhatsApp Broadcast"
           description="Immediately dispatch this approved template card to all active opted-in clients on WhatsApp."
-          size="md"
+          size="lg"
         >
           <div className="space-y-4">
             <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center justify-between">
@@ -896,26 +927,47 @@ export const TemplatesPage: React.FC = () => {
               <Badge variant="success">Auto-Personalized</Badge>
             </div>
 
-            {/* Compact Preview Card */}
-            <div className="p-3 bg-[#111B21] rounded-xl border border-slate-800">
-              <div className="bg-[#1F2C34] rounded-xl overflow-hidden text-xs text-white shadow-xs border border-slate-700/50">
-                <div className="aspect-[16/9] w-full bg-slate-900 overflow-hidden">
-                  <img
-                    src={broadcastTemplate.headerMediaUrl || TEMPLATE_BANNER_PRESETS.BROADCAST.dataUrl}
-                    alt="Banner"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="p-3 space-y-1.5">
-                  <p className="font-bold text-white">{broadcastTemplate.name}</p>
-                  <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+            {/* Compact Preview Card - Full View */}
+            <div className="p-3 bg-[#111B21] rounded-xl border border-slate-800 flex justify-center">
+              <div className="w-full max-w-[420px] bg-[#1F2C34] rounded-2xl overflow-hidden text-xs text-white shadow-xl border border-slate-700/60">
+                {broadcastTemplate.headerType !== 'NONE' &&
+                  broadcastTemplate.headerType !== 'TEXT' &&
+                  Boolean(broadcastTemplate.headerMediaUrl) && (
+                    <button
+                      type="button"
+                      onClick={() => setLightboxUrl(broadcastTemplate.headerMediaUrl!)}
+                      aria-label="Click to view full size attached image"
+                      className="group relative w-full bg-slate-950 overflow-hidden flex items-center justify-center border-b border-slate-700/50 cursor-pointer text-left focus:outline-none"
+                    >
+                      <img
+                        src={broadcastTemplate.headerMediaUrl!}
+                        alt="Attached Template Media"
+                        className="w-full max-h-[480px] object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                      />
+                      <div className="absolute top-2 right-2 px-2 py-0.5 rounded bg-black/75 backdrop-blur-xs text-[10px] font-semibold text-emerald-400 flex items-center gap-1 border border-emerald-500/30">
+                        <Paperclip className="w-3 h-3" /> Attached Image
+                      </div>
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                        <span className="px-2.5 py-1 rounded-full bg-black/80 text-white text-[11px] font-medium backdrop-blur-xs flex items-center gap-1.5 border border-white/10 shadow-lg">
+                          <ZoomIn className="w-3.5 h-3.5 text-white" /> Click to view full image
+                        </span>
+                      </div>
+                    </button>
+                  )}
+                <div className="p-3.5 space-y-2">
+                  {broadcastTemplate.headline && (
+                    <h4 className="font-bold text-sm text-white leading-snug">
+                      {broadcastTemplate.headline}
+                    </h4>
+                  )}
+                  <p className="text-slate-200 leading-relaxed whitespace-pre-wrap text-[13px]">
                     {broadcastTemplate.body
                       .replace(/\{\{1\}\}/g, 'Vikramaditya Singhania')
                       .replace(/\{\{2\}\}/g, 'Today')}
                   </p>
-                  <p className="text-[10px] text-slate-400 border-t border-slate-700 pt-1">
+                  <div className="text-[10px] text-slate-400 border-t border-slate-700/60 pt-1.5 leading-snug">
                     {SEBI_FOOTER}
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -948,6 +1000,34 @@ export const TemplatesPage: React.FC = () => {
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* Full-Screen High-Resolution Image Lightbox Modal */}
+      {lightboxUrl && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Full size attached image viewer"
+          onClick={() => setLightboxUrl(null)}
+          className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-8 animate-in fade-in duration-150"
+        >
+          <div className="relative max-w-full max-h-full flex flex-col items-center">
+            <button
+              type="button"
+              onClick={() => setLightboxUrl(null)}
+              aria-label="Close image preview"
+              className="absolute -top-12 right-0 p-2 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer"
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <img
+              src={lightboxUrl}
+              alt="Full size attachment preview"
+              onClick={(e) => e.stopPropagation()}
+              className="max-w-[95vw] max-h-[88vh] rounded-lg object-contain shadow-2xl border border-white/10"
+            />
+          </div>
+        </div>
       )}
     </div>
   );

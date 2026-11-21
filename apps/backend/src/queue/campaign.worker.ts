@@ -265,6 +265,23 @@ export class CampaignWorker implements OnModuleInit, OnModuleDestroy {
       },
     ];
 
+    const approvedVersion = template.versions[0];
+    const vSchema = approvedVersion?.variableSchema as any;
+    const mediaUrl = vSchema?.headerMediaUrl || (approvedVersion as any)?.headerMedia?.url;
+    const mediaId = approvedVersion?.headerMediaId;
+
+    if (approvedVersion?.headerType === 'IMAGE' && (mediaUrl || mediaId)) {
+      components.unshift({
+        type: 'header',
+        parameters: [
+          {
+            type: 'image',
+            image: mediaId ? { id: mediaId, link: mediaUrl } : { link: mediaUrl },
+          },
+        ],
+      });
+    }
+
     // 6. Invoke Meta Messages Adapter
     const targetPhone = client.whatsappNumber || phone;
     const sendResult = await this.metaAdapter.sendMessage({
