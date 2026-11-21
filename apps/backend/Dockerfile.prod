@@ -54,5 +54,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD wget -qO- http://localhost:3000/api/v1/health || exit 1
 
-# Run migrations then start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && if [ -f dist/src/main.js ]; then node dist/src/main.js; else node dist/main.js; fi"]
+# Push database schema then start the server
+CMD ["sh", "-c", "npx prisma db push --accept-data-loss && if [ -f dist/src/main.js ]; then node dist/src/main.js; else node dist/main.js; fi"]

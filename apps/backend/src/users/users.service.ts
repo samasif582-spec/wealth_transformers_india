@@ -6,6 +6,7 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
+import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import {
@@ -57,35 +58,30 @@ export class UsersService implements OnModuleInit {
     try {
       const userCount = await this.prisma.user.count();
       if (userCount === 0) {
-        this.logger.log('🌱 No users found in database. Initializing default administrative accounts...');
-        const SEED_USERS = [
+        this.logger.log('🌱 No administrative accounts found. Initializing secure administrative accounts...');
+
+        const superAdminEmail = (process.env.SUPERADMIN_EMAIL || 'superadmin@wealthtransformers.in').toLowerCase().trim();
+        const superAdminPassword = process.env.SUPERADMIN_PASSWORD || process.env.ADMIN_PASSWORD || crypto.randomBytes(16).toString('hex') + '!Aa1';
+
+        const adminEmail = (process.env.ADMIN_EMAIL || 'admin@wealthtransformers.in').toLowerCase().trim();
+        const adminPassword = process.env.ADMIN_PASSWORD || crypto.randomBytes(16).toString('hex') + '!Aa1';
+
+        const accounts = [
           {
-            email: 'superadmin@wealthtransformers.in',
-            password: 'SuperAdmin@2026!',
+            email: superAdminEmail,
+            password: superAdminPassword,
             fullName: 'System Super Admin',
             role: UserRole.Super_Admin,
           },
           {
-            email: 'admin@wealthtransformers.in',
-            password: 'Admin@2026!',
+            email: adminEmail,
+            password: adminPassword,
             fullName: 'Operations Admin',
-            role: UserRole.Admin,
-          },
-          {
-            email: 'superadmin@wealthtrade.in',
-            password: 'SuperAdmin@2026!',
-            fullName: 'System Super Admin (Legacy)',
-            role: UserRole.Super_Admin,
-          },
-          {
-            email: 'admin@wealthtrade.in',
-            password: 'Admin@2026!',
-            fullName: 'Operations Admin (Legacy)',
             role: UserRole.Admin,
           },
         ];
 
-        for (const u of SEED_USERS) {
+        for (const u of accounts) {
           const passwordHash = await bcrypt.hash(u.password, BCRYPT_SALT_ROUNDS);
           await this.prisma.user.create({
             data: {
@@ -96,8 +92,12 @@ export class UsersService implements OnModuleInit {
               accountStatus: AccountStatus.ACTIVE,
             },
           });
+
+          if (!process.env.ADMIN_PASSWORD && !process.env.SUPERADMIN_PASSWORD) {
+            this.logger.warn(`🔑 Secure bootstrap credential generated for [${u.email}] -> Password: ${u.password}`);
+          }
         }
-        this.logger.log('✅ Default administrative accounts initialized successfully.');
+        this.logger.log('✅ Secure administrative accounts initialized successfully.');
       }
     } catch (err: any) {
       this.logger.warn(`Could not seed default users: ${err.message}`);
