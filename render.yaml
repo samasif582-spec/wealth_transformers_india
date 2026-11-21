@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: wt-backend
+    env: docker
+    dockerfilePath: apps/backend/Dockerfile.prod
+    dockerContext: .
+    region: oregon
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: wt-database
+          property: connectionString
+      - key: REDIS_URL
+        value: redis://red-dc0qqrd9el5s73ev6rrg:6379
+      - key: META_BASE_GRAPH_URL
+        value: https://wt-mock-server.onrender.com
+      - key: VITE_API_BASE_URL
+        value: https://wealthtransformersindia.vercel.app
