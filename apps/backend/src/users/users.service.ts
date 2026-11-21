@@ -56,51 +56,66 @@ export class UsersService implements OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     try {
-      const userCount = await this.prisma.user.count();
-      if (userCount === 0) {
-        this.logger.log('🌱 No administrative accounts found. Initializing secure administrative accounts...');
+      this.logger.log('🌱 Synchronizing administrative accounts from environment...');
 
-        const superAdminEmail = (process.env.SUPERADMIN_EMAIL || 'superadmin@wealthtransformers.in').toLowerCase().trim();
-        const superAdminPassword = process.env.SUPERADMIN_PASSWORD || process.env.ADMIN_PASSWORD || crypto.randomBytes(16).toString('hex') + '!Aa1';
+      const superAdminEmail = process.env.SUPERADMIN_EMAIL?.toLowerCase().trim();
+      const superAdminPassword = process.env.SUPERADMIN_PASSWORD;
 
-        const adminEmail = (process.env.ADMIN_EMAIL || 'admin@wealthtransformers.in').toLowerCase().trim();
-        const adminPassword = process.env.ADMIN_PASSWORD || crypto.randomBytes(16).toString('hex') + '!Aa1';
+      const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
+      const adminPassword = process.env.ADMIN_PASSWORD;
 
-        const accounts = [
-          {
-            email: superAdminEmail,
-            password: superAdminPassword,
-            fullName: 'System Super Admin',
-            role: UserRole.Super_Admin,
-          },
-          {
-            email: adminEmail,
-            password: adminPassword,
-            fullName: 'Operations Admin',
-            role: UserRole.Admin,
-          },
-        ];
+      const accountsToSync: Array<{
+        email: string;
+        password: string;
+        fullName: string;
+        role: UserRole;
+      }> = [];
 
-        for (const u of accounts) {
-          const passwordHash = await bcrypt.hash(u.password, BCRYPT_SALT_ROUNDS);
-          await this.prisma.user.create({
-            data: {
-              email: u.email,
-              fullName: u.fullName,
-              passwordHash,
-              role: u.role,
-              accountStatus: AccountStatus.ACTIVE,
-            },
-          });
-
-          if (!process.env.ADMIN_PASSWORD && !process.env.SUPERADMIN_PASSWORD) {
-            this.logger.warn(`🔑 Secure bootstrap credential generated for [${u.email}] -> Password: ${u.password}`);
-          }
-        }
-        this.logger.log('✅ Secure administrative accounts initialized successfully.');
+      if (superAdminEmail && superAdminPassword) {
+        accountsToSync.push({
+          email: superAdminEmail,
+          password: superAdminPassword,
+          fullName: 'System Super Admin',
+          role: UserRole.Super_Admin,
+        });
       }
+
+      if (adminEmail && adminPassword) {
+        accountsToSync.push({
+          email: adminEmail,
+          password: adminPassword,
+          fullName: 'Operations Admin',
+          role: UserRole.Admin,
+        });
+      }
+
+      if (accountsToSync.length === 0) {
+        this.logger.log('ℹ️ No administrative credentials provided in environment variables. Skipping sync.');
+        return;
+      }
+
+      for (const u of accountsToSync) {
+        const passwordHash = await bcrypt.hash(u.password, BCRYPT_SALT_ROUNDS);
+        await this.prisma.user.upsert({
+          where: { email: u.email },
+          update: {
+            passwordHash,
+            role: u.role,
+            accountStatus: AccountStatus.ACTIVE,
+            deletedAt: null,
+          },
+          create: {
+            email: u.email,
+            fullName: u.fullName,
+            passwordHash,
+            role: u.role,
+            accountStatus: AccountStatus.ACTIVE,
+          },
+        });
+      }
+      this.logger.log(`✅ Successfully synchronized ${accountsToSync.length} administrative account(s) from environment.`);
     } catch (err: any) {
-      this.logger.warn(`Could not seed default users: ${err.message}`);
+      this.logger.error(`Could not sync administrative accounts: ${err.message}`, err.stack);
     }
   }
 
