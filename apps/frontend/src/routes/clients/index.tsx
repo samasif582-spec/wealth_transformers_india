@@ -231,11 +231,10 @@ export const ClientsPage: React.FC = () => {
               <>
                 <button
                   onClick={() => handleToggleConsent(c)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all active:scale-[0.98] cursor-pointer ${
-                    c.communicationConsent === 'OPTED_IN'
-                      ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 border border-rose-500/20'
-                      : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20'
-                  }`}
+                  className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all active:scale-[0.98] cursor-pointer ${c.communicationConsent === 'OPTED_IN'
+                    ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 border border-rose-500/20'
+                    : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/20 border border-emerald-500/20'
+                    }`}
                 >
                   {c.communicationConsent === 'OPTED_IN' ? 'Opt-Out' : 'Opt-In'}
                 </button>

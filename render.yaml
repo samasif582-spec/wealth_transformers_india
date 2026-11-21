@@ -4,7 +4,7 @@ services:
     env: docker
     dockerfilePath: apps/backend/Dockerfile.prod
     dockerContext: .
-    region: oregon
+    region: singapore
     plan: free
     healthCheckPath: /api/v1/health
     envVars:
@@ -17,8 +17,28 @@ services:
           name: wt-database
           property: connectionString
       - key: REDIS_URL
-        value: redis://red-dc0qqrd9el5s73ev6rrg:6379
+        fromService:
+          type: keyvalue
+          name: wt-redis
+          property: connectionString
       - key: META_BASE_GRAPH_URL
         value: https://wt-mock-server.onrender.com
-      - key: VITE_API_BASE_URL
+      - key: FRONTEND_URL
         value: https://wealthtransformersindia.vercel.app
+      - key: JWT_ACCESS_TOKEN_TTL
+        value: 3600
+      - key: JWT_REFRESH_TOKEN_TTL
+        value: 604800
+
+  - type: keyvalue
+    name: wt-redis
+    region: singapore
+    plan: free
+    ipAllowList: []
+
+databases:
+  - name: wt-database
+    databaseName: wt_whatsapp
+    user: wt_app
+    region: singapore
+    plan: free

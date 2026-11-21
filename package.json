@@ -2,8 +2,12 @@
   "name": "wt-whatsapp-platform",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["apps/*"],
-  "engines": { "node": ">=20.0.0" },
+  "workspaces": [
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "build": "npm run build:frontend",
     "dev:backend": "npm run dev --workspace=apps/backend",
