@@ -98,4 +98,31 @@ Second Client,+919999900011,RETAIL,second@example.com`;
     expect(result.errors).toBeDefined();
     expect(result.errors![0].field).toBe('header');
   });
+
+  it('should successfully import streamlined template with mobileNumber, fullName, dateOfBirth (DD-MM-YYYY)', async () => {
+    const streamlinedCsv = `mobileNumber,fullName,dateOfBirth
++919811122233,Sunil Mittal,23-10-1968
++919848011223,Kavita Reddy,14-06-1984
++919825099887,Deepak Mehta,30-01-1992`;
+
+    const result = await service.parseAndPersist(streamlinedCsv, 'streamlined.csv', 'admin-id');
+
+    expect(result.success).toBe(true);
+    expect(result.imported).toBe(3);
+    expect(result.errors).toBeUndefined();
+    expect(mockPrisma.$transaction).toHaveBeenCalled();
+  });
+
+  it('should successfully import split firstName and lastName with dateOfBirth', async () => {
+    const splitNameCsv = `mobileNumber,firstName,lastName,dateOfBirth
++919820123456,Vikramaditya,Singhania,12-04-1985
++919819876543,Ananya,Deshmukh,1992-08-20`;
+
+    const result = await service.parseAndPersist(splitNameCsv, 'split_names.csv', 'admin-id');
+
+    expect(result.success).toBe(true);
+    expect(result.imported).toBe(2);
+    expect(result.errors).toBeUndefined();
+    expect(mockPrisma.$transaction).toHaveBeenCalled();
+  });
 });

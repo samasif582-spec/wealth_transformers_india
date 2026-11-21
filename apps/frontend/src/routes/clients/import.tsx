@@ -80,10 +80,11 @@ export const ClientImportPage: React.FC = () => {
 
   const downloadSampleCsv = () => {
     const csvContent =
-      'data:text/csv;charset=utf-8,fullName,whatsappNumber,email,categoryTier,preferredLanguage,dateOfBirth\n' +
-      'Sunil Mittal,+919811122233,sunil@bharti.com,CORPORATE,en,1968-10-23\n' +
-      'Kavita Reddy,+919848011223,kavita.reddy@gmail.com,HNI,te,1984-06-14\n' +
-      'Deepak Mehta,+919825099887,deepak.mehta@fin.in,RETAIL,gu,1992-01-30\n';
+      'data:text/csv;charset=utf-8,mobileNumber,fullName,dateOfBirth\n' +
+      '+919811122233,Sunil Mittal,23-10-1968\n' +
+      '+919848011223,Kavita Reddy,14-06-1984\n' +
+      '+919825099887,Deepak Mehta,30-01-1992\n' +
+      '+919820123456,Vikramaditya Singhania,12-04-1985\n';
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
@@ -221,7 +222,7 @@ export const ClientImportPage: React.FC = () => {
           <div>
             <h4 className="text-sm font-bold text-slate-900 dark:text-white">Need the Standard CSV Template?</h4>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Includes pre-configured headers: fullName, whatsappNumber, email, categoryTier, preferredLanguage, dateOfBirth
+              Requires only: <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">mobileNumber</span>, <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">fullName</span> (or firstName + lastName), and <span className="font-mono text-emerald-600 dark:text-emerald-400 font-semibold">dateOfBirth</span> (DD-MM-YYYY or YYYY-MM-DD).
             </p>
           </div>
         </div>
