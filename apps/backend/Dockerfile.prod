@@ -5,14 +5,14 @@ WORKDIR /app
 # Install build tools for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy workspace root files
+# Copy workspace root files and package manifests
 COPY package.json package-lock.json* ./
 COPY tsconfig.base.json ./
-
-# Copy backend package files for layer caching
 COPY apps/backend/package.json ./apps/backend/
+COPY apps/frontend/package.json ./apps/frontend/
+COPY apps/mock-whatsapp-server/package.json ./apps/mock-whatsapp-server/
 
-# Install all dependencies
+# Install all backend dependencies
 RUN npm ci --workspace=apps/backend
 
 # Copy backend source
@@ -36,11 +36,13 @@ RUN apk add --no-cache postgresql-client wget
 # Create non-root user for security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Copy only production artifacts from builder
+# Copy hoisted dependencies and backend build artifacts
+COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/dist ./dist
-COPY --from=builder /app/apps/backend/node_modules ./node_modules
 COPY --from=builder /app/apps/backend/prisma ./prisma
 COPY --from=builder /app/apps/backend/package.json ./
+
+ENV PATH="/app/node_modules/.bin:$PATH"
 
 # Set correct ownership
 RUN chown -R appuser:appgroup /app
@@ -53,4 +55,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD wget -qO- http://localhost:3000/api/v1/health || exit 1
 
 # Run migrations then start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/main"]
+CMD ["sh", "-c", "npx prisma migrate deploy && if [ -f dist/src/main.js ]; then node dist/src/main.js; else node dist/main.js; fi"]
