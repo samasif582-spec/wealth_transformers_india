@@ -40,7 +40,7 @@ export const AppRoutes: React.FC = () => {
       {/* Protected routes */}
       <Route element={<PrivateLayout />}>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        
+
         {/* Core Admin & Operational Views */}
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/clients" element={<ClientsPage />} />

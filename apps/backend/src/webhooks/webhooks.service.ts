@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConsentService } from '../consent/consent.service';
 import { LlmReplyService } from '../chat/llm-reply.service';
-import { DeliveryStatus, ConsentStatus, ConsentSource } from '@prisma/client';
+import { DeliveryStatus, ConsentStatus, ConsentSource, AuditActionType } from '@prisma/client';
 
 const STATUS_RANKS: Record<DeliveryStatus, number> = {
   QUEUED: 0,
@@ -80,7 +80,40 @@ export class WebhooksService {
     });
 
     if (!existingLog) {
-      this.logger.debug(`No MessageLog found for wamid ${wamid}`);
+      // Also check if this WAMID belongs to a direct custom message in AuditLog
+      const customLogs = await this.prisma.auditLog.findMany({
+        where: {
+          resourceType: 'CUSTOM_MESSAGE',
+          afterState: {
+            path: ['wamid'],
+            equals: wamid,
+          },
+        },
+        take: 1,
+      });
+
+      if (customLogs.length > 0) {
+        const customLog = customLogs[0];
+        const prevState = (customLog.afterState as Record<string, any>) || {};
+        const prevStatus = (prevState.status || 'SENT').toUpperCase() as DeliveryStatus;
+        const prevRank = STATUS_RANKS[prevStatus] ?? 0;
+        const nextRank = STATUS_RANKS[incomingStatus] ?? 0;
+
+        if (nextRank > prevRank) {
+          await this.prisma.auditLog.update({
+            where: { id: customLog.id },
+            data: {
+              afterState: {
+                ...prevState,
+                status: incomingStatus,
+              },
+            },
+          });
+          this.logger.log(`Custom message status updated for ${wamid}: ${prevStatus} -> ${incomingStatus}`);
+        }
+      } else {
+        this.logger.debug(`No MessageLog found for wamid ${wamid}`);
+      }
       return;
     }
 
@@ -140,8 +173,37 @@ export class WebhooksService {
       return;
     }
 
-    // Inbound customer conversation — handle through LLM responder & authority escalation
+    // Record inbound message in client's custom message timeline
     if (rawBody.length > 0) {
+      const digits = fromPhone.replace(/[^\d]/g, '');
+      const client = await this.prisma.client.findFirst({
+        where: {
+          OR: [
+            { whatsappNumber: fromPhone },
+            { whatsappNumber: digits },
+            ...(digits.length >= 10 ? [{ whatsappNumber: { endsWith: digits.slice(-10) } }] : []),
+          ],
+          deletedAt: null,
+        },
+      });
+
+      if (client) {
+        await this.prisma.auditLog.create({
+          data: {
+            actionType: AuditActionType.CREATE,
+            resourceType: 'CUSTOM_MESSAGE',
+            resourceId: client.id,
+            afterState: {
+              direction: 'inbound',
+              message: rawBody,
+              wamid: msg.id || null,
+              status: 'RECEIVED',
+              from: fromPhone,
+            },
+          },
+        });
+      }
+
       this.logger.log(`💬 Inbound customer query from ${fromPhone}: "${rawBody}"`);
       await this.llmReplyService.processInboundCustomerQuery(fromPhone, rawBody);
     }

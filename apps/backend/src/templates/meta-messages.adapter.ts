@@ -46,7 +46,11 @@ export class MetaMessagesAdapter {
   }
 
   public get phoneNumberId(): string {
-    return this.config.get<string>('META_PHONE_NUMBER_ID') || process.env['META_PHONE_NUMBER_ID'] || '';
+    const id = this.config.get<string>('META_PHONE_NUMBER_ID') || process.env['META_PHONE_NUMBER_ID'] || '';
+    if (!id && this.dispatchMode === 'virtualized') {
+      return 'phone-sit-2001';
+    }
+    return id;
   }
 
   public get graphApiVersion(): string {
@@ -54,7 +58,12 @@ export class MetaMessagesAdapter {
   }
 
   public get baseGraphUrl(): string {
-    return this.config.get<string>('META_BASE_GRAPH_URL') || process.env['META_BASE_GRAPH_URL'] || 'https://graph.facebook.com';
+    if (this.dispatchMode === 'virtualized') {
+      const waSim = this.config.get<string>('WA_SIM_URL') || process.env['WA_SIM_URL'];
+      if (waSim) return waSim.replace(/\/+$/, '');
+    }
+    const url = this.config.get<string>('META_BASE_GRAPH_URL') || process.env['META_BASE_GRAPH_URL'] || 'https://graph.facebook.com';
+    return url.replace(/\/+$/, '');
   }
 
   public get dispatchMode(): string {
@@ -186,13 +195,18 @@ export class MetaMessagesAdapter {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${this.metaToken}`,
+      'Content-Type': 'application/json',
+    };
+    if (this.dispatchMode === 'virtualized') {
+      headers['X-WA-Sim-Direct'] = '1';
+    }
+
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.metaToken}`,
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(requestBody),
         signal: controller.signal,
       });
@@ -304,13 +318,18 @@ export class MetaMessagesAdapter {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
+    const headers: Record<string, string> = {
+      Authorization: `Bearer ${this.metaToken}`,
+      'Content-Type': 'application/json',
+    };
+    if (this.dispatchMode === 'virtualized') {
+      headers['X-WA-Sim-Direct'] = '1';
+    }
+
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${this.metaToken}`,
-          'Content-Type': 'application/json',
-        },
+        headers,
         body: JSON.stringify(requestBody),
         signal: controller.signal,
       });

@@ -19,7 +19,9 @@ import {
   X,
   Paperclip,
   ZoomIn,
+  Trash2,
 } from 'lucide-react';
+import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { DataTable, Column } from '../../components/ui/DataTable';
 import { Badge } from '../../components/ui/Badge';
 import { Modal } from '../../components/ui/Modal';
@@ -125,6 +127,8 @@ export const TemplatesPage: React.FC = () => {
   const [broadcastTemplate, setBroadcastTemplate] = useState<TemplateRecord | null>(null);
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<TemplateRecord | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -374,6 +378,21 @@ export const TemplatesPage: React.FC = () => {
     }
   };
 
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      setIsDeleting(true);
+      await apiClient.delete(`/templates/${deleteTarget.id}`);
+      toast.success('Template Deleted', `"${deleteTarget.name}" has been permanently removed.`);
+      setDeleteTarget(null);
+      fetchTemplates();
+    } catch (err: any) {
+      toast.error('Delete Failed', err.response?.data?.message || err.message);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const columns: Column<TemplateRecord>[] = [
     {
       key: 'name',
@@ -430,6 +449,13 @@ export const TemplatesPage: React.FC = () => {
           >
             <Send className="w-3.5 h-3.5" />
             Send to All Clients
+          </button>
+          <button
+            onClick={() => setDeleteTarget(t)}
+            className="p-2 rounded-xl border border-rose-200 dark:border-rose-800/50 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+            title="Delete template"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       ),
@@ -1012,6 +1038,18 @@ export const TemplatesPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Delete Template Confirmation Dialog */}
+      <ConfirmDialog
+        isOpen={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        title="Delete Template"
+        message={`Are you sure you want to permanently delete the template "${deleteTarget?.name}"? This action cannot be undone and will remove it from all future campaigns.`}
+        confirmLabel={isDeleting ? 'Deleting...' : 'Delete Template'}
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 };

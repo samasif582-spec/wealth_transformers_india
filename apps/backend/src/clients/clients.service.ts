@@ -597,7 +597,7 @@ export class ClientsService implements OnModuleInit {
         return {
           id: log.id,
           type: 'custom' as const,
-          direction: 'outbound' as const,
+          direction: (state.direction === 'inbound' ? 'inbound' : 'outbound') as 'inbound' | 'outbound',
           body: String(state.message || ''),
           status: String(state.status || 'SENT'),
           wamid: state.wamid ? String(state.wamid) : undefined,

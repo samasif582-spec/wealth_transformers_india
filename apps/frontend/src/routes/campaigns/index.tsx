@@ -195,10 +195,11 @@ export const CampaignsPage: React.FC = () => {
           {(c.status === 'RUNNING' || c.status === 'EXECUTING' || c.status === 'PAUSED') && (
             <button
               onClick={() => togglePause(c)}
-              className="p-1.5 text-slate-400 hover:text-slate-200 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
+              className="apple-btn-secondary"
               title={c.status === 'PAUSED' ? 'Resume Campaign' : 'Pause Campaign'}
             >
-              {c.status === 'PAUSED' ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
+              {c.status === 'PAUSED' ? <Play className="w-3.5 h-3.5" /> : <Pause className="w-3.5 h-3.5" />}
+              {c.status === 'PAUSED' ? 'Resume' : 'Pause'}
             </button>
           )}
           <button

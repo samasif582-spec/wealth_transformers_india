@@ -100,6 +100,7 @@ export interface SendMessageParams {
   broadcastId?: string;
   failureRollPercent?: number;
   deferPersist?: boolean;
+  bypass24hWindow?: boolean;
   metadata?: Record<string, unknown>;
 }
 
@@ -1281,6 +1282,7 @@ export class EmulatorEngine {
 
     // 3. 24-hour customer service window enforcement (Business mode, direct chats)
     if (
+      !params.bypass24hWindow &&
       isBusiness &&
       this.state.settings.enforce24hWindow &&
       chat.type === 'direct' &&

@@ -479,6 +479,8 @@ export function createApiRouter(
       return;
     }
 
+    const bypass24hWindow = req.headers['x-wa-sim-direct'] === '1';
+
     const result = engine.sendMessage({
       toPhone: normalized.toPhone,
       phoneNumberId: req.params.phoneNumberId,
@@ -493,6 +495,7 @@ export function createApiRouter(
       templateVariables: normalized.templateVariables,
       templateOtpCode: normalized.templateOtpCode,
       templateHeaderImageUrl: normalized.templateHeaderImageUrl,
+      bypass24hWindow,
       metadata: { cloudApiVersion: req.params.version, phoneNumberId: req.params.phoneNumberId },
     });
 

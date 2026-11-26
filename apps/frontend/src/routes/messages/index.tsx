@@ -117,6 +117,15 @@ export const CustomMessagesPage: React.FC = () => {
   useEffect(() => {
     if (selectedClient) {
       fetchClientMessages(selectedClient.id);
+      const interval = setInterval(() => {
+        apiClient
+          .get<{ messages: ClientMessageItem[] }>(`/clients/${selectedClient.id}/messages`)
+          .then((res) => {
+            if (res.data?.messages) setMessages(res.data.messages);
+          })
+          .catch(() => {});
+      }, 5000);
+      return () => clearInterval(interval);
     } else {
       setMessages([]);
     }
@@ -444,12 +453,24 @@ export const CustomMessagesPage: React.FC = () => {
                     </p>
                   </div>
                 ) : (
-                  messages.map((msg) => (
-                    <div key={msg.id} className="flex justify-end">
-                      <div className="max-w-[78%] rounded-2xl rounded-tr-sm px-4 py-2.5 bg-apple-blue text-white shadow-sm space-y-1">
-                        <div className="flex items-center justify-between gap-4 text-[10px] text-white/75">
+                  messages.map((msg) => {
+                    const isInbound = msg.direction === 'inbound';
+                    return (
+                    <div key={msg.id} className={`flex ${isInbound ? 'justify-start' : 'justify-end'}`}>
+                      <div
+                        className={`max-w-[78%] rounded-2xl px-4 py-2.5 shadow-sm space-y-1 ${
+                          isInbound
+                            ? 'rounded-tl-sm bg-black/[0.05] dark:bg-white/[0.08] text-slate-900 dark:text-white border border-black/[0.05] dark:border-white/[0.08]'
+                            : 'rounded-tr-sm bg-apple-blue text-white'
+                        }`}
+                      >
+                        <div className={`flex items-center justify-between gap-4 text-[10px] ${isInbound ? 'text-slate-500 dark:text-slate-400' : 'text-white/75'}`}>
                           <span className="font-semibold uppercase tracking-wider">
-                            {msg.type === 'custom' ? 'Direct Admin Reply' : msg.campaignType || 'Campaign'}
+                            {isInbound
+                              ? 'Client Inbound'
+                              : msg.type === 'custom'
+                                ? 'Direct Admin Reply'
+                                : msg.campaignType || 'Campaign'}
                           </span>
                           <span className="font-mono">
                             {new Date(msg.timestamp).toLocaleString('en-IN', {
@@ -459,7 +480,7 @@ export const CustomMessagesPage: React.FC = () => {
                           </span>
                         </div>
                         <p className="text-xs leading-relaxed whitespace-pre-wrap">{msg.body}</p>
-                        <div className="flex items-center justify-between gap-3 pt-0.5 text-[10px] text-white/75">
+                        <div className={`flex items-center justify-between gap-3 pt-0.5 text-[10px] ${isInbound ? 'text-slate-500 dark:text-slate-400' : 'text-white/75'}`}>
                           <span className="flex items-center gap-1">
                             {msg.status === 'FAILED' ? (
                               <>
@@ -471,7 +492,7 @@ export const CustomMessagesPage: React.FC = () => {
                               </>
                             ) : (
                               <>
-                                <CheckCircle2 className="w-3 h-3 text-emerald-200" /> {msg.status}
+                                <CheckCircle2 className={`w-3 h-3 ${isInbound ? 'text-emerald-500' : 'text-emerald-200'}`} /> {msg.status}
                               </>
                             )}
                           </span>
@@ -488,7 +509,8 @@ export const CustomMessagesPage: React.FC = () => {
                         )}
                       </div>
                     </div>
-                  ))
+                  );
+                  })
                 )}
                 <div ref={messagesEndRef} />
               </div>
