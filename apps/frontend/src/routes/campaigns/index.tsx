@@ -180,8 +180,9 @@ export const CampaignsPage: React.FC = () => {
     {
       key: 'actions',
       header: 'Actions',
+      className: 'text-right',
       render: (c) => (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-end gap-2">
           {c.status === 'APPROVED' && (
             <button
               onClick={() => handleDispatch(c.id)}
@@ -194,7 +195,7 @@ export const CampaignsPage: React.FC = () => {
           {(c.status === 'RUNNING' || c.status === 'EXECUTING' || c.status === 'PAUSED') && (
             <button
               onClick={() => togglePause(c)}
-              className="p-1.5 text-slate-400 hover:text-slate-200 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-200 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors cursor-pointer"
               title={c.status === 'PAUSED' ? 'Resume Campaign' : 'Pause Campaign'}
             >
               {c.status === 'PAUSED' ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}

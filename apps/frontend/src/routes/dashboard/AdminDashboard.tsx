@@ -254,67 +254,6 @@ export const AdminDashboard: React.FC = () => {
         />
       </div>
 
-      {/* DPDP Consent & Workflow Status Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)]">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-3">Client Category Distribution</h3>
-          <div className="space-y-3">
-            {[
-              { label: 'HNI (High Net Worth)', count: 5, pct: '38%', color: 'bg-purple-500' },
-              { label: 'Retail Investors', count: 4, pct: '31%', color: 'bg-apple-blue' },
-              { label: 'Corporate Accounts', count: 2, pct: '15%', color: 'bg-apple-emerald' },
-              { label: 'Prospects', count: 1, pct: '8%', color: 'bg-slate-300 dark:bg-slate-700' },
-            ].map((item, idx) => (
-              <div key={idx} className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="font-medium text-slate-700 dark:text-slate-300">{item.label}</span>
-                  <span className="text-slate-500 dark:text-slate-400 font-semibold">{item.count} ({item.pct})</span>
-                </div>
-                <div className="w-full bg-black/[0.04] dark:bg-white/[0.06] rounded-full h-1.5 overflow-hidden">
-                  <div className={`${item.color} h-1.5 rounded-full`} style={{ width: item.pct }}></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)]">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-3">DPDP Consent Compliance</h3>
-          <div className="p-4 bg-emerald-500/10 dark:bg-emerald-500/15 border border-emerald-500/20 rounded-2xl space-y-2">
-            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-xs">
-              <ShieldCheck className="w-4 h-4" /> Real Opt-In Ratio Enforced
-            </div>
-            <p className="text-[11.5px] text-emerald-700 dark:text-emerald-400 leading-relaxed">
-              All marketing dispatches strictly enforce Property P1 (excluding non-OPTED_IN clients).
-              Automated STOP keyword opt-out workflow (06-opt-out) is active.
-            </p>
-          </div>
-          <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 flex justify-between font-medium">
-            <span>Opted-In: {clientStats.optedIn}</span>
-            <span>Opted-Out: {clientStats.optedOut}</span>
-          </div>
-        </div>
-
-        <div className="bg-white/75 dark:bg-[#181A20]/75 backdrop-blur-2xl p-5 rounded-[22px] border border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_24px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.4)] flex flex-col justify-between">
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-400 mb-2">Automated Schedule Status</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
-              Daily cron jobs active via n8n automation engine:
-            </p>
-            <div className="space-y-2 text-xs">
-              <div className="flex items-center justify-between py-1.5 border-b border-black/[0.04] dark:border-white/[0.06]">
-                <span className="font-medium text-slate-700 dark:text-slate-300">01 - Daily Birthday Wishes</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">09:00 IST Daily</span>
-              </div>
-              <div className="flex items-center justify-between py-1.5">
-                <span className="font-medium text-slate-700 dark:text-slate-300">02 - Festival Calendar Wishes</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">National Calendar</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Confirmation Dialog */}
       <ConfirmDialog
         isOpen={Boolean(selectedCampaign)}

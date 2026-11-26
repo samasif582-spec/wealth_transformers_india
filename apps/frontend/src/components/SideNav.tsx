@@ -7,7 +7,7 @@ import {
   Image,
   Send,
   BarChart3,
-  Bot,
+  MessageSquare,
   Settings,
   Shield,
   Receipt,
@@ -40,7 +40,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Clients', path: '/clients', icon: Users },
   { label: 'Templates & Offers', path: '/templates', icon: FileText },
   { label: 'Send Broadcast', path: '/campaigns', icon: Send },
-  { label: 'Automations', path: '/automation', icon: Bot },
+  { label: 'Custom Messages', path: '/messages', icon: MessageSquare },
   {
     label: 'Bills',
     path: '/billing',

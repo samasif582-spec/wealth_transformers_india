@@ -14,7 +14,7 @@ import { CampaignCreatePage } from './routes/campaigns/new';
 import { CampaignDetailPage } from './routes/campaigns/$campaignId';
 import { BillingPage } from './routes/billing';
 import { AnalyticsPage } from './routes/analytics';
-import { AutomationPage } from './routes/automation';
+import { CustomMessagesPage } from './routes/messages';
 import { SettingsPage } from './routes/settings';
 import { AuditPage } from './routes/audit';
 import { useAuthStore } from './stores/auth.store';
@@ -53,6 +53,7 @@ export const AppRoutes: React.FC = () => {
         <Route path="/campaigns/new" element={<CampaignCreatePage />} />
         <Route path="/campaigns/:campaignId" element={<CampaignDetailPage />} />
         <Route path="/billing" element={<BillingPage />} />
+        <Route path="/messages" element={<CustomMessagesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
 
         {/* Super Admin Exclusive Views */}
@@ -61,14 +62,6 @@ export const AppRoutes: React.FC = () => {
           element={
             <SuperAdminGuard>
               <AnalyticsPage />
-            </SuperAdminGuard>
-          }
-        />
-        <Route
-          path="/automation"
-          element={
-            <SuperAdminGuard>
-              <AutomationPage />
             </SuperAdminGuard>
           }
         />

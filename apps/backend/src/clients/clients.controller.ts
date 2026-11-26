@@ -26,6 +26,7 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { QueryClientsDto } from './dto/query-clients.dto';
 import { ErasureRequestDto } from './dto/erasure-request.dto';
+import { SendCustomMessageDto } from './dto/send-custom-message.dto';
 import { JwtPayload } from '../auth/auth.service';
 
 @Controller('clients')
@@ -137,5 +138,28 @@ export class ClientsController {
       ? dto
       : { confirmed: true, reason: 'Right-to-erasure requested' };
     return this.clientsService.eraseClient(id, erasureDto, actor?.sub);
+  }
+
+  @Get(':id/messages')
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
+  @HttpCode(HttpStatus.OK)
+  getClientMessages(@Param('id', ParseUUIDPipe) id: string) {
+    return this.clientsService.getClientMessages(id);
+  }
+
+  @Post(':id/message')
+  @Roles(UserRole.Super_Admin, UserRole.Admin)
+  @HttpCode(HttpStatus.OK)
+  sendCustomMessage(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: SendCustomMessageDto,
+    @CurrentUser() actor: JwtPayload,
+  ) {
+    return this.clientsService.sendCustomMessage(
+      id,
+      dto.message,
+      actor?.sub,
+      actor?.role as UserRole,
+    );
   }
 }

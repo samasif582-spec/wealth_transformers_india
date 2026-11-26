@@ -13,11 +13,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { AuditService } from '../audit/audit.service';
 import { CsvImportService } from './csv-import.service';
+import { MetaMessagesAdapter } from '../templates/meta-messages.adapter';
 import {
   Client,
   CategoryTier,
   ConsentStatus,
   AccountStatus,
+  AuditActionType,
+  UserRole,
   Prisma,
 } from '@prisma/client';
 import { Queue } from 'bullmq';
@@ -53,6 +56,7 @@ export class ClientsService implements OnModuleInit {
     private readonly auditService: AuditService,
     private readonly csvImportService: CsvImportService,
     private readonly config: ConfigService,
+    private readonly metaAdapter: MetaMessagesAdapter,
     @Optional() @Inject('QUEUE_CONFIG') private readonly injectedQueueConfig?: any,
   ) {
     try {
@@ -560,6 +564,118 @@ export class ClientsService implements OnModuleInit {
         tier: r.categoryTier,
         count: r._count._all,
       })),
+    };
+  }
+
+  async getClientMessages(clientId: string) {
+    await this.findOne(clientId);
+
+    const [customLogs, campaignLogs] = await Promise.all([
+      this.prisma.auditLog.findMany({
+        where: {
+          resourceType: 'CUSTOM_MESSAGE',
+          resourceId: clientId,
+        },
+        orderBy: { createdAt: 'asc' },
+        take: 100,
+      }),
+      this.prisma.messageLog.findMany({
+        where: { clientId },
+        include: {
+          campaign: {
+            select: { name: true, campaignType: true },
+          },
+        },
+        orderBy: { dispatchedAt: 'asc' },
+        take: 50,
+      }),
+    ]);
+
+    const items = [
+      ...customLogs.map((log) => {
+        const state = (log.afterState as Record<string, any>) || {};
+        return {
+          id: log.id,
+          type: 'custom' as const,
+          direction: 'outbound' as const,
+          body: String(state.message || ''),
+          status: String(state.status || 'SENT'),
+          wamid: state.wamid ? String(state.wamid) : undefined,
+          errorMessage: state.errorMessage ? String(state.errorMessage) : undefined,
+          timestamp: log.createdAt.toISOString(),
+        };
+      }),
+      ...campaignLogs.map((log) => ({
+        id: log.id,
+        type: 'campaign' as const,
+        direction: 'outbound' as const,
+        body: log.campaign?.name ? `Campaign: ${log.campaign.name}` : 'Campaign Template Message',
+        campaignType: log.campaign?.campaignType,
+        status: String(log.deliveryStatus),
+        wamid: log.metaMessageId || undefined,
+        errorMessage: log.errorMessage || undefined,
+        timestamp: log.dispatchedAt.toISOString(),
+      })),
+    ].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+
+    return { messages: items };
+  }
+
+  async sendCustomMessage(
+    clientId: string,
+    message: string,
+    actorId?: string,
+    actorRole?: UserRole,
+  ) {
+    const client = await this.findOne(clientId);
+
+    if (client.fullName.startsWith('ERASED_')) {
+      throw new BadRequestException('Cannot send message to an anonymized/erased client');
+    }
+
+    if (!client.whatsappNumber) {
+      throw new BadRequestException('Client does not have a valid WhatsApp number');
+    }
+
+    const trimmed = message.trim();
+    const result = await this.metaAdapter.sendTextMessage(client.whatsappNumber, trimmed);
+    const status = result.success ? 'SENT' : 'FAILED';
+
+    const log = await this.prisma.auditLog.create({
+      data: {
+        actorId: actorId || null,
+        actorRole: actorRole || null,
+        actionType: AuditActionType.CREATE,
+        resourceType: 'CUSTOM_MESSAGE',
+        resourceId: client.id,
+        afterState: {
+          message: trimmed,
+          wamid: result.wamid || null,
+          status,
+          errorMessage: result.errorMessage || null,
+          to: client.whatsappNumber,
+        },
+        metadata: {
+          mockMode: result.mockMode,
+        },
+      },
+    });
+
+    return {
+      success: result.success,
+      wamid: result.wamid,
+      errorMessage: result.errorMessage,
+      mockMode: result.mockMode,
+      item: {
+        id: log.id,
+        type: 'custom' as const,
+        direction: 'outbound' as const,
+        body: trimmed,
+        status,
+        wamid: result.wamid,
+        errorMessage: result.errorMessage,
+        timestamp: log.createdAt.toISOString(),
+      },
     };
   }
 }
